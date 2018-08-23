@@ -23,7 +23,3 @@ becomes
 ```
 -e git://github.com/Amsterdam/GOB-Core.git#egg=gobcore
 ```
-
-## Todo
-
-Jenkins file that runs the tests

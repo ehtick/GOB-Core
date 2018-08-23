@@ -8,5 +8,8 @@ setup(
     author='Datapunt',
     author_email='',
     license='MPL-2.0',
+    install_requires=[
+        'pika',
+    ],
     packages=find_packages(exclude=['tests*'])
 )

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gobcore',
-    version='0.2',
+    version='0.1',
     description='GOB Core Components',
     url='https://github.com/Amsterdam/GOB-Core',
     author='Datapunt',

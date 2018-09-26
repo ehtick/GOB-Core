@@ -111,7 +111,7 @@ class GOBType(metaclass=ABCMeta):
 
     @classmethod
     def get_column_definition(cls, column_name):
-        """Returns the """
+        """Returns the SQL Alchemy column definition for the type """
         return sqlalchemy.Column(column_name, cls.sql_type, primary_key=cls.is_pk, autoincrement=cls.is_pk)
 
 

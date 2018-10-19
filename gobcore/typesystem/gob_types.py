@@ -323,14 +323,22 @@ class Date(String):
 class DateTime(Date):
     name = "DateTime"
     sql_type = sqlalchemy.DateTime
+    internal_format = "%Y-%m-%d %H:%M:%S.%f"
 
     def __init__(self, value):
         super().__init__(value)
-        raise NotImplementedError
 
     @classmethod
     def from_value(cls, value, **kwargs):
-        raise NotImplementedError
+        input_format = kwargs['format'] if 'format' in kwargs else cls.internal_format
+
+        if value is not None:
+            try:
+                value = datetime.datetime.strptime(str(value), input_format).strftime(cls.internal_format)
+            except ValueError as v:
+                raise GOBTypeException(v)
+
+        return cls(str(value)) if value is not None else cls(None)
 
 
 class JSON(GOBType):

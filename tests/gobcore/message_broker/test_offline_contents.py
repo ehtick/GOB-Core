@@ -41,7 +41,7 @@ class TestOfflineContents(unittest.TestCase):
         self.assertFalse(mocked_remove.called)
 
         # End message with contents_ref gets the filename and removes it
-        self.assertEqual(oc.end_message({"contents_ref": "x"}), None)
+        self.assertEqual(oc.end_message("x"), None)
         mocked_filename.assert_called_with("x")
         mocked_remove.assert_called_with("filename")
 
@@ -72,12 +72,12 @@ class TestOfflineContents(unittest.TestCase):
 
     @mock.patch('gobcore.message_broker.offline_contents._get_filename', return_value="filename")
     def testLoadMessage(self, mocked_filename):
-        self.assertEqual(oc.load_message({}, converter), {})
+        self.assertEqual(oc.load_message({}, converter), ({}, None))
 
         mocked_reader = mock_open(read_data="some data")
         with mock.patch('builtins.open', mocked_reader):
             self.assertEqual(oc.load_message({"contents_ref": "unique_name", "any": "value"}, converter),
-                             {"contents_ref": "unique_name", "any": "value", "contents": "converted some data"})
+                             ({"any": "value", "contents": "converted some data"}, "unique_name"))
             mocked_reader.assert_called_once_with('filename', 'r')
             handle = mocked_reader()
             handle.read.assert_called()

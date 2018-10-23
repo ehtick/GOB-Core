@@ -268,18 +268,19 @@ class AsyncConnection(object):
 
                 # Try to parse body as json message, else pass it as it is received
                 msg = body
+                offload_id = None
                 try:
                     msg = from_json(body)
 
                     # Allow for offline contents
-                    msg = load_message(msg, from_json)
+                    msg, offload_id = load_message(msg, from_json)
                 except json.decoder.JSONDecodeError:
                     pass
 
                 if message_handler(self, basic_deliver.exchange, queue, basic_deliver.routing_key, msg) is not False:
                     # Default is to acknowledge message
                     channel.basic_ack(basic_deliver.delivery_tag)
-                    end_message(msg)
+                    end_message(offload_id)
 
             return handle_message
 

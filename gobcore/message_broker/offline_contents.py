@@ -76,20 +76,22 @@ def load_message(msg, converter):
     :param converter:
     :return:
     """
+    unique_name = None
     if _CONTENTS_REF in msg:
-        filename = _get_filename(msg[_CONTENTS_REF])
+        unique_name = msg[_CONTENTS_REF]
+        filename = _get_filename(unique_name)
         with open(filename, 'r') as file:
             msg[_CONTENTS] = converter(file.read())
-    return msg
+        del msg[_CONTENTS_REF]
+    return msg, unique_name
 
 
-def end_message(msg):
+def end_message(unique_name):
     """Remove the offloaded contents after a message has been succesfully handled
 
     :param msg:
     :return:
     """
-    if _CONTENTS_REF in msg:
-        filename = _get_filename(msg[_CONTENTS_REF])
+    if unique_name:
+        filename = _get_filename(unique_name)
         os.remove(filename)
-        del msg[_CONTENTS_REF]

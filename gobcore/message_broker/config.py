@@ -10,6 +10,9 @@ Two main queues are defined:
 """
 import os
 import pika
+import tempfile
+
+GOB_SHARED_DIR = os.getenv("GOB_SHARED_DIR", tempfile.gettempdir())
 
 MESSAGE_BROKER = os.getenv("MESSAGE_BROKER_ADDRESS", "localhost")
 MESSAGE_BROKER_PORT = os.getenv("MESSAGE_BROKER_PORT", 15672)

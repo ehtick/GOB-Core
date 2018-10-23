@@ -17,6 +17,7 @@ import traceback
 import pika
 
 from gobcore.typesystem.json import GobTypeJSONEncoder
+from gobcore.message_broker.offline_contents import offload_message, load_message, end_message
 
 
 def progress(*args):
@@ -208,13 +209,18 @@ class AsyncConnection(object):
         :param msg: The message
         :return: None
         """
+        def to_json(obj):
+            return json.dumps(obj, cls=GobTypeJSONEncoder, allow_nan=False)
 
         # Check whether a connection has been established
         if self._channel is None:
             raise Exception("Connection with message broker not available")
 
+        # Allow for offloaded contents
+        msg = offload_message(msg, to_json)
+
         # Convert the message to json
-        json_msg = json.dumps(msg, cls=GobTypeJSONEncoder, allow_nan=False)
+        json_msg = to_json(msg)
 
         # Publish the message as a persistent message on the queue
         self._channel.basic_publish(
@@ -257,17 +263,23 @@ class AsyncConnection(object):
                 :param body: The message body (json dump)
                 :return: None
                 """
+                def from_json(obj):
+                    return json.loads(obj, parse_float=decimal.Decimal)
 
                 # Try to parse body as json message, else pass it as it is received
                 msg = body
                 try:
-                    msg = json.loads(body, parse_float=decimal.Decimal)
+                    msg = from_json(body)
+
+                    # Allow for offline contents
+                    msg = load_message(msg, from_json)
                 except json.decoder.JSONDecodeError:
                     pass
 
                 if message_handler(self, basic_deliver.exchange, queue, basic_deliver.routing_key, msg) is not False:
                     # Default is to acknowledge message
                     channel.basic_ack(basic_deliver.delivery_tag)
+                    end_message(msg)
 
             return handle_message
 

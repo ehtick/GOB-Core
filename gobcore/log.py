@@ -45,8 +45,6 @@ class RequestsHandler(logging.Handler):
         if LOG_PUBLISHER is None:
             # Instantiate a log publisher
             LOG_PUBLISHER = LogPublisher()
-            # Connect to the message broker
-            LOG_PUBLISHER.connect()
             # Disconnect at exit
             atexit.register(LOG_PUBLISHER.disconnect)
 

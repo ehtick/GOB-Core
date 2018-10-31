@@ -38,6 +38,9 @@ class Connection(object):
     def __exit__(self, *args):
         self.disconnect()
 
+    def is_open(self):
+        return False if self._connection is None else self._connection.is_open
+
     def connect(self):
         self._connection = pika.BlockingConnection(self._connection_params)
         self._channel = self._connection.channel()

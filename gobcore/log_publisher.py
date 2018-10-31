@@ -23,7 +23,7 @@ class LogPublisher():
         self._queue = get_queue(queue_name)
 
     def publish(self, level, msg):
-        if not self._connection.is_open():
+        if not self._connection.is_alive():
             self.connect()
         self._connection.publish(self._queue, level, msg)
 

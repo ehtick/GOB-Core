@@ -38,8 +38,11 @@ class Connection(object):
     def __exit__(self, *args):
         self.disconnect()
 
-    def is_open(self):
-        return False if self._connection is None else self._connection.is_open
+    def is_alive(self):
+        if self._connection is None or self._channel is None:
+            return False
+        else:
+            return self._connection.is_open and self._channel.is_open
 
     def connect(self):
         self._connection = pika.BlockingConnection(self._connection_params)
@@ -47,7 +50,7 @@ class Connection(object):
 
     def publish(self, queue, key, msg):
         # Check whether a connection has been established
-        if self._channel is None:
+        if self._channel is None or not self._channel.is_open:
             raise Exception("Connection with message broker not available")
 
         # Convert the message to json

@@ -34,6 +34,8 @@ LOG_EXCHANGE = "gob.log"
 
 PROPOSAL_QUEUE = WORKFLOW_EXCHANGE + '.proposal'
 REQUEST_QUEUE = WORKFLOW_EXCHANGE + '.request'
+IMPORT_QUEUE = WORKFLOW_EXCHANGE + '.import'
+EXPORT_QUEUE = WORKFLOW_EXCHANGE + '.export'
 LOG_QUEUE = LOG_EXCHANGE + '.all'
 
 QUEUES = [
@@ -46,6 +48,16 @@ QUEUES = [
         "exchange": WORKFLOW_EXCHANGE,
         "name": REQUEST_QUEUE,
         "key": "*.request"
+    },
+    {
+        "exchange": WORKFLOW_EXCHANGE,
+        "name": IMPORT_QUEUE,
+        "key": "import.start"
+    },
+    {
+        "exchange": WORKFLOW_EXCHANGE,
+        "name": EXPORT_QUEUE,
+        "key": "export.start"
     },
     {
         "exchange": LOG_EXCHANGE,

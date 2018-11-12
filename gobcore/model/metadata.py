@@ -21,9 +21,16 @@ METADATA_COLUMNS = {
     },
 
     # These properties will not be made public by the API
+    # Note:
+    # the _last_event property is a unique identification of the "state" of the entity
+    # This property is used when deriving events out of a full update
+    # The _last_event property tells with which state of the entity the comparison has been made
+    # On applying the event this state is compared with the current state
+    # Only when these two match the event will be applied, otherwise the event will be rejected.
     "private": {
-        "_source": "GOB.String",
-        "_source_id": "GOB.String"
+        "_source": "GOB.String", # Source for the specific entity, eg the name of a database
+        "_source_id": "GOB.String", # Id of the entity in the above mentioned source
+        "_last_event": "GOB.Integer" # Id of the last event that has been applied to this entity
     }
 }
 

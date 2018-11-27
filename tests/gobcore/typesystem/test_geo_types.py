@@ -33,3 +33,21 @@ class TestGobGeoTypes(unittest.TestCase):
         mock_db_field.data = '01010000204071000000000000f0abfd400000000050a11d41'
 
         self.assertEqual('POINT (121535.00 485460.00)', str(GobType.from_value(mock_db_field)))
+
+    def test_gob_polygon(self):
+        GobType = get_gob_type("GOB.Geo.Polygon")
+        self.assertEqual(GobType.name, "Polygon")
+
+        self.assertEqual('POLYGON(112.0 22.0, 113.0 22.0, 113.0 21.0)', str(GobType.from_value('POLYGON(112.0 22.0, 113.0 22.0, 113.0 21.0)')))
+
+        empty_polygon = GobType('')
+        self.assertEqual('null', empty_polygon.json)
+
+    def test_gob_geometry(self):
+        GobType = get_gob_type("GOB.Geo.Geometry")
+        self.assertEqual(GobType.name, "Geometry")
+
+        self.assertEqual('POLYGON(112.0 22.0, 113.0 22.0, 113.0 21.0)', str(GobType.from_value('POLYGON(112.0 22.0, 113.0 22.0, 113.0 21.0)')))
+
+        empty_geometry = GobType('')
+        self.assertEqual('null', empty_geometry.json)

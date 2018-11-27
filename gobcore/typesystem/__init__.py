@@ -32,7 +32,8 @@ GOB_TYPES = [
 
 GEO_TYPES = [
     GEO.Point,
-    GEO.Polygon
+    GEO.Polygon,
+    GEO.Geometry
 ]
 
 # Convert GOB_TYPES to a dictionary indexed by the name of the type, prefixed by GOB.

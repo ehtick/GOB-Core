@@ -441,7 +441,7 @@
             "ref": "gebieden:buurten"
           },
           "geometrie": {
-            "type": "GOB.Geo.Polygon",
+            "type": "GOB.Geo.Geometry",
             "description": "Geometrische beschrijving van een object."
           }
         },

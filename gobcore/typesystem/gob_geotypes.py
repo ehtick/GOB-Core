@@ -158,7 +158,7 @@ class Polygon(GEOType):
         """
 
         if isinstance(value, str):
-            regex = re.compile("^POLYGON\s*\(\([0-9\s\.,]*\)\)$")
+            regex = re.compile("^POLYGON\s*\([0-9\s\.,\(\)]*\)$")
             if not regex.match(value):
                 raise ValueError(f"Illegal WKT value: {value}")
 

@@ -272,22 +272,39 @@ class AsyncConnection(object):
                 def from_json(obj):
                     return json.loads(obj, parse_float=decimal.Decimal)
 
-                # Try to parse body as json message, else pass it as it is received
-                msg = body
-                offload_id = None
-                try:
-                    msg = from_json(body)
+                def get_message_from_body():
+                    offload_id = None
+                    try:
+                        # Try to parse body as json message, else pass it as it is received
+                        msg = from_json(body)
 
-                    # Allow for offline contents
-                    msg, offload_id = load_message(msg, from_json)
-                except json.decoder.JSONDecodeError:
-                    pass
+                        # Allow for offline contents
+                        msg, offload_id = load_message(msg, from_json)
+                    except json.decoder.JSONDecodeError:
+                        # message was not json, pass message as it is received
+                        msg = body
+
+                    return msg, offload_id
 
                 def run_message_handler():
-                    if message_handler(self, basic_deliver.exchange, queue, basic_deliver.routing_key, msg) is not False:
-                        # Default is to acknowledge message
-                        channel.basic_ack(basic_deliver.delivery_tag)
+                    offload_id = None
+                    result = None
+                    try:
+                        # Try to get the message, parse any json contents and retrieve any offloaded contents
+                        msg, offload_id = get_message_from_body()
+                        # Try to handle the message
+                        result = message_handler(self, basic_deliver.exchange, queue, basic_deliver.routing_key, msg)
+                    except Exception as e:
+                        # Print error message, the message that caused the error and a short stacktrace
+                        stacktrace = traceback.format_exc(limit=-5)
+                        print(f"Message handling has failed: {str(e)}, message: {str(body)}", stacktrace)
+                        # run fail-safe method to end the message
                         end_message(offload_id)
+
+                    if result is not False:
+                        # Default is to acknowledge message
+                        # Only on an explicit return value of False the message keeps unacked.
+                        channel.basic_ack(basic_deliver.delivery_tag)
 
                 if self._message_handler_thread is not None:
                     # Wait for any not yet terminated thread

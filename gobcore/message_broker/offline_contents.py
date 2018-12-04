@@ -89,9 +89,14 @@ def load_message(msg, converter):
 def end_message(unique_name):
     """Remove the offloaded contents after a message has been succesfully handled
 
-    :param msg:
-    :return:
+    end_message can always be called, it can never fail
+
+    :param unique_name: the id of any offloaded contents
+    :return: None
     """
     if unique_name:
-        filename = _get_filename(unique_name)
-        os.remove(filename)
+        try:
+            filename = _get_filename(unique_name)
+            os.remove(filename)
+        except Exception:
+            pass

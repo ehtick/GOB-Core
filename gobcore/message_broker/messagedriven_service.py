@@ -48,7 +48,7 @@ def log_error(msg, cause_msg, err):
 
     # Include the header to associate the log message with the correct processid
     logger.error(msg, extra={
-        **cause_msg['header'],
+        **cause_msg.get('header', {}),
         "data": {
             "error": str(err)   # Include a short error description
         }

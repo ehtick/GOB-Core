@@ -77,7 +77,7 @@ def _on_message(connection, service, msg):
         return True
 
     # If a report_queue
-    if 'report' in service:
+    if 'report' in service and not result_msg is None:
         report = service['report']
         connection.publish(report, report['key'], result_msg)
 

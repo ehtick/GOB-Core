@@ -72,7 +72,10 @@ class ImportEvent(metaclass=ABCMeta):
         :param metadata: the metadata of the import message
         :return:
         """
+        # Register the time that the event has been applied to the entity
         setattr(entity, self.timestamp_field, self._metadata.timestamp)
+        # Register the application that delivered the event
+        entity._application = self._metadata.application
 
         for key, value in self._data.items():
             gob_type = get_gob_type(self._model['fields'][key]['type'])

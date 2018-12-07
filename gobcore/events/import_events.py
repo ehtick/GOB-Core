@@ -61,9 +61,10 @@ class ImportEvent(metaclass=ABCMeta):
 
         :return: entity_id, source_id: ids of this event
         """
-        source_id = self._data.pop(self._metadata.source_id_column)
-
-        return source_id
+        # source_id = self._data.pop(self._metadata.source_id_column)
+        #
+        # return source_id
+        pass
 
     def apply_to(self, entity):
         """Sets the attributes in data on the entity (expands `data['mutations'] first)
@@ -76,10 +77,13 @@ class ImportEvent(metaclass=ABCMeta):
         setattr(entity, self.timestamp_field, self._metadata.timestamp)
         # Register the application that delivered the event
         entity._application = self._metadata.application
+        # And the id of the entity within the application
+        entity._source_id = self._data["_source_id"]
 
         for key, value in self._data.items():
-            gob_type = get_gob_type(self._model['fields'][key]['type'])
-            setattr(entity, key, gob_type.from_value(value).to_db)
+            if key != "_source_id":
+                gob_type = get_gob_type(self._model['fields'][key]['type'])
+                setattr(entity, key, gob_type.from_value(value).to_db)
 
 
 class ADD(ImportEvent):

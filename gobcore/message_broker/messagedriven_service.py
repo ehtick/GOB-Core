@@ -70,7 +70,7 @@ def _on_message(connection, service, msg):
     except Exception as err:
         # Print error message, the message that caused the error and a short stacktrace
         stacktrace = traceback.format_exc(limit=-5)
-        print("Message processing has failed, further processing stopped", msg, stacktrace)
+        print("Message processing has failed, further processing stopped", stacktrace)
         # Log the error and a short error description
         log_error(f"Message processing has failed, further processing stopped", msg, err)
         # Message has caused a crash, remove the message from the queue by returning true

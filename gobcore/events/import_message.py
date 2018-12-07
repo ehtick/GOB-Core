@@ -9,8 +9,6 @@ Todo: Name of the module (message) should correspond to the contents of the file
 
 class MessageMetaData():
 
-    source_id_column = '_source_id'
-
     def __init__(self, header):
         self._header = header
 

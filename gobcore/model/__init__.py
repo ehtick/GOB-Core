@@ -3,6 +3,32 @@ import json
 
 from gobcore.model.metadata import STATE_FIELDS
 
+EVENTS_DESCRIPTION = {
+    "eventid": "Unique identification of the event, numbered sequentially",
+    "timestamp": "Datetime when the event as created",
+    "catalogue": "The catalogue in which the entity resides",
+    "entity": "The entity to which the event need to be applied",
+    "version": "The version of the entity model",
+    "action": "Add, change, delete or confirm",
+    "source": "The functional source of the entity, e.g. AMSBI",
+    "application": "The technical source of the entity, e.g. DIVA",
+    "source_id": "The id of the entity in the source",
+    "contents": "A json object that holds the contents for the action, the full entity for an Add"
+}
+
+EVENTS = {
+    "eventid": "GOB.PKInteger",
+    "timestamp": "GOB.DateTime",
+    "catalogue": "GOB.String",
+    "entity": "GOB.String",
+    "version": "GOB.String",
+    "action": "GOB.String",
+    "source": "GOB.String",
+    "application": "GOB.String",
+    "source_id": "GOB.String",
+    "contents": "GOB.JSON"
+}
+
 
 class GOBModel():
     def __init__(self):

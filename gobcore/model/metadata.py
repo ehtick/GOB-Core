@@ -16,8 +16,9 @@ DESCRIPTION = {
     "_date_confirmed": "Timestamp telling when the entity has last been confirmed in GOB.",
     "_date_modified": "Timestamp telling when the entity has last been modified in GOB.",
     "_date_deleted": "Timestamp telling when the entity has last been deleted in GOB.",
-    "_source": "Source for the specific entity, eg the name of a database.",
-    "_source_id": "Id of the entity in the above mentioned source.",
+    "_source": "Functional source for the specific entity, eg the name of a department.",
+    "_application": "Technical source for the specific entity, eg the name of a database.",
+    "_source_id": "Id of the entity in the above mentioned source application.",
     "_last_event": "Id of the last event that has been applied to this entity.",
     "_gobid": "The internal GOB id of the entity.",
     "_id": "Provide for a generic (independent from Stelselpedia) id field for every entity.",
@@ -45,6 +46,7 @@ METADATA_COLUMNS = {
     # Only when these two match the event will be applied, otherwise the event will be rejected.
     "private": {
         "_source": "GOB.String",
+        "_application": "GOB.String",
         "_source_id": "GOB.String",
         "_last_event": "GOB.Integer"
     }

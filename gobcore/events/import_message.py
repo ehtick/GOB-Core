@@ -23,10 +23,6 @@ class MessageMetaData():
         return self._header['timestamp']
 
     @property
-    def id_column(self):
-        return self._header['id_column']
-
-    @property
     def catalogue(self):
         return self._header['catalogue']
 
@@ -51,7 +47,6 @@ class MessageMetaData():
         return {
             "source": self.source,
             "timestamp": self.timestamp,
-            "id_column": self.id_column,
             "catalogue": self.catalogue,
             "entity": self.entity,
             "version": self.version,

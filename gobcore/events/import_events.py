@@ -28,7 +28,7 @@ class ImportEvent(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def create_event(cls, _source_id, data):
+    def create_event(cls, _source_id, _entity_source_id, data):
         """Creates the event dict for the given parameters
 
         :param _source_id: the source id of the data this event is based on
@@ -38,6 +38,7 @@ class ImportEvent(metaclass=ABCMeta):
         :return: a dict representing the event
         """
         data["_source_id"] = _source_id
+        data["_entity_source_id"] = _entity_source_id
 
         return {"event": cls.name, "data": data}
 
@@ -80,8 +81,9 @@ class ImportEvent(metaclass=ABCMeta):
         # And the id of the entity within the application
         entity._source_id = self._data["_source_id"]
 
+        skip = ["_source_id", "_entity_source_id"]
         for key, value in self._data.items():
-            if key != "_source_id":
+            if key not in skip:
                 gob_type = get_gob_type(self._model['fields'][key]['type'])
                 setattr(entity, key, gob_type.from_value(value).to_db)
 
@@ -118,7 +120,7 @@ class ADD(ImportEvent):
         super().apply_to(entity)
 
     @classmethod
-    def create_event(cls, _source_id, data):
+    def create_event(cls, _source_id, _entity_source_id, data):
         #   ADD has no modifications, only data
         if modifications_key in data:
             data.pop(modifications_key)
@@ -128,7 +130,7 @@ class ADD(ImportEvent):
             **(cls.last_event(data))
         }
 
-        return super().create_event(_source_id, event_data)
+        return super().create_event(_source_id, _entity_source_id, event_data)
 
 
 class MODIFY(ImportEvent):
@@ -177,13 +179,13 @@ class MODIFY(ImportEvent):
         return modified_attributes
 
     @classmethod
-    def create_event(cls, _source_id, data):
+    def create_event(cls, _source_id, _entity_source_id, data):
         #   MODIFY has no data attributes only modifications
         if modifications_key not in data:
             raise GOBException("MODIFY event requires modifications")
         mods = {modifications_key: data[modifications_key], **(cls.last_event(data))}
 
-        return super().create_event(_source_id, mods)
+        return super().create_event(_source_id, _entity_source_id, mods)
 
 
 class DELETE(ImportEvent):
@@ -201,9 +203,9 @@ class DELETE(ImportEvent):
     timestamp_field = "_date_deleted"
 
     @classmethod
-    def create_event(cls, _source_id, data):
+    def create_event(cls, _source_id, _entity_source_id, data):
         #  DELETE has no data, except reference to entity age
-        return super().create_event(_source_id, cls.last_event(data))
+        return super().create_event(_source_id, _entity_source_id, cls.last_event(data))
 
 
 class CONFIRM(ImportEvent):
@@ -221,6 +223,6 @@ class CONFIRM(ImportEvent):
     timestamp_field = "_date_confirmed"
 
     @classmethod
-    def create_event(cls, _source_id, data):
+    def create_event(cls, _source_id, _entity_source_id, data):
         #  CONFIRM has no data, except reference to entity age
-        return super().create_event(_source_id, cls.last_event(data))
+        return super().create_event(_source_id, _entity_source_id, cls.last_event(data))

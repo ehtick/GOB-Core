@@ -56,18 +56,19 @@ def get_event_for(entity, data, metadata, modifications):
     gob_event = _get_event_class_for(has_old_state, has_new_state, has_modifications)
 
     # get relevenant id's from either entity or data
+    _source_id = data["_source_id"] if has_new_state else None
     if has_old_state:
-        source_id = entity._source_id
+        _entity_source_id = entity._source_id
         last_event = entity._last_event
     else:
-        source_id = data['_source_id']
+        _entity_source_id = _source_id
         last_event = None
 
     modifications_dict = dict(modifications=modifications)
     data = modifications_dict if data is None else {**modifications_dict, **data}
     data = {**data, "_last_event": last_event}
 
-    return gob_event.create_event(source_id, data)
+    return gob_event.create_event(_source_id, _entity_source_id, data)
 
 
 def _get_event_class_for(has_old_state, has_new_state, has_modifications):

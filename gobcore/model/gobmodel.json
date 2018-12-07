@@ -5,7 +5,7 @@
     "collections": {
       "test_entity": {
         "version": "0.1",
-        "entity_id": "testid",
+        "entity_id": "string",
         "attributes": {
           "string": {
             "type": "GOB.String",
@@ -116,11 +116,6 @@
         "api": {
           "filters": [
             {
-              "field": "_source",
-              "op": "==",
-              "value": "Grondslag"
-            },
-            {
               "field": "publiceerbaar",
               "op": "==",
               "value": true
@@ -193,11 +188,6 @@
         },
         "api": {
           "filters": [
-            {
-              "field": "_source",
-              "op": "==",
-              "value": "Grondslag"
-            },
             {
               "field": "publiceerbaar",
               "op": "==",
@@ -288,11 +278,6 @@
         "api": {
           "filters": [
             {
-              "field": "_source",
-              "op": "==",
-              "value": "Grondslag"
-            },
-            {
               "field": "publiceerbaar",
               "op": "==",
               "value": true
@@ -315,13 +300,7 @@
           }
         },
         "api": {
-          "filters": [
-            {
-              "field": "_source",
-              "op": "==",
-              "value": "Basisinformatie"
-            }
-          ]
+          "filters": []
         }
       }
     }
@@ -395,11 +374,6 @@
         },
         "api": {
           "filters": [
-            {
-              "field": "_source",
-              "op": "==",
-              "value": "Grondslag"
-            },
             {
               "field": "publiceerbaar",
               "op": "==",

@@ -19,6 +19,10 @@ class MessageMetaData():
         return self._header['source']
 
     @property
+    def application(self):
+        return self._header['application']
+
+    @property
     def timestamp(self):
         return self._header['timestamp']
 
@@ -46,6 +50,7 @@ class MessageMetaData():
     def as_header(self):
         return {
             "source": self.source,
+            "application": self.application,
             "timestamp": self.timestamp,
             "catalogue": self.catalogue,
             "entity": self.entity,

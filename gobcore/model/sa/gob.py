@@ -7,36 +7,12 @@ from sqlalchemy import Index
 from sqlalchemy.ext.declarative import declarative_base
 
 # Import data definitions
-from gobcore.model import GOBModel
+from gobcore.model import GOBModel, EVENTS, EVENTS_DESCRIPTION
 from gobcore.model.metadata import FIXED_FIELDS, PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, STATE_FIELDS
 from gobcore.model.metadata import columns_to_fields
 from gobcore.typesystem import get_gob_type
 
 Base = declarative_base()
-
-EVENTS_DESCRIPTION = {
-    "eventid": "Unique identification of the event, numbered sequentially",
-    "timestamp": "Datetime when the event as created",
-    "catalogue": "The catalogue in which the entity resides",
-    "entity": "The entity to which the event need to be applied",
-    "version": "The version of the entity model",
-    "action": "Add, change, delete or confirm",
-    "source": "The source of the entity, e.g. DIVA",
-    "source_id": "The id of the entity in the source",
-    "contents": "A json object that holds the contents for the action, the full entity for an Add"
-}
-
-EVENTS = {
-    "eventid": "GOB.PKInteger",
-    "timestamp": "GOB.DateTime",
-    "catalogue": "GOB.String",
-    "entity": "GOB.String",
-    "version": "GOB.String",
-    "action": "GOB.String",
-    "source": "GOB.String",
-    "source_id": "GOB.String",
-    "contents": "GOB.JSON"
-}
 
 
 def get_column(column_name, column_specification):

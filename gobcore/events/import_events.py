@@ -53,20 +53,6 @@ class ImportEvent(metaclass=ABCMeta):
         self.last_event = self._data.pop("_last_event")
         self._model = self.gob_model.get_collection(self._metadata.catalogue, self._metadata.entity)
 
-    def pop_ids(self):
-        """Removes and returns relevent ids
-
-        Todo: decide if putting them in (see abstract class-method `create_event`)
-              and popping them off is the right way
-              Given the metadata, these could be derived
-
-        :return: entity_id, source_id: ids of this event
-        """
-        # source_id = self._data.pop(self._metadata.source_id_column)
-        #
-        # return source_id
-        pass
-
     def apply_to(self, entity):
         """Sets the attributes in data on the entity (expands `data['mutations'] first)
 
@@ -115,7 +101,6 @@ class ADD(ImportEvent):
         # The _last_event and other meta info is set seperately from the entity update
         self._data = self._data["entity"]
         del self._data["_last_event"]
-        self.pop_ids()
 
         super().apply_to(entity)
 

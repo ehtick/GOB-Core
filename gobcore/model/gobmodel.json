@@ -39,6 +39,30 @@
           "json": {
             "type": "GOB.JSON",
             "description": "JSON value."
+          },
+          "datetime": {
+            "type": "GOB.DateTime",
+            "description": "DateTime value."
+          },
+          "pkinteger": {
+            "type": "GOB.PKInteger",
+            "description": "Primary key integer value"
+          },
+          "reference": {
+            "type": "GOB.Reference",
+            "description": "Reference value."
+          },
+          "manyreference": {
+            "type": "GOB.ManyReference",
+            "description": "Many Reference value."
+          },
+          "polygon": {
+            "type": "GOB.Geo.Polygon",
+            "description": "Many Reference value."
+          },
+          "Geometry": {
+            "type": "GOB.Geo.Geometry",
+            "description": "Geometry value."
           }
         },
         "api": {

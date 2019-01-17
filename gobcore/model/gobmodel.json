@@ -60,7 +60,7 @@
             "type": "GOB.Geo.Polygon",
             "description": "Many Reference value."
           },
-          "Geometry": {
+          "geometry": {
             "type": "GOB.Geo.Geometry",
             "description": "Geometry value."
           }

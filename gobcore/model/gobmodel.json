@@ -39,6 +39,42 @@
           "json": {
             "type": "GOB.JSON",
             "description": "JSON value."
+          },
+          "datetime": {
+            "type": "GOB.DateTime",
+            "description": "DateTime value."
+          },
+          "pkinteger": {
+            "type": "GOB.PKInteger",
+            "description": "Primary key integer value"
+          },
+          "reference": {
+            "type": "GOB.Reference",
+            "description": "Reference value.",
+            "ref": "test_catalogue:test_entity_ref"
+          },
+          "manyreference": {
+            "type": "GOB.ManyReference",
+            "description": "Many Reference value.",
+            "ref": "test_catalogue:test_entity_ref"
+          },
+          "polygon": {
+            "type": "GOB.Geo.Polygon",
+            "description": "Many Reference value."
+          },
+          "geometry": {
+            "type": "GOB.Geo.Geometry",
+            "description": "Geometry value."
+          }
+        },
+        "test_entity_ref": {
+          "version": "0.1",
+          "entity_id": "string",
+          "attributes": {
+            "string": {
+              "type": "GOB.String",
+              "description": "String value."
+            }
           }
         },
         "api": {

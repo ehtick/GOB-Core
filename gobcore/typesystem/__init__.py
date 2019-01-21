@@ -57,6 +57,7 @@ _gob_postgres_sql_types_list = [
     {'sql_type': sqlalchemy.types.DATE, 'gob_type': GOB.Date},
     {'sql_type': sqlalchemy.dialects.postgresql.base.TIMESTAMP, 'gob_type': GOB.DateTime},
     {'sql_type': sqlalchemy.dialects.postgresql.JSON, 'gob_type': GOB.JSON},
+    {'sql_type': sqlalchemy.dialects.postgresql.JSONB, 'gob_type': GOB.JSON},
     {'sql_type': sqlalchemy.types.JSON, 'gob_type': GOB.JSON},
     {'sql_type': geoalchemy2.types.Geometry, 'gob_type': GEO.Point},
 ]

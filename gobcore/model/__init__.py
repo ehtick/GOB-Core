@@ -86,6 +86,13 @@ class GOBModel():
         collections = self.get_collections(catalog_name)
         return collections[collection_name] if collection_name in collections else None
 
+    def get_reference_by_abbreviations(self, catalog_abbreviation, collection_abbreviation):
+        for catalog_name, catalog in self._data.items():
+            if catalog['abbreviation'] == catalog_abbreviation.upper():
+                for collection_name, collection in catalog['collections'].items():
+                    if collection['abbreviation'] == collection_abbreviation.upper():
+                        return ':'.join([catalog_name, collection_name])
+
     def get_table_names(self):
         '''
         Helper function to generate all table names

@@ -24,3 +24,11 @@ class TestModel(unittest.TestCase):
 
     def test_get_table_name(self):
         self.assertEqual('meetbouten_meetbouten', self.model.get_table_name('meetbouten', 'meetbouten'))
+
+    def test_get_reference_by_abbreviations(self):
+        # Test lower and upper case
+        self.assertEqual('meetbouten:meetbouten', self.model.get_reference_by_abbreviations('mbn', 'mbt'))
+        self.assertEqual('meetbouten:meetbouten', self.model.get_reference_by_abbreviations('mbn', 'MBT'))
+
+        # Test non existing abbreviation
+        self.assertEqual(None, self.model.get_reference_by_abbreviations('xxx', 'xxx'))

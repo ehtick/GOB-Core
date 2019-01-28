@@ -12,6 +12,8 @@ when the service has reported itself dead via the atexit method
 import datetime
 import threading
 import atexit
+import socket
+import os
 
 from gobcore.message_broker.config import HEARTBEAT_QUEUE, get_queue
 
@@ -49,6 +51,8 @@ class Heartbeat():
 
         status_msg = {
             "name": self._name,
+            "host": socket.gethostname(),
+            "pid": os.getpid(),
             "is_alive": is_alive,
             "threads": [
                 {

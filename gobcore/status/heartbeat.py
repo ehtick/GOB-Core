@@ -47,7 +47,8 @@ class Heartbeat():
         :param _: not used yet; the message itself
         :return: None
         """
-        if queue["name"] == HEARTBEAT_QUEUE["name"] and key == HEARTBEAT_QUEUE["key"]:
+        heartbeat_queue = get_queue(HEARTBEAT_QUEUE)
+        if queue["name"] == heartbeat_queue["name"] and key == heartbeat_queue["key"]:
             # Do not send a heartbeat on handling a heartbeat message
             return
         self.send()

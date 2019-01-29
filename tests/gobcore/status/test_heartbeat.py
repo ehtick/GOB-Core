@@ -1,6 +1,7 @@
 import unittest
 import mock
 
+from gobcore.message_broker.config import HEARTBEAT_QUEUE, get_queue
 from gobcore.status.heartbeat import Heartbeat
 
 
@@ -44,3 +45,10 @@ class TestHeartbeat(unittest.TestCase):
         self.assertEqual(MockHeartbeat.queue["name"], "gob.status.heartbeat")
         self.assertEqual(MockHeartbeat.key, "HEARTBEAT")
         self.assertEqual(MockHeartbeat.msg["name"], "Myname")
+
+    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
+    def test_send_on_heartbeat_msg(self, mock_publish):
+        heartbeat_queue = get_queue(HEARTBEAT_QUEUE)
+        heartbeat = Heartbeat(MockHeartbeat(), "Myname")
+        heartbeat.send_on_msg(heartbeat_queue["name"], heartbeat_queue["key"], {})
+        mock_publish.assert_not_called()

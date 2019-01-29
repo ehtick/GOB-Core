@@ -3,7 +3,7 @@
 SQLAlchemy Management Models
 
 """
-from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean
+from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -42,8 +42,10 @@ class Service(Base):
     """
     __tablename__ = "services"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    host = Column(String)
+    pid = Column(Integer)
     is_alive = Column(Boolean)
     timestamp = Column(DateTime)
 
@@ -61,7 +63,9 @@ class ServiceTask(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    service_name = Column(String)
+    service_id = Column(ForeignKey(Service.id))
+    service_name = Column(String) # remove this later; https://github.com/Amsterdam/GOB-Core/issues/125
+
     is_alive = Column(Boolean)
 
     def __repr__(self):

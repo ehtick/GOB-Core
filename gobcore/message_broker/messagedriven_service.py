@@ -150,9 +150,9 @@ def messagedriven_service(services, name):
         # A heartbeat updates the status of the process
         # Send a heartbeat before and after the processing of the message to keep the overview up-to-date
         # independent of the scheduled heartbeats
-        heartbeat.send()
+        heartbeat.send_on_msg(queue, key, msg)
         result = _on_message(connection, service, msg)
-        heartbeat.send()
+        heartbeat.send_on_msg(queue, key, msg)
 
         return result
 

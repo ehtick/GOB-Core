@@ -39,6 +39,19 @@ class Heartbeat():
         # At exit send a final heartbeat that denotes the end of the process
         atexit.register(self.send)
 
+    def send_on_message(self, queue, key, _):
+        """Send heartbeat on handle message
+
+        :param queue: queue from which the message is received
+        :param key: key for the message
+        :param _: not used yet; the message itself
+        :return: None
+        """
+        if queue["name"] == HEARTBEAT_QUEUE["name"] and key == HEARTBEAT_QUEUE["key"]:
+            # Do not send a heartbeat on handling a heartbeat message
+            return
+        self.send()
+
     def send(self):
         """Send a heartbeat signal
 

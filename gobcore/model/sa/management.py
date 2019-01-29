@@ -64,7 +64,7 @@ class ServiceTask(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     service_id = Column(ForeignKey(Service.id))
-    service_name = Column(String) # remove this later; https://github.com/Amsterdam/GOB-Core/issues/125
+    service_name = Column(String)  # remove this later; https://github.com/Amsterdam/GOB-Core/issues/125
 
     is_alive = Column(Boolean)
 

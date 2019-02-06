@@ -3,10 +3,51 @@
 SQLAlchemy Management Models
 
 """
-from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, JSON, ARRAY, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
+
+class Job(Base):
+    """Job
+
+    Class that holds GOB jobs
+
+    Jobs are started by the workflow manager.
+    The workflow manager controls and monitors the progress of jobs
+
+    """
+    __tablename__ = 'jobs'
+
+    id = Column(Integer, primary_key=True, doc="Internal primary key")
+    name = Column(String, doc="e.g. import.data/metingen.json.2020-01-20T12:43:18.005")
+    type = Column(String, doc="import, export, ...", index=True)
+    args = Column(ARRAY(String), doc="whatever was passed as argument when the job was started")
+    start = Column(DateTime, doc="Time when the job was started", index=True)
+    end = Column(DateTime, doc="Time when the job has ended", index=True)
+    status = Column(String, doc="started, paused, waiting, ended, ...", index=True)
+
+    def __repr__(self):
+        return f'<Job {self.name}>'
+
+
+class JobStep(Base):
+    """Job
+
+    Class that holds GOB job steps
+
+    """
+    __tablename__ = 'jobsteps'
+
+    id = Column(Integer, primary_key=True, doc="Internal primary key")
+    name = Column(String, doc="compare, upload, enrich")
+    start = Column(DateTime, doc="Time when the job step was started", index=True)
+    end = Column(DateTime, doc="Time when the job step has ended", index=True)
+    status = Column(String, doc="started, paused, waiting, ended, ...", index=True)
+
+    def __repr__(self):
+        return f'<Job {self.name}>'
 
 
 class Log(Base):
@@ -18,6 +59,8 @@ class Log(Base):
     __tablename__ = 'logs'
 
     logid = Column(Integer, primary_key=True)
+    jobid = Column(ForeignKey(Job.id))
+    stepid = Column(ForeignKey(JobStep.id))
     timestamp = Column(DateTime)
     process_id = Column(String, index=True)
     source = Column(String, index=True)

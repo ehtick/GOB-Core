@@ -41,6 +41,7 @@ class JobStep(Base):
     __tablename__ = 'jobsteps'
 
     id = Column(Integer, primary_key=True, doc="Internal primary key")
+    jobid = Column(ForeignKey(Job.id))
     name = Column(String, doc="compare, upload, enrich")
     start = Column(DateTime, doc="Time when the job step was started", index=True)
     end = Column(DateTime, doc="Time when the job step has ended", index=True)

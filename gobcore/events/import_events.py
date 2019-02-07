@@ -107,7 +107,8 @@ class ADD(ImportEvent):
         # Set the hash
         entity._hash = self._data[hash_key]
 
-        del self._data["_last_event"]
+        # Remove last_event from the data if it exists
+        self._data.pop("_last_event", None)
 
         super().apply_to(entity)
 

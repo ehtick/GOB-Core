@@ -1,7 +1,7 @@
 import mock
 import unittest
 
-from gobcore.log_publisher import LogPublisher
+from gobcore.logging.log_publisher import LogPublisher
 
 
 class TestLogPublisher(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestLogPublisher(unittest.TestCase):
         publisher = LogPublisher(None)
         assert(publisher is not None)
 
-    @mock.patch('gobcore.log_publisher.LogPublisher._auto_disconnect')
+    @mock.patch('gobcore.logging.log_publisher.LogPublisher._auto_disconnect')
     @mock.patch('gobcore.message_broker.message_broker.Connection.connect')
     @mock.patch('gobcore.message_broker.message_broker.Connection.publish')
     def testPublish(self, patched_publish, patched_connect, patched_auto_disconnect):
@@ -20,7 +20,7 @@ class TestLogPublisher(unittest.TestCase):
         assert(patched_publish.called)
 
 
-    @mock.patch('gobcore.log_publisher.LogPublisher._auto_disconnect')
+    @mock.patch('gobcore.logging.log_publisher.LogPublisher._auto_disconnect')
     @mock.patch('gobcore.message_broker.message_broker.Connection.connect')
     @mock.patch('gobcore.message_broker.message_broker.Connection.publish')
     def testAutoConnect(self, patched_publish, patched_connect, patched_auto_disconnect):

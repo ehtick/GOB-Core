@@ -11,7 +11,7 @@ Todo:
 import logging
 import datetime
 
-from gobcore.log_publisher import LogPublisher
+from gobcore.logging.log_publisher import LogPublisher
 
 LOGFORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
 LOGLEVEL = logging.INFO

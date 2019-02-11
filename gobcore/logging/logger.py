@@ -54,10 +54,10 @@ class Logger:
 
     _logger = {}
 
-    def __init__(self, name):
-        self._name = name
+    def __init__(self, name=None):
+        if name is not None:
+            self.set_name(name)
         self._default_args = {}
-        self._init_logger(name)
 
     def info(self, msg, kwargs={}):
         Logger._logger[self._name].info(msg, extra={**self._default_args, **kwargs})
@@ -68,26 +68,37 @@ class Logger:
     def error(self, msg, kwargs={}):
         Logger._logger[self._name].error(msg, extra={**self._default_args, **kwargs})
 
-    def configure(self, msg):
+    def set_name(self, name):
+        self._name = name
+        self._init_logger(name)
+
+    def set_default_args(self, default_args):
+        self._default_args = default_args
+
+    def configure(self, msg, name=None):
         """Configure the logger to store the relevant information for subsequent logging.
         Should be called at the start of processing new item.
 
         :param msg: the processed message
+        :param name: the name of the process that processes the message
         """
+        if name is not None:
+            self.set_name(name)
+
         header = msg.get("header", {})
-        self._default_args = {
+        self.set_default_args({
             'process_id': header.get('process_id'),
             'source': header.get('source'),
             'application': header.get('application'),
             'catalogue': header.get('catalogue'),
             'entity': header.get('entity')
-        }
+        })
 
     def _init_logger(self, name):
-        """Returns a logger instance
+        """Sets and initializes a logger instance for the given name
 
         :param name: The name of the logger instance. This name will be part of every log record
-        :return: logger
+        :return: None
         """
         # init_logger creates and adds a loghandler with the given name
         # Only one log handler should exist for the given name
@@ -109,3 +120,8 @@ class Logger:
         logger.addHandler(stdout_handler)
 
         Logger._logger[name] = logger
+
+
+# Export a Logger instance
+# This instance needs to be configured with a message and a name
+logger = Logger()

@@ -6,9 +6,7 @@ from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
-from gobcore.logging.logger import Logger
-
-logger = Logger("CORE")
+from gobcore.logging.logger import logger
 
 keep_running = True
 
@@ -50,6 +48,7 @@ def _on_message(connection, service, msg):
         stacktrace = traceback.format_exc(limit=-5)
         print("Message processing has failed, further processing stopped", stacktrace)
         # Log the error and a short error description
+        logger.configure(msg, "CORE")
         logger.error(
             "Message processing has failed, further processing stopped",
             {

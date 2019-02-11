@@ -103,6 +103,28 @@ class TestLogger(TestCase):
         self.assertEqual(args["source"], msg["header"]["source"])
         self.assertEqual(args["data"], {"error": "any error"})
 
+    def test_configure_with_name(self):
+        RequestsHandler.LOG_PUBLISHER = MagicMock(spec=LogPublisher)
+        RequestsHandler.LOG_PUBLISHER.publish = MagicMock()
+
+        logger = Logger()
+        msg = {
+            "header": {
+                'process_id': 'any process_id',
+                'source': 'any source',
+                'application': 'any application',
+                'catalogue': 'any catalogue',
+                'entity': 'any entity'
+            },
+            "some": "other"
+        }
+        logger.configure(msg, "Another config logger")
+
+        logger.warning("test")
+        RequestsHandler.LOG_PUBLISHER.publish.assert_called_once()
+        level, args = RequestsHandler.LOG_PUBLISHER.publish.call_args[0]
+        self.assertEqual(args["name"], logger._name)
+
 class TestRequestHandler(TestCase):
 
     def setUp(self):

@@ -87,19 +87,48 @@ class GOBModel():
         return collections[collection_name] if collection_name in collections else None
 
     def get_functional_key_fields(self, catalog_name, collection_name):
+        """
+        Return the list of fieldnames that functionally identifies an entity
+
+        :param catalog_name: name of the catalog
+        :param collection_name: name of the collection
+        :return: array of fieldnames
+        """
         collection = self.get_collection(catalog_name, collection_name)
         result = ["_source", collection["entity_id"]]
         if self.has_states(catalog_name, collection_name):
             result.append("volgnummer")
+        return result
 
     def get_technical_key_fields(self, catalog_name, collection_name):
-        return ["_source", "_application", "_source_id"]
+        """
+        Return the list of fieldnames that technically identifies an entity
+
+        :param catalog_name: name of the catalog
+        :param collection_name: name of the collection
+        :return: array of fieldnames
+        """
+        return ["_source", "_source_id"]
 
     def has_states(self, catalog_name, collection_name):
+        """
+        Tells if a collection has states
+
+        :param catalog_name: name of the catalog
+        :param collection_name: name of the collection
+        :return: True if the collection has states
+        """
         collection = self.get_collection(catalog_name, collection_name)
         return collection.get("has_states") == True
 
     def get_source_id(self, entity, input_spec):
+        """
+        Gets the id that uniquely identifies the entity within the source
+
+        :param entity: the entity
+        :param input_spec: the input format specification
+        :return: the source id
+        """
         source_id_field = input_spec['source']['entity_id']
         source_id = str(entity[source_id_field])
         if self.has_states(input_spec['catalogue'], input_spec['entity']):

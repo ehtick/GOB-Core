@@ -86,6 +86,27 @@ class GOBModel():
         collections = self.get_collections(catalog_name)
         return collections[collection_name] if collection_name in collections else None
 
+    def get_functional_key_fields(self, catalog_name, collection_name):
+        collection = self.get_collection(catalog_name, collection_name)
+        result = ["_source", collection["entity_id"]]
+        if self.has_states(catalog_name, collection_name):
+            result.append("volgnummer")
+
+    def get_technical_key_fields(self, catalog_name, collection_name):
+        return ["_source", "_application", "_source_id"]
+
+    def has_states(self, catalog_name, collection_name):
+        collection = self.get_collection(catalog_name, collection_name)
+        return collection.get("has_states") == True
+
+    def get_source_id(self, entity, input_spec):
+        source_id_field = input_spec['source']['entity_id']
+        source_id = str(entity[source_id_field])
+        if self.has_states(input_spec['catalogue'], input_spec['entity']):
+            # Source id + volgnummer is source id
+            source_id = f"{source_id}.{entity['volgnummer']}"
+        return source_id
+
     def get_reference_by_abbreviations(self, catalog_abbreviation, collection_abbreviation):
         for catalog_name, catalog in self._data.items():
             if catalog['abbreviation'] == catalog_abbreviation.upper():

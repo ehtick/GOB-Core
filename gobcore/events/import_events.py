@@ -66,14 +66,12 @@ class ImportEvent(metaclass=ABCMeta):
         setattr(entity, self.timestamp_field, self._metadata.timestamp)
         # Register the application that delivered the event
         entity._application = self._metadata.application
-        # And the id of the entity within the application
-        entity._source_id = self._data["_source_id"]
 
-        skip = ["_source_id", "_entity_source_id", hash_key]
+        skip = ["_entity_source_id", "_last_event"]
 
         for key, value in self._data.items():
             if key not in skip:
-                gob_type = get_gob_type(self._model['fields'][key]['type'])
+                gob_type = get_gob_type(self._model['all_fields'][key]['type'])
                 setattr(entity, key, gob_type.from_value(value).to_db)
 
 
@@ -101,14 +99,7 @@ class ADD(ImportEvent):
         setattr(entity, '_date_deleted', None)
 
         # The data for the add event is in the entity attribute
-        # The _last_event and other meta info is set seperately from the entity update
         self._data = self._data["entity"]
-
-        # Set the hash
-        entity._hash = self._data[hash_key]
-
-        # Remove last_event from the data if it exists
-        self._data.pop("_last_event", None)
 
         super().apply_to(entity)
 

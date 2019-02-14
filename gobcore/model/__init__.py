@@ -1,6 +1,7 @@
 import os
 import json
 
+from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import STATE_FIELDS
 from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
 
@@ -57,6 +58,8 @@ class GOBModel():
             for entity_name, model in catalog['collections'].items():
                 model['references'] = self._extract_references(model['attributes'])
 
+                self._set_api(catalog_name, entity_name, model)
+
                 model_attributes = model['attributes']
                 state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
                 all_attributes = {
@@ -72,6 +75,29 @@ class GOBModel():
                     **all_attributes,
                     **global_attributes
                 }
+
+    def _set_api(self, catalog_name, entity_name, model):
+        """
+        Sets the api attribute of an entity model
+
+        Entities with state are automatically populated with a end_validity filter
+
+        :param catalog_name: name of the catalog
+        :param entity_name:  name of the entity
+        :param model: the entity model
+        :return: None
+        """
+        api = model.get('api', {})
+        if not api.get('filters'):
+            api['filters'] = []
+        if self.has_states(catalog_name, entity_name):
+            # If no filter on end validity is set, add the default filter
+            if not [item for item in api['filters'] if item["field"] == FIELD.END_VALIDITY]:
+                api['filters'].append({
+                    "field": FIELD.END_VALIDITY,
+                    "op": "is_null"
+                })
+        model['api'] = api
 
     def _extract_references(self, attributes):
         return {field_name: spec for field_name, spec in attributes.items()
@@ -107,9 +133,9 @@ class GOBModel():
         :return: array of fieldnames
         """
         collection = self.get_collection(catalog_name, collection_name)
-        result = ["_source", collection["entity_id"]]
+        result = [FIELD.SOURCE, collection["entity_id"]]
         if self.has_states(catalog_name, collection_name):
-            result.append("volgnummer")
+            result.append(FIELD.SEQNR)
         return result
 
     def get_technical_key_fields(self, catalog_name, collection_name):
@@ -120,7 +146,7 @@ class GOBModel():
         :param collection_name: name of the collection
         :return: array of fieldnames
         """
-        return ["_source", "_source_id"]
+        return [FIELD.SOURCE, FIELD.SOURCE_ID]
 
     def has_states(self, catalog_name, collection_name):
         """
@@ -145,7 +171,7 @@ class GOBModel():
         source_id = str(entity[source_id_field])
         if self.has_states(input_spec['catalogue'], input_spec['entity']):
             # Source id + volgnummer is source id
-            source_id = f"{source_id}.{entity['volgnummer']}"
+            source_id = f"{source_id}.{entity[FIELD.SEQNR]}"
         return source_id
 
     def get_reference_by_abbreviations(self, catalog_abbreviation, collection_abbreviation):

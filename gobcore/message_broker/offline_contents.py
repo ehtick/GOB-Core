@@ -24,7 +24,7 @@ def _get_unique_name():
 
     :return:
     """
-    now = datetime.now().strftime("%Y%m%d.%H%M%S")  # Start with a timestamp
+    now = datetime.utcnow().strftime("%Y%m%d.%H%M%S")  # Start with a timestamp
     unique = str(uuid.uuid4())  # Add a random uuid
     return f"{now}.{unique}"
 

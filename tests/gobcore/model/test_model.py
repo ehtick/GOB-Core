@@ -54,3 +54,8 @@ class TestModel(unittest.TestCase):
         }
         source_id = self.model.get_source_id(entity, spec)
         self.assertEqual(source_id, 'idvalue')
+
+    def test_set_api(self):
+        model = {}
+        self.model._set_api('meetbouten', 'meetbouten', model)
+        self.assertEqual(model, {'api': {'filters': []}})

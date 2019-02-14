@@ -9,33 +9,54 @@ The auto-included attributes have the purpose of
 
 """
 
+
+# Field names
+class FIELD:
+    START_VALIDITY = "begin_geldigheid"
+    END_VALIDITY = "eind_geldigheid"
+    VERSION = "_version"
+    DATE_CREATED = "_date_created"
+    DATE_CONFIRMED = "_date_confirmed"
+    DATE_MODIFIED = "_date_modified"
+    DATE_DELETED = "_date_deleted"
+    SOURCE = "_source"
+    ID = "_id"
+    APPLICATION = "_application"
+    SOURCE_ID = "_source_id"
+    LAST_EVENT = "_last_event"
+    GOBID = "_gobid"
+    SEQNR = "volgnummer"
+    REGISTRATION_DATE = "registratiedatum"
+    HASH = "_hash"
+
+
 """Description of all fields that are automatically added to each entity"""
 DESCRIPTION = {
-    "_version": "",
-    "_date_created": "Timestamp telling when the entity has last been created in GOB.",
-    "_date_confirmed": "Timestamp telling when the entity has last been confirmed in GOB.",
-    "_date_modified": "Timestamp telling when the entity has last been modified in GOB.",
-    "_date_deleted": "Timestamp telling when the entity has last been deleted in GOB.",
-    "_source": "Functional source for the specific entity, eg the name of a department.",
-    "_id": "Functional source id, a generic (independent from Stelselpedia) id field for every entity.",
-    "_application": "Technical source for the specific entity, eg the name of a database.",
-    "_source_id": "Technical source id, id of the entity in the above mentioned source application.",
-    "_last_event": "Id of the last event that has been applied to this entity.",
-    "_gobid": "The internal GOB id of the entity.",
-    "volgnummer": "Uniek volgnummer van de toestand van het object.",
-    "registratiedatum": "De datum waarop de toestand is geregistreerd.",
-    "_hash": "A hash of the values of all public fields for comparison",
+    FIELD.VERSION: "",
+    FIELD.DATE_CREATED: "Timestamp telling when the entity has last been created in GOB.",
+    FIELD.DATE_CONFIRMED: "Timestamp telling when the entity has last been confirmed in GOB.",
+    FIELD.DATE_MODIFIED: "Timestamp telling when the entity has last been modified in GOB.",
+    FIELD.DATE_DELETED: "Timestamp telling when the entity has last been deleted in GOB.",
+    FIELD.SOURCE: "Functional source for the specific entity, eg the name of a department.",
+    FIELD.ID: "Functional source id, a generic (independent from Stelselpedia) id field for every entity.",
+    FIELD.APPLICATION: "Technical source for the specific entity, eg the name of a database.",
+    FIELD.SOURCE_ID: "Technical source id, id of the entity in the above mentioned source application.",
+    FIELD.LAST_EVENT: "Id of the last event that has been applied to this entity.",
+    FIELD.GOBID: "The internal GOB id of the entity.",
+    FIELD.SEQNR: "Uniek volgnummer van de toestand van het object.",
+    FIELD.REGISTRATION_DATE: "De datum waarop de toestand is geregistreerd.",
+    FIELD.HASH: "A hash of the values of all public fields for comparison",
 }
 
 """Meta data that is registered for every entity"""
 METADATA_COLUMNS = {
     # Public meta information about each row in a table
     "public": {
-        "_version": "GOB.String",
-        "_date_created": "GOB.DateTime",
-        "_date_confirmed": "GOB.DateTime",
-        "_date_modified": "GOB.DateTime",
-        "_date_deleted": "GOB.DateTime",
+        FIELD.VERSION: "GOB.String",
+        FIELD.DATE_CREATED: "GOB.DateTime",
+        FIELD.DATE_CONFIRMED: "GOB.DateTime",
+        FIELD.DATE_MODIFIED: "GOB.DateTime",
+        FIELD.DATE_DELETED: "GOB.DateTime",
     },
 
     # These properties will not be made public by the API
@@ -46,24 +67,24 @@ METADATA_COLUMNS = {
     # On applying the event this state is compared with the current state
     # Only when these two match the event will be applied, otherwise the event will be rejected.
     "private": {
-        "_source": "GOB.String",
-        "_application": "GOB.String",
-        "_source_id": "GOB.String",
-        "_last_event": "GOB.Integer",
-        "_hash": "GOB.String",
+        FIELD.SOURCE: "GOB.String",
+        FIELD.APPLICATION: "GOB.String",
+        FIELD.SOURCE_ID: "GOB.String",
+        FIELD.LAST_EVENT: "GOB.Integer",
+        FIELD.HASH: "GOB.String",
     }
 }
 
 """Columns that are at the start of each entity"""
 FIXED_COLUMNS = {
-    "_gobid": "GOB.PKInteger",
-    "_id": "GOB.String"
+    FIELD.GOBID: "GOB.PKInteger",
+    FIELD.ID: "GOB.String"
 }
 
 """Columns that are part of entities that have states"""
 STATE_COLUMNS = {
-    "volgnummer": "GOB.String",
-    "registratiedatum": "GOB.DateTime"
+    FIELD.SEQNR: "GOB.String",
+    FIELD.REGISTRATION_DATE: "GOB.DateTime"
 }
 
 

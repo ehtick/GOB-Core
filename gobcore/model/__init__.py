@@ -2,6 +2,8 @@ import os
 import json
 
 from gobcore.model.metadata import STATE_FIELDS
+from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
+
 
 EVENTS_DESCRIPTION = {
     "eventid": "Unique identification of the event, numbered sequentially",
@@ -44,21 +46,31 @@ class GOBModel():
 
         self._data = data
 
+        global_attributes = {
+            **PRIVATE_META_FIELDS,
+            **PUBLIC_META_FIELDS,
+            **FIXED_FIELDS
+        }
+
         # Extract references for easy access in API
         for catalog_name, catalog in self._data.items():
             for entity_name, model in catalog['collections'].items():
                 model['references'] = self._extract_references(model['attributes'])
 
                 model_attributes = model['attributes']
-                state_attributes = STATE_FIELDS if model.get('has_states') else {}
+                state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
                 all_attributes = {
                     **state_attributes,
                     **model_attributes
                 }
 
                 # Add fields to the GOBModel to be used in database creation and lookups
-                model['fields'] = {
-                    field_name: attributes for field_name, attributes in all_attributes.items()
+                model['fields'] = all_attributes
+
+                # Include complete definition, including all global fields
+                model['all_fields'] = {
+                    **all_attributes,
+                    **global_attributes
                 }
 
     def _extract_references(self, attributes):
@@ -119,7 +131,7 @@ class GOBModel():
         :return: True if the collection has states
         """
         collection = self.get_collection(catalog_name, collection_name)
-        return collection.get("has_states") == True
+        return collection.get("has_states") is True
 
     def get_source_id(self, entity, input_spec):
         """

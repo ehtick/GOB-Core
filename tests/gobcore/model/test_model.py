@@ -32,3 +32,25 @@ class TestModel(unittest.TestCase):
 
         # Test non existing abbreviation
         self.assertEqual(None, self.model.get_reference_by_abbreviations('xxx', 'xxx'))
+
+    def test_functional_key_fields(self):
+        fields = self.model.get_functional_key_fields('meetbouten', 'meetbouten')
+        self.assertEqual(fields, ['_source', 'identificatie'])
+
+    def test_technical_key_fields(self):
+        fields = self.model.get_technical_key_fields('meetbouten', 'meetbouten')
+        self.assertEqual(fields, ['_source', '_source_id'])
+
+    def test_source_id(self):
+        entity = {
+            'idfield': 'idvalue'
+        }
+        spec = {
+            'catalogue': 'meetbouten',
+            'entity': 'meetbouten',
+            'source': {
+                'entity_id': 'idfield'
+            }
+        }
+        source_id = self.model.get_source_id(entity, spec)
+        self.assertEqual(source_id, 'idvalue')

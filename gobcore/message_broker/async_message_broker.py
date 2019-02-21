@@ -114,7 +114,7 @@ class AsyncConnection(object):
             # Handle max 1 message at the same time
             # Do not prefetch next message, just wait for processing to finish and then get next message
             # This prevents messages to get queued after a long running earlier message and get delayed
-            channel.basic_qos(prefetch_count=0)
+            channel.basic_qos(prefetch_count=1)
 
             # If a callback has been defined for connection success, call this function
             if self._on_connect_callback:

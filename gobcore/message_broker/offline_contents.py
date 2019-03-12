@@ -4,7 +4,6 @@ Large messages are stored outside the message broker.
 This prevents the message broker from transferring large messages
 
 """
-import sys
 import uuid
 
 import os
@@ -53,20 +52,18 @@ def offload_message(msg, converter):
     """
     if _CONTENTS in msg:
         contents = msg[_CONTENTS]
-        size = sys.getsizeof(contents)
-        if size > _MAX_CONTENTS_SIZE:
-            unique_name = _get_unique_name()
-            filename = _get_filename(unique_name)
-            try:
-                with open(filename, 'w') as file:
-                    file.write(converter(contents))
-            except IOError:
-                # When the write fails, returns the msg untouched
-                print("Offload failed", filename)
-                return msg
-            # Replace the contents by a reference
-            msg[_CONTENTS_REF] = unique_name
-            del msg[_CONTENTS]
+        unique_name = _get_unique_name()
+        filename = _get_filename(unique_name)
+        try:
+            with open(filename, 'w') as file:
+                file.write(converter(contents))
+        except IOError as e:
+            # When the write fails, returns the msg untouched
+            print(f"Offload failed: {str(e)}", filename)
+            return msg
+        # Replace the contents by a reference
+        msg[_CONTENTS_REF] = unique_name
+        del msg[_CONTENTS]
     return msg
 
 

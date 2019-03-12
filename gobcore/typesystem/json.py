@@ -2,7 +2,7 @@ import datetime
 import decimal
 import json
 
-from gobcore.typesystem.gob_types import GOBType, Date, DateTime
+from gobcore.typesystem.gob_types import GOBType
 
 
 class GobTypeJSONEncoder(json.JSONEncoder):

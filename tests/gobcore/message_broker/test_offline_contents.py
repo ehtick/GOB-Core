@@ -61,14 +61,14 @@ class TestOfflineContents(unittest.TestCase):
             handle = mocked_writer()
             handle.write.assert_called_once_with('converted contents')
 
-        # Only offload large messages
-        oc._MAX_CONTENTS_SIZE = 1024
-
-        mocked_writer = mock_open()
-        with mock.patch('builtins.open', mocked_writer):
-            self.assertEqual(oc.offload_message({"contents": "contents", "any": "value"}, converter),
-                             {"contents": "contents", "any": "value"})
-            self.assertFalse(mocked_writer.called)
+        # # Only offload large messages
+        # oc._MAX_CONTENTS_SIZE = 1024
+        #
+        # mocked_writer = mock_open()
+        # with mock.patch('builtins.open', mocked_writer):
+        #     self.assertEqual(oc.offload_message({"contents": "contents", "any": "value"}, converter),
+        #                      {"contents": "contents", "any": "value"})
+        #     self.assertFalse(mocked_writer.called)
 
     @mock.patch('gobcore.message_broker.offline_contents._get_filename', return_value="filename")
     def testLoadMessage(self, mocked_filename):

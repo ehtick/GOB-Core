@@ -26,7 +26,9 @@ CONNECTION_PARAMS = pika.ConnectionParameters(
     credentials=pika.PlainCredentials(username=MESSAGE_BROKER_USER,
                                       password=MESSAGE_BROKER_PASSWORD),
     heartbeat_interval=600,
-    blocked_connection_timeout=300
+    blocked_connection_timeout=300,
+    prefetch_count=1,
+    unpack_message=True
 )
 
 WORKFLOW_EXCHANGE = "gob.workflow"

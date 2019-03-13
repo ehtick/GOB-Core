@@ -9,7 +9,7 @@ COPY test.sh /app/
 
 # Install required Python packages
 COPY requirements.txt /app/
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 RUN rm requirements.txt
 
 # Copy gobcore module

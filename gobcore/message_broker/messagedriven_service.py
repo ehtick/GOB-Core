@@ -57,7 +57,7 @@ def _on_message(connection, service, msg):
                     "error": str(err)  # Include a short error description
                 }
             })
-        # Message has caused a crash, remove the message from the queue by returning trueexit
+        # Message has caused a crash, remove the message from the queue by returning true
         return True
 
     # If a report_queue

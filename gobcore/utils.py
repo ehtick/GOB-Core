@@ -32,3 +32,24 @@ def gettotalsizeof(o):
         return s
 
     return sizeof(o)
+
+
+class ProgressTicker():
+    """
+    Simple progress ticker
+    """
+
+    def __init__(self, name, report_interval):
+        """
+
+        :param name: the name of the process
+        :param report_interval: the interval at which to print a short progress message
+        """
+        self._name = name
+        self._report_interval = report_interval
+        self._count = 0
+
+    def tick(self):
+        self._count += 1
+        if self._count % 10000 == 0:
+            print(f"{self._name} - {self._count}")

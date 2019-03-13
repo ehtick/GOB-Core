@@ -308,8 +308,9 @@ class AsyncConnection(object):
                         # Print error message, the message that caused the error and a short stacktrace
                         stacktrace = traceback.format_exc(limit=-5)
                         print(f"Message handling has failed: {str(e)}, message: {str(body)}", stacktrace)
-                        # run fail-safe method to end the message
-                        end_message(offload_id)
+
+                    # run fail-safe method to end the message
+                    end_message(msg, offload_id)
 
                     if result is not False:
                         # Default is to acknowledge message

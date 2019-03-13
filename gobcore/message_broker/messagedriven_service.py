@@ -85,7 +85,7 @@ def _init():
     print("Succesfully initialized message broker")
 
 
-def messagedriven_service(services, name):
+def messagedriven_service(services, name, params={}):
     """Start a connection with a the message broker and the given definition
 
     servicedefenition is a dict of dicts:
@@ -143,7 +143,7 @@ def messagedriven_service(services, name):
     # Start by initializing the message broker (idempotent)
     _init()
 
-    with AsyncConnection(CONNECTION_PARAMS) as connection:
+    with AsyncConnection(CONNECTION_PARAMS, params) as connection:
         # Subscribe to the queues, handle messages in the on_message function (runs in another thread)
         queues = []
         for key, service in services.items():

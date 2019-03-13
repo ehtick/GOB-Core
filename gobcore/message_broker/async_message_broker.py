@@ -47,7 +47,7 @@ class AsyncConnection(object):
 
     """
 
-    def __init__(self, connection_params):
+    def __init__(self, connection_params, params={}):
         """Create a new AsyncConnection
 
         :param address: The RabbitMQ address
@@ -55,6 +55,13 @@ class AsyncConnection(object):
 
         # The connection parameters for the RabbitMQ Message broker
         self._connection_params = connection_params
+
+        # Custom params
+        self._params = {
+            "prefetch_count": 1,
+            "load_message": True,
+            **params
+        }
 
         # The Connection and Channel objects
         self._connection = None
@@ -114,7 +121,7 @@ class AsyncConnection(object):
             # Handle max 1 message at the same time
             # Do not prefetch next message, just wait for processing to finish and then get next message
             # This prevents messages to get queued after a long running earlier message and get delayed
-            channel.basic_qos(prefetch_count=1)
+            channel.basic_qos(prefetch_count=self._params["prefetch_count"])
 
             # If a callback has been defined for connection success, call this function
             if self._on_connect_callback:
@@ -281,7 +288,8 @@ class AsyncConnection(object):
                         msg = from_json(body)
 
                         # Allow for offline contents
-                        msg, offload_id = load_message(msg, from_json)
+                        if self._params["load_message"]:
+                            msg, offload_id = load_message(msg, from_json)
                     except (TypeError, json.decoder.JSONDecodeError):
                         # message was not json, pass message as it is received
                         msg = body

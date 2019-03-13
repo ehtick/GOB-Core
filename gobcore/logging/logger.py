@@ -13,6 +13,8 @@ import datetime
 
 from gobcore.logging.log_publisher import LogPublisher
 
+from gobcore.utils import gettotalsizeof
+
 
 class RequestsHandler(logging.Handler):
 
@@ -52,6 +54,8 @@ class Logger:
     LOGFORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
     LOGLEVEL = logging.INFO
 
+    MAX_SIZE = 10000
+
     _logger = {}
 
     def __init__(self, name=None):
@@ -59,14 +63,33 @@ class Logger:
             self.set_name(name)
         self._default_args = {}
 
+    def _log(self, level, msg, kwargs={}):
+        """
+        Logs the message at the given level
+
+        If the msg is larger than MAX_SIZE the logging is skipped
+        :param level: info, warning, error, ...
+        :param msg:
+        :param kwargs:
+        :return: None
+        """
+        logger = getattr(Logger._logger[self._name], level)
+        assert logger, f"Error: invalid logging level specified ({level})"
+        extra = {**self._default_args, **kwargs}
+        size = gettotalsizeof(msg) + gettotalsizeof(extra)
+        if size <= Logger.MAX_SIZE:
+            logger(msg, extra=extra)
+        else:
+            logger("Large log message skipped", extra=self._default_args)
+
     def info(self, msg, kwargs={}):
-        Logger._logger[self._name].info(msg, extra={**self._default_args, **kwargs})
+        self._log('info', msg, kwargs)
 
     def warning(self, msg, kwargs={}):
-        Logger._logger[self._name].warning(msg, extra={**self._default_args, **kwargs})
+        self._log('warning', msg, kwargs)
 
     def error(self, msg, kwargs={}):
-        Logger._logger[self._name].error(msg, extra={**self._default_args, **kwargs})
+        self._log('error', msg, kwargs)
 
     def set_name(self, name):
         self._name = name

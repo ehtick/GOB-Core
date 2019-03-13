@@ -90,7 +90,7 @@ class TestMessageDrivenService(unittest.TestCase):
         messagedriven_service.messagedriven_service(service_definition, "Any name")
 
         mocked_init.assert_called_with()
-        mocked_connection.assert_called_with(CONNECTION_PARAMS)
+        mocked_connection.assert_called_with(CONNECTION_PARAMS, {})
         mocked_connection.return_value.__enter__.return_value.subscribe\
             .assert_called_with([{'exchange': expected_exchange,
                                   'name': expected_queue,

@@ -1,17 +1,17 @@
 from sys import getsizeof
 from itertools import chain
 
+
 def gettotalsizeof(o):
     """ Returns the approximate memory footprint an object and all of its contents.
 
     Automatically finds the contents of the following builtin containers and
     their subclasses:  tuple, list, dict, set and frozenset.
     """
-    dict_handler = lambda d: chain.from_iterable(d.items())
     all_handlers = {
         tuple: iter,
         list: iter,
-        dict: dict_handler,
+        dict: lambda d: chain.from_iterable(d.items()),
         set: iter,
         frozenset: iter,
     }

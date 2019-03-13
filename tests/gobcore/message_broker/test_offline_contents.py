@@ -36,12 +36,12 @@ class TestOfflineContents(unittest.TestCase):
     def testEndMessage(self, mocked_remove, mocked_filename):
 
         # End message without any contents_ref does nothing
-        self.assertEqual(oc.end_message({}), None)
+        self.assertEqual(oc.end_message({}, {}), None)
         self.assertFalse(mocked_filename.called)
         self.assertFalse(mocked_remove.called)
 
         # End message with contents_ref gets the filename and removes it
-        self.assertEqual(oc.end_message("x"), None)
+        self.assertEqual(oc.end_message({}, "x"), None)
         mocked_filename.assert_called_with("x")
         mocked_remove.assert_called_with("filename")
 

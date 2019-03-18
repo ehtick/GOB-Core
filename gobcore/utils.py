@@ -51,5 +51,5 @@ class ProgressTicker():
 
     def tick(self):
         self._count += 1
-        if self._count % 10000 == 0:
+        if self._count % self._report_interval == 0:
             print(f"{self._name} - {self._count}")

@@ -7,24 +7,14 @@
           "destination_attribute": "code"
         },
         "ligt_in_buurt": {
-          "method": "through",
-          "source_attribute": "ligt_in_bouwblok",
-          "destination_attribute": "identificatie",
-          "chain": [
-            {"entity": "gebieden:bouwblokken", "source_attribute": "ligt_in_bouwblok", "destination_attribute": "identificatie"},
-            {"entity": "gebieden:buurten", "source_attribute": "ligt_in_buurt", "destination_attribute": "identificatie"}
-          ]
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         },
         "ligt_in_stadsdeel": {
-          "method": "through",
-          "source_attribute": "ligt_in_bouwblok",
-          "destination_attribute": "identificatie",
-          "chain": [
-            {"entity": "gebieden:bouwblokken", "source_attribute": "ligt_in_bouwblok", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:buurten", "source_attribute": "ligt_in_buurt", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:wijken", "source_attribute": "ligt_in_wijk", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:stadsdelen", "source_attribute": "ligt_in_stadsdeel", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]}
-          ]
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         }
       },
       "metingen": {
@@ -43,24 +33,14 @@
           "destination_attribute": "code"
         },
         "ligt_in_buurt": {
-          "method": "through",
-          "source_attribute": "ligt_in_bouwblok",
-          "destination_attribute": "identificatie",
-          "chain": [
-            {"entity": "gebieden:bouwblokken", "source_attribute": "ligt_in_bouwblok", "destination_attribute": "identificatie"},
-            {"entity": "gebieden:buurten", "source_attribute": "ligt_in_buurt", "destination_attribute": "identificatie"}
-          ]
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         },
         "ligt_in_stadsdeel": {
-          "method": "through",
-          "source_attribute": "ligt_in_bouwblok",
-          "destination_attribute": "identificatie",
-          "chain": [
-            {"entity": "gebieden:bouwblokken", "source_attribute": "ligt_in_bouwblok", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:buurten", "source_attribute": "ligt_in_buurt", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:wijken", "source_attribute": "ligt_in_wijk", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]},
-            {"entity": "gebieden:stadsdelen", "source_attribute": "ligt_in_stadsdeel", "destination_attribute": "identificatie", "filters": [{"field": "eind_geldigheid", "op":"is_null"}]}
-          ]
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         },
         "is_nap_peilmerk": {
           "method": "equals",

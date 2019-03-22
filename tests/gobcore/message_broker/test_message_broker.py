@@ -69,7 +69,7 @@ class MockChannel:
                   tag):
         pass
 
-    def basic_qos(self, prefetch_count):
+    def basic_qos(self, prefetch_count, all_channels):
         pass
 
     def queue_bind(self,

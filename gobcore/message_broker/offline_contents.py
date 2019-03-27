@@ -13,9 +13,9 @@ from pathlib import Path
 
 from gobcore.message_broker.config import GOB_SHARED_DIR
 
-from gobcore.utils import gettotalsizeof
+from gobcore.utils import getapproxsizeof
 
-_MAX_CONTENTS_SIZE = 4096                   # Any message contents larger than this size is stored offline
+_MAX_CONTENTS_SIZE = 2048                   # Any message contents larger than this size is stored offline
 _CONTENTS = "contents"                      # The name of the message attribute to check for its contents
 _CONTENTS_REF = "contents_ref"              # The name of the attribute for the reference to the offloaded contents
 _MESSAGE_BROKER_FOLDER = "message_broker"   # The name of the folder where the offloaded contents are stored
@@ -55,7 +55,7 @@ def offload_message(msg, converter):
     """
     if _CONTENTS in msg:
         contents = msg[_CONTENTS]
-        size = gettotalsizeof(contents)
+        size = getapproxsizeof(contents)
         if size > _MAX_CONTENTS_SIZE:
             unique_name = _get_unique_name()
             filename = _get_filename(unique_name)

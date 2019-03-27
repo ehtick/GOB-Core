@@ -1,5 +1,16 @@
 from sys import getsizeof
 from itertools import chain
+import operator
+import functools
+
+
+def getapproxsizeof(o):
+    if isinstance(o, dict):
+        return functools.reduce(operator.add, map(getsizeof, o.values()), 0)
+    elif isinstance(o, list):
+        return functools.reduce(operator.add, map(getsizeof, o), 0)
+    else:
+        return getsizeof(o)
 
 
 def gettotalsizeof(o):

@@ -13,7 +13,7 @@ import datetime
 
 from gobcore.logging.log_publisher import LogPublisher
 
-from gobcore.utils import gettotalsizeof
+from gobcore.utils import getapproxsizeof
 
 
 class RequestsHandler(logging.Handler):
@@ -54,7 +54,7 @@ class Logger:
     LOGFORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
     LOGLEVEL = logging.INFO
 
-    MAX_SIZE = 10000
+    MAX_SIZE = 5000
 
     _logger = {}
 
@@ -76,7 +76,7 @@ class Logger:
         logger = getattr(Logger._logger[self._name], level)
         assert logger, f"Error: invalid logging level specified ({level})"
         extra = {**self._default_args, **kwargs}
-        size = gettotalsizeof(msg) + gettotalsizeof(extra)
+        size = getapproxsizeof(msg) + getapproxsizeof(extra)
         if size <= Logger.MAX_SIZE:
             logger(msg, extra=extra)
         else:

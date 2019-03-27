@@ -79,6 +79,7 @@ def _derive_models():
             fields = {col: desc for col, desc in collection['fields'].items()}
 
             state_fields = STATE_FIELDS if collection.get('has_states') else {}
+            private_attributes = collection.get('private_attributes', {})
 
             # Collect all columns for this collection
             entity = {
@@ -86,7 +87,8 @@ def _derive_models():
                 **PRIVATE_META_FIELDS,
                 **PUBLIC_META_FIELDS,
                 **state_fields,
-                **fields
+                **fields,
+                **private_attributes
             }
 
             table_name = model.get_table_name(catalog_name, collection_name)

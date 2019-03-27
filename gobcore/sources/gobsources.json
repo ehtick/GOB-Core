@@ -101,12 +101,27 @@
         "ligt_in_wijk": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "_ligt_in_ggpgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
+        },
+        "_ligt_in_ggwgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         }
       },
       "wijken": {
         "ligt_in_stadsdeel": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "_ligt_in_ggwgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         }
       }
     }
@@ -123,12 +138,27 @@
         "ligt_in_wijk": {
           "method": "equals",
           "destination_attribute": "code"
+        },
+        "_ligt_in_ggpgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
+        },
+        "_ligt_in_ggwgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         }
       },
       "wijken": {
         "ligt_in_stadsdeel": {
           "method": "equals",
           "destination_attribute": "code"
+        },
+        "_ligt_in_ggwgebied": {
+          "method": "lies_in",
+          "source_attribute": "geometrie",
+          "destination_attribute": "geometrie"
         }
       }
     }

@@ -135,7 +135,7 @@ def get_relation_name(model, catalog_name, collection_name, reference_name):
     """
     catalog = model.get_catalog(catalog_name)
     collection = model.get_collection(catalog_name, collection_name)
-    reference = [reference for name, reference in collection['attributes'].items() if name == reference_name][0]
+    reference = collection['references'][reference_name]
     dst_catalog_name, dst_collection_name = reference['ref'].split(':')
 
     src = {
@@ -166,7 +166,7 @@ def get_relations(model):
     }
     for src_catalog_name, src_catalog in model._data.items():
         for src_collection_name, src_collection in src_catalog['collections'].items():
-            references = model._extract_references(src_collection['attributes'])
+            references = model._extract_references({**src_collection['attributes'], **src_collection.get('private_attributes', {})})
             for reference_name, reference in references.items():
                 dst_catalog_name, dst_collection_name = reference['ref'].split(':')
                 src = {

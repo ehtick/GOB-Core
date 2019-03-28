@@ -58,7 +58,10 @@ class GOBModel():
         # Extract references for easy access in API
         for catalog_name, catalog in self._data.items():
             for entity_name, model in catalog['collections'].items():
-                model['references'] = self._extract_references({**model['attributes'], **model.get('private_attributes', {})})
+                model['references'] = self._extract_references({
+                    **model['attributes'],
+                    **model.get('private_attributes', {})
+                })
 
                 self._set_api(catalog_name, entity_name, model)
 

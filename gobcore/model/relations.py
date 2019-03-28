@@ -166,7 +166,10 @@ def get_relations(model):
     }
     for src_catalog_name, src_catalog in model._data.items():
         for src_collection_name, src_collection in src_catalog['collections'].items():
-            references = model._extract_references({**src_collection['attributes'], **src_collection.get('private_attributes', {})})
+            references = model._extract_references({
+                **src_collection['attributes'],
+                **src_collection.get('private_attributes', {})
+            })
             for reference_name, reference in references.items():
                 dst_catalog_name, dst_collection_name = reference['ref'].split(':')
                 src = {

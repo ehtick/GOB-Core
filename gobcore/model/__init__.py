@@ -58,15 +58,11 @@ class GOBModel():
         # Extract references for easy access in API
         for catalog_name, catalog in self._data.items():
             for entity_name, model in catalog['collections'].items():
-                model['references'] = self._extract_references({
-                    **model['attributes'],
-                    **model.get('private_attributes', {})
-                })
+                model['references'] = self._extract_references(model['attributes'])
 
                 self._set_api(catalog_name, entity_name, model)
 
                 model_attributes = model['attributes']
-                model_private_attributes = model.get('private_attributes', {})
                 state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
                 all_attributes = {
                     **state_attributes,
@@ -79,7 +75,6 @@ class GOBModel():
                 # Include complete definition, including all global fields
                 model['all_fields'] = {
                     **all_attributes,
-                    **model_private_attributes,
                     **global_attributes
                 }
 

@@ -521,9 +521,7 @@
           "geometrie": {
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
-          }
-        },
-        "private_attributes": {
+          },
           "_ligt_in_ggpgebied": {
             "type": "GOB.Reference",
             "description": "Het GGP-gebied waar de buurt in ligt",
@@ -590,9 +588,7 @@
           "geometrie": {
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
-          }
-        },
-        "private_attributes": {
+          },
           "_ligt_in_ggwgebied": {
             "type": "GOB.Reference",
             "description": "Het GGW-gebied waar de wijk in ligt.",

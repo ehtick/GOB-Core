@@ -52,11 +52,6 @@ class TestRelations(unittest.TestCase):
                     'reference': {
                         'ref': 'src:dst'
                     }
-                },
-                'references': {
-                    'reference': {
-                        'ref': 'src:dst'
-                    }
                 }
             },
             "collection_name": "collection"

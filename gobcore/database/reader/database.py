@@ -3,7 +3,7 @@ from sqlalchemy.exc import DBAPIError
 from gobcore.exceptions import GOBException, GOBEmptyResultException
 
 
-def read_from_database(connection, query):
+def query_database(connection, query):
     """Reads from the database
 
     The SQLAlchemy library is used to connect to the data source for databases
@@ -18,9 +18,15 @@ def read_from_database(connection, query):
     if len(result) == 0:
         raise GOBEmptyResultException('No results found for database query')
 
-    data = []
-    while result:
-        row = result.pop(0)
-        data.append(dict(row))
+    for row in result:
+        yield dict(row)
 
-    return data
+
+def read_from_database(connection, query):
+    """Reads from the database
+
+    The SQLAlchemy library is used to connect to the data source for databases
+
+    :return: a list of data
+    """
+    return [row for row in query_database(connection, query)]

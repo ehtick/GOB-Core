@@ -5,7 +5,7 @@ import io
 from objectstore.objectstore import get_full_container_list, get_object
 
 
-def read_from_objectstore(connection, config):
+def query_objectstore(connection, config):
     """Reads from the objectstore
 
     The Amsterdam/objectstore library is used to connect to the container
@@ -18,19 +18,28 @@ def read_from_objectstore(connection, config):
 
     result = get_full_container_list(connection, container_name)
     pattern = re.compile(file_filter)
-    data = []
+
     for row in result:
         if pattern.match(row["name"]):
             file_info = dict(row)    # File information
             if file_type == "XLS":
                 # Include (non-empty) Excel rows
                 obj = get_object(connection, row, container_name)
-                data += _read_xls(obj, file_info)
+                for item in _read_xls(obj, file_info):
+                    yield item
             else:
                 # Include file attributes
-                data.append(file_info)
+                yield file_info
 
-    return data
+
+def read_from_objectstore(connection, config):
+    """Reads from the objectstore
+
+    The Amsterdam/objectstore library is used to connect to the container
+
+    :return: a list of data
+    """
+    return [row for row in query_objectstore(connection, config)]
 
 
 def _read_xls(obj, file_info):

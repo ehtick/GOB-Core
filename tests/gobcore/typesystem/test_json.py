@@ -1,5 +1,6 @@
 import json
 import unittest
+import datetime
 
 from gobcore.typesystem.gob_geotypes import Point
 from gobcore.typesystem.gob_types import String, Integer, Decimal, Boolean, JSON
@@ -15,6 +16,18 @@ class TestJsonEncoding(unittest.TestCase):
         geojson = json.dumps(gob_type, cls=GobTypeJSONEncoder)
 
         self.assertEqual('{"type": "Point", "coordinates": [1.0, 2.0]}', geojson)
+
+    def test_decimal(self):
+        dump = json.dumps(Decimal("1.5"), cls=GobTypeJSONEncoder)
+        self.assertEqual(dump, "1.5")
+
+    def test_date(self):
+        dump = json.dumps(datetime.date(2000, 12, 20), cls=GobTypeJSONEncoder)
+        self.assertEqual(dump, '"2000-12-20"')
+
+    def test_datetime(self):
+        dump = json.dumps(datetime.datetime(2000, 12, 20, 11, 25, 30), cls=GobTypeJSONEncoder)
+        self.assertEqual(dump, '"2000-12-20T11:25:30.000000"')
 
     def test_normal_json(self):
 

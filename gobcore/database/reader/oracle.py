@@ -19,7 +19,7 @@ def output_type_handler(cursor, name, defaultType, size, precision, scale):
         return cursor.var(cx_Oracle.LONG_STRING, arraysize=cursor.arraysize)
 
 
-def read_from_oracle(connection, query):
+def query_oracle(connection, query):
     """Reads from the database
 
     The cx_Oracle library is used to connect to the data source for databases
@@ -31,7 +31,18 @@ def read_from_oracle(connection, query):
     cursor.execute("\n".join(query))
     cursor.rowfactory = makedict(cursor)
 
-    data = [obj for obj in cursor.fetchall()]
+    for row in cursor:
+        yield row
+
+
+def read_from_oracle(connection, query):
+    """Reads from the database
+
+    The cx_Oracle library is used to connect to the data source for databases
+
+    :return: a list of data
+    """
+    data = [obj for obj in query_oracle(connection, query)]
 
     if len(data) == 0:
         raise GOBEmptyResultException('No results found for database query')

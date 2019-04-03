@@ -6,19 +6,62 @@ This prevents the message broker from transferring large messages
 """
 import gc
 import uuid
-
+import json
 import os
 from datetime import datetime
 from pathlib import Path
 
 from gobcore.message_broker.config import GOB_SHARED_DIR
-
+from gobcore.typesystem.json import GobTypeJSONEncoder
 from gobcore.utils import gettotalsizeof
 
 _MAX_CONTENTS_SIZE = 4096                   # Any message contents larger than this size is stored offline
 _CONTENTS = "contents"                      # The name of the message attribute to check for its contents
 _CONTENTS_REF = "contents_ref"              # The name of the attribute for the reference to the offloaded contents
 _MESSAGE_BROKER_FOLDER = "message_broker"   # The name of the folder where the offloaded contents are stored
+
+
+class ContentsWriter:
+
+    def __init__(self):
+        """
+        Opens a file
+        The entities are written to the file as an array
+        """
+        unique_name = _get_unique_name()
+        self.filename = _get_filename(unique_name)
+
+    def __enter__(self):
+        self.file = open(self.filename, 'w')
+        self.file.write("[")
+        self.empty = True
+        return self
+
+    def __exit__(self, exc_type, exc_val, traceback):
+        self.close()
+        if exc_type is not None:
+            os.remove(self.filename)
+
+    def write(self, entity):
+        """
+        Write an entity to the file
+
+        Separate entities with a comma
+        :param entity:
+        :return:
+        """
+        if not self.empty:
+            self.file.write(",\n")
+        self.file.write(json.dumps(entity, cls=GobTypeJSONEncoder, allow_nan=False))
+        self.empty = False
+
+    def close(self):
+        """
+        Terminates the array and closes the file
+        :return:
+        """
+        self.file.write("]")
+        self.file.close()
 
 
 def _get_unique_name():

@@ -84,3 +84,39 @@ class TestOfflineContents(unittest.TestCase):
             mocked_reader.assert_called_once_with('filename', 'r')
             handle = mocked_reader()
             handle.read.assert_called()
+
+    @mock.patch('os.remove')
+    @mock.patch('builtins.open')
+    def testContentsWriter(self, mock_open, mock_remove):
+        cp_writer = None
+        with oc.ContentsWriter() as writer:
+            mock_open.assert_called_with(writer.filename, "w")
+
+            writer.file.write.assert_called_with("[")
+            writer.file.reset_mock()
+
+            writer.write({})
+            writer.file.write.assert_called_with("{}")
+            writer.file.reset_mock()
+
+            writer.write({})
+            writer.file.write.assert_has_calls([mock.call(",\n"), mock.call("{}")])
+
+            cp_writer = writer
+
+        cp_writer.file.close.assert_called()
+        mock_remove.assert_not_called()
+
+        try:
+            with oc.ContentsWriter() as writer:
+                cp_writer = writer
+                raise Exception("Any exception")
+        except Exception:
+            pass
+
+        mock_remove.assert_called_with(cp_writer.filename)
+
+
+
+
+

@@ -1,6 +1,8 @@
-import re
-import pandas
 import io
+import os
+import pandas
+import re
+
 
 from objectstore.objectstore import get_full_container_list, get_object
 
@@ -12,10 +14,11 @@ def query_objectstore(connection, config):
 
     :return: a list of data
     """
-    container_name = config["container"]
+    container_name = os.getenv("CONTAINER_BASE", "acceptatie")
     file_filter = config.get("file_filter", ".*")
     file_type = config.get("file_type")
 
+    # Use the container base env variable
     result = get_full_container_list(connection, container_name)
     pattern = re.compile(file_filter)
 

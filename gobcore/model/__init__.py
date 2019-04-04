@@ -120,11 +120,11 @@ class GOBModel():
 
     def get_collections(self, catalog_name):
         catalog = self.get_catalog(catalog_name)
-        return catalog['collections'] if 'collections' in catalog else None
+        return catalog['collections'] if catalog and 'collections' in catalog else None
 
     def get_collection(self, catalog_name, collection_name):
         collections = self.get_collections(catalog_name)
-        return collections[collection_name] if collection_name in collections else None
+        return collections[collection_name] if collections and collection_name in collections else None
 
     def get_functional_key_fields(self, catalog_name, collection_name):
         """

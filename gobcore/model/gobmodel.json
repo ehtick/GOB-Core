@@ -646,7 +646,8 @@
           "bestaat_uit_buurten": {
             "type": "GOB.ManyReference",
             "description": "De buurten waaruit het object bestaat.",
-            "ref": "gebieden:buurten"
+            "ref": "gebieden:buurten",
+            "hidden": true
           },
           "geometrie": {
             "type": "GOB.Geo.Polygon",
@@ -704,7 +705,8 @@
           "bestaat_uit_buurten": {
             "type": "GOB.ManyReference",
             "description": "De buurten waaruit het object bestaat.",
-            "ref": "gebieden:buurten"
+            "ref": "gebieden:buurten",
+            "hidden": true
           },
           "geometrie": {
             "type": "GOB.Geo.Polygon",

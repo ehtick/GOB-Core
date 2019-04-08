@@ -7,7 +7,7 @@ The following connectors are implemented in this module:
 import os
 import pandas
 
-LOCAL_DATADIR = os.path.join(os.path.dirname(__file__), '../..', 'data')
+LOCAL_DATADIR = os.path.join(os.path.dirname(__file__), '../../../../..', 'data')
 LOCAL_DATADIR = os.getenv('LOCAL_DATADIR', LOCAL_DATADIR)
 
 

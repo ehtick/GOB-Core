@@ -19,6 +19,7 @@ setup(
         'requests==2.20.0',
         'psycopg2-binary==2.7.7',
         'pandas==0.23.3',
+        'ijson==2.3',
     ],
     packages=find_packages(exclude=['tests*']),
     dependency_links=[

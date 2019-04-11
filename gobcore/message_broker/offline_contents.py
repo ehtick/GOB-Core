@@ -18,6 +18,7 @@ from gobcore.utils import gettotalsizeof
 
 _MAX_CONTENTS_SIZE = 4096                   # Any message contents larger than this size is stored offline
 _CONTENTS = "contents"                      # The name of the message attribute to check for its contents
+_CONTENTS_READER = "contents_reader"        # Message contents is exposed by a ContentsReader instance
 _CONTENTS_REF = "contents_ref"              # The name of the attribute for the reference to the offloaded contents
 _MESSAGE_BROKER_FOLDER = "message_broker"   # The name of the folder where the offloaded contents are stored
 
@@ -96,10 +97,6 @@ class ContentsReader:
         :return:
         """
         self.file.close()
-        try:
-            os.remove(self.filename)
-        except Exception as e:
-            print(f"Remove failed ({str(e)})")
 
 
 def _get_unique_name():
@@ -153,7 +150,7 @@ def offload_message(msg, converter):
     return msg
 
 
-def load_message(msg, converter):
+def load_message(msg, converter, params):
     """Load the message contents if it has been offloaded
 
     :param msg:
@@ -164,8 +161,11 @@ def load_message(msg, converter):
     if _CONTENTS_REF in msg:
         unique_name = msg[_CONTENTS_REF]
         filename = _get_filename(unique_name)
-        with open(filename, 'r') as file:
-            msg[_CONTENTS] = converter(file.read())
+        if params['stream_contents']:
+            msg[_CONTENTS] = ContentsReader(filename)
+        else:
+            with open(filename, 'r') as file:
+                msg[_CONTENTS] = converter(file.read())
         del msg[_CONTENTS_REF]
     return msg, unique_name
 

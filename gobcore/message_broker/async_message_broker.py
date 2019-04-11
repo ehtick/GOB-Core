@@ -59,6 +59,7 @@ class AsyncConnection(object):
         # Custom params
         self._params = {
             "load_message": True,
+            "stream_contents": False,
             **params,
             "prefetch_count": 1
         }
@@ -289,7 +290,7 @@ class AsyncConnection(object):
 
                         # Allow for offline contents
                         if self._params["load_message"]:
-                            msg, offload_id = load_message(msg, from_json)
+                            msg, offload_id = load_message(msg, from_json, self._params)
                     except (TypeError, json.decoder.JSONDecodeError):
                         # message was not json, pass message as it is received
                         msg = body

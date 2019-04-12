@@ -76,26 +76,16 @@ class ContentsReader:
         """
         self.filename = filename
 
-    def __enter__(self):
-        """
-        Opens the file and provides for a generator for the items in the contents array
-
-        :return:
-        """
         self.file = open(self.filename, "r")
         # Use prefix='item' to get per entity (contents = [entity, entity, ...])
-        self.items = ijson.items(self.file, prefix="item")
-        return self
+        self._items = ijson.items(self.file, prefix="item")
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        After the contents has been read, closes the file and removes it
+    def items(self):
+        for item in self._items:
+            yield item
+        self.close()
 
-        :param exc_type:
-        :param exc_val:
-        :param exc_tb:
-        :return:
-        """
+    def close(self):
         self.file.close()
 
 
@@ -162,7 +152,9 @@ def load_message(msg, converter, params):
         unique_name = msg[_CONTENTS_REF]
         filename = _get_filename(unique_name)
         if params['stream_contents']:
-            msg[_CONTENTS] = ContentsReader(filename)
+            reader = ContentsReader(filename)
+            msg[_CONTENTS] = reader.items()
+            msg[_CONTENTS_READER] = reader
         else:
             with open(filename, 'r') as file:
                 msg[_CONTENTS] = converter(file.read())
@@ -179,6 +171,10 @@ def end_message(msg, unique_name):
     :return: None
     """
     if unique_name:
+        reader = msg.get(_CONTENTS_READER)
+        if reader is not None:
+            reader.close()
+
         try:
             filename = _get_filename(unique_name)
             os.remove(filename)
@@ -186,6 +182,6 @@ def end_message(msg, unique_name):
             print(f"Remove failed ({str(e)})", filename)
 
     # Clear message and run garbage collection
-    for item in msg.keys():
-        msg[item] = None
+    for key in list(msg.keys()):
+        del msg[key]
     gc.collect()

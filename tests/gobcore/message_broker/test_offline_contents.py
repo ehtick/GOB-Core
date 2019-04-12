@@ -1,6 +1,6 @@
 import mock
 import unittest
-from unittest.mock import mock_open
+from unittest.mock import mock_open, ANY
 from pathlib import Path
 
 import gobcore.message_broker.config as config
@@ -75,15 +75,24 @@ class TestOfflineContents(unittest.TestCase):
 
     @mock.patch('gobcore.message_broker.offline_contents._get_filename', return_value="filename")
     def testLoadMessage(self, mocked_filename):
-        self.assertEqual(oc.load_message({}, converter), ({}, None))
+        self.assertEqual(oc.load_message({}, converter, {}), ({}, None))
 
         mocked_reader = mock_open(read_data="some data")
         with mock.patch('builtins.open', mocked_reader):
-            self.assertEqual(oc.load_message({"contents_ref": "unique_name", "any": "value"}, converter),
+            params = {"stream_contents": False}
+            self.assertEqual(oc.load_message({"contents_ref": "unique_name", "any": "value"}, converter, params),
                              ({"any": "value", "contents": "converted some data"}, "unique_name"))
             mocked_reader.assert_called_once_with('filename', 'r')
             handle = mocked_reader()
             handle.read.assert_called()
+
+    @mock.patch('gobcore.message_broker.offline_contents._get_filename', return_value="filename")
+    def testLoadMessageReader(self, mocked_filename):
+        mocked_reader = mock_open(read_data="some data")
+        with mock.patch('builtins.open', mocked_reader):
+            params = {"stream_contents": True}
+            self.assertEqual(oc.load_message({"contents_ref": "unique_name", "any": "value"}, converter, params),
+                             ({"any": "value", "contents": ANY, "contents_reader": ANY}, "unique_name"))
 
     @mock.patch('os.remove')
     @mock.patch('builtins.open')
@@ -120,11 +129,6 @@ class TestOfflineContents(unittest.TestCase):
     @mock.patch('os.remove')
     @mock.patch('builtins.open')
     def testContentsReader(self, mock_open, mock_remove):
-        cp_reader = None
-        with oc.ContentsReader("filename") as reader:
-            mock_open.assert_called_with("filename", "r")
-
-            cp_reader = reader
-
-        self.assertIsNotNone(cp_reader.file)
-        mock_remove.assert_called_with(cp_reader.filename)
+        reader = oc.ContentsReader("filename")
+        mock_open.assert_called_with("filename", "r")
+        self.assertIsNotNone(reader.file)

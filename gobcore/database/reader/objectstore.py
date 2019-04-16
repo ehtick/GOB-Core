@@ -25,14 +25,14 @@ def query_objectstore(connection, config):
     for row in result:
         if pattern.match(row["name"]):
             file_info = dict(row)    # File information
-            if file_type == "XLS":
-                # Include (non-empty) Excel rows
+            if file_type in ["XLS", "CSV"]:
                 obj = get_object(connection, row, container_name)
-                for item in _read_xls(obj, file_info, config):
-                    yield item
-            elif file_type == "CSV":
-                obj = get_object(connection, row, container_name)
-                for item in _read_csv(obj, file_info, config):
+                if file_type == "XLS":
+                    # Include (non-empty) Excel rows
+                    _read = _read_xls
+                else:
+                    _read = _read_csv
+                for item in _read(obj, file_info, config):
                     yield item
             else:
                 # Include file attributes

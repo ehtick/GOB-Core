@@ -28,7 +28,11 @@ def query_objectstore(connection, config):
             if file_type == "XLS":
                 # Include (non-empty) Excel rows
                 obj = get_object(connection, row, container_name)
-                for item in _read_xls(obj, file_info):
+                for item in _read_xls(obj, file_info, config):
+                    yield item
+            elif file_type == "CSV":
+                obj = get_object(connection, row, container_name)
+                for item in _read_csv(obj, file_info, config):
                     yield item
             else:
                 # Include file attributes
@@ -45,7 +49,32 @@ def read_from_objectstore(connection, config):
     return [row for row in query_objectstore(connection, config)]
 
 
-def _read_xls(obj, file_info):
+def _yield_rows(iterrows, file_info, config):
+    """
+    Yield rows from an iterrows object
+
+    :param iterrows:
+    :param file_info:
+    :param config: Any operators to apply on the result ("lowercase_keys")
+    :return:
+    """
+    for _, row in iterrows:
+        empty = True
+        for key, value in row.items():
+            # Convert any NULL values to None values
+            if pandas.isnull(value):
+                row[key] = None
+            else:
+                # Not NULL => row is not empty
+                empty = False
+        if not empty:
+            row["_file_info"] = file_info
+            if "lowercase_keys" in config.get("operators", []):
+                row = {key.lower(): value for key, value in row.items()}
+            yield row
+
+
+def _read_xls(obj, file_info, config):
     """Read XLS(X) object
 
     Read Excel object and return the (non-empty) rows
@@ -57,18 +86,20 @@ def _read_xls(obj, file_info):
     io_obj = io.BytesIO(obj)
     excel = pandas.read_excel(io=io_obj)
 
-    data = []
-    for _, row in excel.iterrows():
-        empty = True
-        for key, value in row.items():
-            # Convert any NULL values to None values
-            if pandas.isnull(value):
-                row[key] = None
-            else:
-                # Not NULL => row is not empty
-                empty = False
-        if not empty:
-            row["_file_info"] = file_info
-            data.append(row)
+    return _yield_rows(excel.iterrows(), file_info, config)
 
-    return data
+
+def _read_csv(obj, file_info, config):
+    """Read CSV object
+
+    Read CSV object and return the (non-empty) rows
+
+    :param obj: An Objectstore object
+    :param file_info: File information (name, last_modified, ...)
+    :param config: CSV config parameters ("delimiter" character)
+    :return: The list of non-empty rows
+    """
+    io_obj = io.BytesIO(obj)
+    csv = pandas.read_csv(io_obj, delimiter=config.get("delimiter", ","))
+
+    return _yield_rows(csv.iterrows(), file_info, config)

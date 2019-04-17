@@ -16,6 +16,9 @@ from gobcore.typesystem import get_gob_type
 
 Base = declarative_base()
 
+model = GOBModel()
+sources = GOBSources()
+
 
 def get_column(column_name, column_specification):
     """Utility method to convert GOB type to a SQLAlchemy Column
@@ -77,8 +80,6 @@ def _derive_models():
             "__repr__": lambda self: f"{table_name}"
         })
 
-    model = GOBModel()
-
     # Start with events
     columns_to_model("events", columns_to_fields(EVENTS, EVENTS_DESCRIPTION))
 
@@ -105,9 +106,70 @@ def _derive_models():
     return models
 
 
-def _derive_indexes() -> dict: # noqa C901
-    model = GOBModel()
-    sources = GOBSources()
+def _remove_leading_underscore(s: str):
+    return re.sub(r'^_', '', s)
+
+
+def _tablename_from_ref(ref: str):
+    catalog, collection = ref.split(':')
+    return model.get_table_name(catalog, collection)
+
+
+def _default_indexes_for_columns(input_columns: list) -> dict:
+    """Returns applicable indexes for table with input_columns
+
+    :param input_columns:
+    :return:
+    """
+    default_indexes = [
+        (FIELD.SOURCE, FIELD.SOURCE_ID,),
+        (FIELD.SEQNR,),
+        (FIELD.APPLICATION,),
+        (FIELD.ID,),
+        (FIELD.SOURCE_ID,),
+        (FIELD.START_VALIDITY,),
+        (FIELD.END_VALIDITY,),
+        (FIELD.DATE_DELETED,),
+    ]
+    result = {}
+    for columns in default_indexes:
+        # Check if all columns defined in index are present
+        if all([column in input_columns for column in columns]):
+            idx_name = "_".join([_remove_leading_underscore(column) for column in columns])
+            result[idx_name] = columns
+    return result
+
+
+def _relation_indexes_for_collection(catalog_name, collection_name, collection):
+    indexes = {}
+    entity = _fields_for_collection(collection)
+    table_name = model.get_table_name(catalog_name, collection_name)
+
+    reference_columns = {column: desc['ref'] for column, desc in entity.items() if
+                         desc['type'] in ['GOB.Reference', 'GOB.ManyReference']}
+
+    # Search source and destination attributes for relation and define index
+    for col, ref in reference_columns.items():
+        relations = sources.get_field_relations(catalog_name, collection_name, col)
+
+        for relation in relations:
+            src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
+            dst_index_table = _tablename_from_ref(ref)
+
+            indexes[f'{table_name}.idx.{_remove_leading_underscore(src_index_col)}'] = {
+                "table_name": table_name,
+                "columns": [src_index_col],
+            }
+            name = f"{dst_index_table}.idx.{_remove_leading_underscore(relation['destination_attribute'])}"
+            indexes[name] = {
+                "table_name": dst_index_table,
+                "columns": [relation['destination_attribute']],
+            }
+
+    return indexes
+
+
+def _derive_indexes() -> dict:
     indexes = {}
 
     for catalog_name, catalog in model.get_catalogs().items():
@@ -120,57 +182,14 @@ def _derive_indexes() -> dict: # noqa C901
             table_name = model.get_table_name(catalog_name, collection_name)
 
             # Generate indexes on default columns
-            default_indexes = [
-                (FIELD.SOURCE, FIELD.SOURCE_ID,),
-                (FIELD.SEQNR,),
-                (FIELD.APPLICATION,),
-                (FIELD.ID,),
-                (FIELD.SOURCE_ID,),
-                (FIELD.START_VALIDITY,),
-                (FIELD.END_VALIDITY,),
-                (FIELD.DATE_DELETED,),
-            ]
-
-            def remove_leading_underscore(s: str):
-                return re.sub(r'^_', '', s)
-
-            def tablename_from_ref(ref: str):
-                catalog, collection = ref.split(':')
-                return model.get_table_name(catalog, collection)
-
-            for columns in default_indexes:
-                columns_present = all([column in entity.keys() for column in columns])
-
-                if columns_present:
-                    # Concat column names with underscores. Remove leading underscores.
-                    idx_name = "_".join([remove_leading_underscore(column) for column in columns])
-                    indexes[f'{table_name}.idx.{idx_name}'] = {
-                        "columns": columns,
-                        "table_name": table_name,
-                    }
+            for idx_name, columns in _default_indexes_for_columns(list(entity.keys())).items():
+                indexes[f'{table_name}.idx.{idx_name}'] = {
+                    "columns": columns,
+                    "table_name": table_name,
+                }
 
             # Generate indexes on referenced columns (GOB.Reference and GOB.ManyReference)
-            reference_columns = {column: desc['ref'] for column, desc in entity.items() if
-                                 desc['type'] in ['GOB.Reference', 'GOB.ManyReference']}
-
-            # Search source and destination attributes for relation and generate index
-            for col, ref in reference_columns.items():
-                relations = sources.get_field_relations(catalog_name, collection_name, col)
-
-                for relation in relations:
-                    src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
-                    dst_index_table = tablename_from_ref(ref)
-
-                    indexes[f'{table_name}.idx.{remove_leading_underscore(src_index_col)}'] = {
-                        "table_name": table_name,
-                        "columns": [src_index_col],
-                    }
-                    name = f"{dst_index_table}.idx.{remove_leading_underscore(relation['destination_attribute'])}"
-                    indexes[name] = {
-                        "table_name": dst_index_table,
-                        "columns": [relation['destination_attribute']],
-                    }
-
+            indexes.update(**_relation_indexes_for_collection(catalog_name, collection_name, collection))
     return indexes
 
 

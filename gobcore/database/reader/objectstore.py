@@ -32,8 +32,7 @@ def query_objectstore(connection, config):
                     _read = _read_xls
                 else:
                     _read = _read_csv
-                for item in _read(obj, file_info, config):
-                    yield item
+                return _read(obj, file_info, config)
             else:
                 # Include file attributes
                 yield file_info

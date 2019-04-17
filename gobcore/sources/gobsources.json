@@ -278,5 +278,19 @@
         }
       }
     }
+  },
+  "GOBPrepare": {
+    "brk": {
+      "kadastraleobjecten": {
+        "heeft_een_relatie_met_verblijfsobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_ontstaan_uit_g_perceel": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      }
+    }
   }
 }

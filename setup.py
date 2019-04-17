@@ -10,7 +10,7 @@ setup(
     license='MPL-2.0',
     install_requires=[
         'pika',
-        'sqlalchemy',
+        'sqlalchemy==1.3.3',
         'geoalchemy2',
         'geomet',
         'shapely',

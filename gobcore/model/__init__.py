@@ -1,6 +1,7 @@
 import os
 import json
 
+from gobcore.exceptions import GOBException
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import STATE_FIELDS
 from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
@@ -196,11 +197,32 @@ class GOBModel():
     def get_table_name(self, catalog_name, collection_name):
         return f'{catalog_name}_{collection_name}'
 
-    def table_name_from_ref(self, ref):
+    def get_table_name_from_ref(self, ref):
         """Returns the table name from a reference
 
         :param ref:
         :return:
         """
-        catalog, collection = ref.split(':')
+        catalog, collection = self.split_ref(ref)
         return self.get_table_name(catalog, collection)
+
+    def split_ref(self, ref) -> tuple:
+        """Splits reference into tuple of (catalog_name, collection_name)
+
+        :param ref:
+        :return:
+        """
+        split_res = ref.split(':')
+
+        if len(split_res) != 2 or not all([len(item) > 0 for item in split_res]):
+            raise GOBException(f"Invalid reference {ref}")
+        return split_res
+
+    def get_collection_from_ref(self, ref) -> dict:
+        """Returns collection ref is referring to
+
+        :param ref:
+        :return:
+        """
+        catalog_name, collection_name = self.split_ref(ref)
+        return self.get_collection(catalog_name, collection_name)

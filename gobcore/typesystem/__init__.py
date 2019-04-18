@@ -76,6 +76,15 @@ def get_gob_type(name):
     return _gob_types_dict[name]
 
 
+def is_gob_geo_type(name):
+    """Returns a boolean value
+
+    :param name:
+    :return:
+    """
+    return name in _gob_geotypes.keys()
+
+
 def get_gob_type_from_sql_type(sql_type):
     """
     Get the type definition for a given sqlalchemy type

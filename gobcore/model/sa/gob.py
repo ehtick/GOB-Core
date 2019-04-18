@@ -12,7 +12,7 @@ from gobcore.model import GOBModel, EVENTS, EVENTS_DESCRIPTION
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import columns_to_fields
 from gobcore.sources import GOBSources
-from gobcore.typesystem import get_gob_type
+from gobcore.typesystem import get_gob_type, is_gob_geo_type
 
 Base = declarative_base()
 
@@ -121,13 +121,17 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
     reference_columns = {column: desc['ref'] for column, desc in collection['all_fields'].items() if
                          desc['type'] in ['GOB.Reference', 'GOB.ManyReference']}
 
+    def is_geo_type(collection, column):
+        return is_gob_geo_type(collection['all_fields'][column]['type'])
+
     # Search source and destination attributes for relation and define index
     for col, ref in reference_columns.items():
+        dst_index_table = model.get_table_name_from_ref(ref)
+        dst_collection = model.get_collection_from_ref(ref)
         relations = sources.get_field_relations(catalog_name, collection_name, col)
 
         for relation in relations:
             src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
-            dst_index_table = model.table_name_from_ref(ref)
 
             indexes[f'{table_name}.idx.{_remove_leading_underscore(src_index_col)}'] = {
                 "table_name": table_name,
@@ -138,6 +142,9 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
                 "table_name": dst_index_table,
                 "columns": [relation['destination_attribute']],
             }
+
+            if is_geo_type(dst_collection, relation['destination_attribute']):
+                indexes[name]["type"] = "geo"
 
     return indexes
 

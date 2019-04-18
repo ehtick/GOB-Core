@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 import geoalchemy2
 
-from gobcore.typesystem import get_gob_type
+from gobcore.typesystem import _gob_types_dict, get_gob_type, is_gob_geo_type
 
 
 class TestGobGeoTypes(unittest.TestCase):
@@ -51,3 +51,11 @@ class TestGobGeoTypes(unittest.TestCase):
 
         empty_geometry = GobType('')
         self.assertEqual('null', empty_geometry.json)
+
+    def test_is_gob_geo_type(self):
+        all_types = _gob_types_dict.keys()
+
+        for type in all_types:
+            # Same test, different approach
+            is_geo = type.startswith("GOB.Geo.")
+            self.assertTrue(is_geo == is_gob_geo_type(type))

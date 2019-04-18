@@ -1,5 +1,7 @@
 import unittest
+from unittest.mock import MagicMock
 
+from gobcore.exceptions import GOBException
 from gobcore.model import GOBModel
 
 
@@ -59,3 +61,34 @@ class TestModel(unittest.TestCase):
         model = {}
         self.model._set_api('meetbouten', 'meetbouten', model)
         self.assertEqual(model, {'api': {'filters': []}})
+
+    def test_get_table_name_from_ref(self):
+        self.assertEqual("abc_def", self.model.get_table_name_from_ref("abc:def"))
+
+    def test_get_table_name_from_ref_error(self):
+        self.model.split_ref = MagicMock(side_effect=GOBException)
+
+        with self.assertRaises(GOBException):
+            self.model.get_table_name_from_ref("something_invalid")
+
+    def test_split_ref(self):
+        error_testcases = [
+            "abc:",
+            ":abc",
+            "abc"
+            "abc:def:ghi"
+        ]
+
+        for testcase in error_testcases:
+            with self.assertRaises(GOBException):
+                self.model.split_ref(testcase)
+
+    def test_get_collection_from_ref(self):
+        self.model.get_collection = MagicMock(return_value={"fake": "collection"})
+        self.model.split_ref = MagicMock(return_value=("some", "reference"))
+
+        result = self.model.get_collection_from_ref("some:reference")
+
+        self.assertEqual({"fake": "collection"}, result)
+        self.model.split_ref.assert_called_with("some:reference")
+        self.model.get_collection.assert_called_with("some", "reference")

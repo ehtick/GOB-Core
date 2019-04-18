@@ -133,16 +133,21 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
         for relation in relations:
             src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
 
-            indexes[f'{table_name}.idx.{_remove_leading_underscore(src_index_col)}'] = {
+            # Source column
+            name = f'{table_name}.idx.{_remove_leading_underscore(src_index_col)}'
+            indexes[name] = {
                 "table_name": table_name,
                 "columns": [src_index_col],
             }
+            if is_geo_type(collection, src_index_col):
+                indexes[name]["type"] = "geo"
+
+            # Destination column
             name = f"{dst_index_table}.idx.{_remove_leading_underscore(relation['destination_attribute'])}"
             indexes[name] = {
                 "table_name": dst_index_table,
                 "columns": [relation['destination_attribute']],
             }
-
             if is_geo_type(dst_collection, relation['destination_attribute']):
                 indexes[name]["type"] = "geo"
 

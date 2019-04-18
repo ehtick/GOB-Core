@@ -32,7 +32,7 @@ def query_objectstore(connection, config):
                     _read = _read_xls
                 else:
                     _read = _read_csv
-                return _read(obj, file_info, config)
+                yield from _read(obj, file_info, config)
             else:
                 # Include file attributes
                 yield file_info
@@ -99,6 +99,6 @@ def _read_csv(obj, file_info, config):
     :return: The list of non-empty rows
     """
     io_obj = io.BytesIO(obj)
-    csv = pandas.read_csv(io_obj, delimiter=config.get("delimiter", ","))
+    csv = pandas.read_csv(io_obj, delimiter=config.get("delimiter", ","), dtype=str)
 
     return _yield_rows(csv.iterrows(), file_info, config)

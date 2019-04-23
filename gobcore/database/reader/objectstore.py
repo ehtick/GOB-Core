@@ -99,6 +99,9 @@ def _read_csv(obj, file_info, config):
     :return: The list of non-empty rows
     """
     io_obj = io.BytesIO(obj)
-    csv = pandas.read_csv(io_obj, delimiter=config.get("delimiter", ","), dtype=str)
+    csv = pandas.read_csv(io_obj,
+                          delimiter=config.get("delimiter", ","),
+                          encoding=config.get("encoding", "UTF-8"),
+                          dtype=str)
 
     return _yield_rows(csv.iterrows(), file_info, config)

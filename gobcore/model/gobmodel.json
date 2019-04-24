@@ -1556,16 +1556,22 @@
         "abbreviation": "ZRT",
         "entity_id": "identificatie",
         "attributes": {
+          "_nrn_id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "De Ka­das­ter iden­ti­fi­ca­tie is een door het Ka­das­ter toe­ge­ken­de lan­de­lijk uniek num­mer aan dit za­ke­lijk recht bin­nen de ka­das­tra­le re­gi­stra­tie."
           },
           "belast": {
-            "type": "GOB.String",
+            "type": "GOB.ManyReference",
+            "ref": "brk:zakelijkerechten",
             "description": "Dit za­ke­lijk recht be­last de vol­gen­de Aard­za­ke­lijk­rech­ten"
           },
           "belast_met": {
-            "type": "GOB.String",
+            "type": "GOB.ManyReference",
+            "ref": "brk:zakelijkerechten",
             "description": "Dit za­ke­lijk recht is be­last met de vol­gen­de Aard­za­ke­lijk­rech­ten"
           },
           "ontstaan_uit": {
@@ -1590,11 +1596,11 @@
             "description": "De identificatie van de appartementsrechtsplitsing"
           },
           "appartementsrechtsplitsingtype": {
-            "type": "GOB.String",
+            "type": "GOB.JSON",
             "description": "Het type appartementsrechtsplitsing. De mogelijke waarden zijn: hoofdsplitsing of ondersplitsing of splitsing afkoop erfpacht."
           },
           "einddatum_appartementsrechtsplitsing": {
-            "type": "GOB.Date",
+            "type": "GOB.String",
             "description": "Eind­da­tum van de appartementsrechtsplitsing"
           },
           "indicatie_actueel_appartementsrechtsplitsing": {
@@ -1610,11 +1616,11 @@
             "description": "De AKR code van de aard van het zakelijk recht"
           },
           "toestandsdatum": {
-            "type": "GOB.Date",
+            "type": "GOB.DateTime",
             "description": "De toestandsdatum is de datum die aangeeft tot hoever de kadastrale registratie volledig is bijgewerkt. Dat houdt in dat: alle voor en op deze toestandsdatum binnengekomen brondocumenten zijn verwerkt; alle brondocumenten die na deze toestandsdatum zijn binnengekomen, verwerkt kunnen zijn."
           },
           "einddatum": {
-            "type": "GOB.Date",
+            "type": "GOB.DateTime",
             "description": ""
           }
         }

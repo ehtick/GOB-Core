@@ -290,6 +290,20 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         }
+      },
+      "zakelijkerechten": {
+        "belast": {
+          "method": "equals",
+          "destination_attribute": "_nrn_id"
+        },
+        "belast_met": {
+          "method": "equals",
+          "destination_attribute": "_nrn_id"
+        },
+        "rust_op": {
+          "method": "equals",
+          "destination_attribute": "_source_id"
+        }
       }
     }
   }

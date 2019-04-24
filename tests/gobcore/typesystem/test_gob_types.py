@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, date
 
 from gobcore.exceptions import GOBException, GOBTypeException
-from gobcore.typesystem import get_gob_type
+from gobcore.typesystem import get_gob_type, is_gob_json_type, _gob_types
 from gobcore.typesystem.gob_types import GOBType
 from tests.gobcore import fixtures
 
@@ -300,3 +300,17 @@ class TestGobTypes(unittest.TestCase):
             GEO.Point
         ]:
             self.assertIsNone(gob_type(None).to_db)
+
+
+    def test_is_gob_json_type(self):
+        json_types = [
+            "GOB.JSON",
+            "GOB.ManyReference",
+            "GOB.Reference",
+        ]
+        non_json_types = [t for t in _gob_types.keys() if t not in json_types]
+
+        for t in json_types:
+            self.assertTrue(is_gob_json_type(t))
+        for t in non_json_types:
+            self.assertFalse(is_gob_json_type(t))

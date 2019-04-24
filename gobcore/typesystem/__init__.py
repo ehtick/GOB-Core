@@ -85,6 +85,19 @@ def is_gob_geo_type(name):
     return name in _gob_geotypes.keys()
 
 
+def is_gob_json_type(name):
+    """Returns a boolean value
+
+    :param name:
+    :return:
+    """
+    gobtype = _gob_types_dict[name]
+
+    if gobtype is None:
+        return False
+    return gobtype.sql_type.__visit_name__ == "JSONB"
+
+
 def get_gob_type_from_sql_type(sql_type):
     """
     Get the type definition for a given sqlalchemy type

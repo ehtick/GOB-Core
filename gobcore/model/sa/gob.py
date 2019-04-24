@@ -12,7 +12,7 @@ from gobcore.model import GOBModel, EVENTS, EVENTS_DESCRIPTION
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import columns_to_fields
 from gobcore.sources import GOBSources
-from gobcore.typesystem import get_gob_type, is_gob_geo_type
+from gobcore.typesystem import get_gob_type, is_gob_geo_type, is_gob_json_type
 
 Base = declarative_base()
 
@@ -114,15 +114,26 @@ def _default_indexes_for_columns(input_columns: list) -> dict:
     return result
 
 
+def _get_special_column_type(column_type: str):
+    """Returns special column type such as 'geo' or 'json', or else None
+
+    :param column_type:
+    :return:
+    """
+    if is_gob_geo_type(column_type):
+        return "geo"
+    elif is_gob_json_type(column_type):
+        return "json"
+    else:
+        return None
+
+
 def _relation_indexes_for_collection(catalog_name, collection_name, collection):
     indexes = {}
     table_name = model.get_table_name(catalog_name, collection_name)
 
     reference_columns = {column: desc['ref'] for column, desc in collection['all_fields'].items() if
                          desc['type'] in ['GOB.Reference', 'GOB.ManyReference']}
-
-    def is_geo_type(collection, column):
-        return is_gob_geo_type(collection['all_fields'][column]['type'])
 
     # Search source and destination attributes for relation and define index
     for col, ref in reference_columns.items():
@@ -139,8 +150,8 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
                 "table_name": table_name,
                 "columns": [src_index_col],
             }
-            if is_geo_type(collection, src_index_col):
-                indexes[name]["type"] = "geo"
+
+            indexes[name]["type"] = _get_special_column_type(collection['all_fields'][src_index_col]['type'])
 
             # Destination column
             name = f"{dst_index_table}.idx.{_remove_leading_underscore(relation['destination_attribute'])}"
@@ -148,8 +159,10 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
                 "table_name": dst_index_table,
                 "columns": [relation['destination_attribute']],
             }
-            if is_geo_type(dst_collection, relation['destination_attribute']):
-                indexes[name]["type"] = "geo"
+
+            indexes[name]["type"] = _get_special_column_type(
+                dst_collection['all_fields'][relation['destination_attribute']]['type']
+            )
 
     return indexes
 

@@ -26,11 +26,10 @@ def _get_service(services, exchange, queue, key):
     :param key:
     :return:
     """
-    key_match = key.replace("*", "\w+")
     return next(s for s in services.values() if
                 s["exchange"] == exchange and
                 s["queue"] == queue and
-                (re.match(s["key"], key_match) or s["key"] == "#"))
+                (re.match(s["key"].replace("*", "\w+"), key) or s["key"] == "#"))
 
 
 def _on_message(connection, service, msg):

@@ -1554,7 +1554,7 @@
       "zakelijkerechten": {
         "version": "0.1",
         "abbreviation": "ZRT",
-        "entity_id": "identificatie",
+        "entity_id": "_nrn_id",
         "attributes": {
           "_nrn_id": {
             "type": "GOB.Integer",

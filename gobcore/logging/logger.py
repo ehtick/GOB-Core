@@ -65,6 +65,9 @@ class Logger:
         if name is not None:
             self.set_name(name)
         self._default_args = {}
+        self._clear_logs()
+
+    def _clear_logs(self):
         self.messages = {key: [] for key in Logger._SAVE_LOGS}
 
     def _save_log(self, level, msg):
@@ -131,6 +134,7 @@ class Logger:
             'catalogue': header.get('catalogue'),
             'entity': header.get('entity')
         })
+        self._clear_logs()
 
     def _init_logger(self, name):
         """Sets and initializes a logger instance for the given name

@@ -59,7 +59,15 @@ def _on_message(connection, service, msg):
                 }
             })
         # Message has caused a crash, remove the message from the queue by returning true
-        return True
+        # Define a result message to end the workflow
+        result_msg = {
+            'header': msg['header'],
+            'summary': {
+                'warnings': logger.get_warnings(),
+                'errors': logger.get_errors()
+            },
+            'contents': None
+        }
 
     # If a report_queue
     if 'report' in service and result_msg is not None:

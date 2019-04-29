@@ -1554,15 +1554,24 @@
       "zakelijkerechten": {
         "version": "0.1",
         "abbreviation": "ZRT",
-        "entity_id": "_nrn_id",
+        "entity_id": "identificatie",
+        "has_states": true,
         "attributes": {
-          "_nrn_id": {
-            "type": "GOB.Integer",
-            "description": ""
-          },
           "identificatie": {
             "type": "GOB.String",
             "description": "De Ka­das­ter iden­ti­fi­ca­tie is een door het Ka­das­ter toe­ge­ken­de lan­de­lijk uniek num­mer aan dit za­ke­lijk recht bin­nen de ka­das­tra­le re­gi­stra­tie."
+          },
+          "volgnummer": {
+            "type": "GOB.Integer",
+            "description": "Volgnummer op basis van kadastraal object volgnummer"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": ""
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": ""
           },
           "belast": {
             "type": "GOB.ManyReference",

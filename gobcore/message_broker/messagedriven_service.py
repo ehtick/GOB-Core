@@ -4,7 +4,7 @@ import re
 import traceback
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
-from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL
+from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, STATUS_START, STATUS_FAIL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
 from gobcore.logging.logger import logger
@@ -42,14 +42,17 @@ def _on_message(connection, service, msg):
     :return:
     """
     handler = service['handler']
+    result_msg = None
     try:
+        Heartbeat.progress(connection, service, msg, STATUS_START)
         result_msg = handler(msg)
+        Heartbeat.progress(connection, service, msg, STATUS_OK)
     except Exception as err:
         # Print error message, the message that caused the error and a short stacktrace
         stacktrace = traceback.format_exc(limit=-5)
         print("Message processing has failed, further processing stopped", stacktrace)
         # Log the error and a short error description
-        logger.configure(msg, "CORE")
+        logger.set_name("CORE")
         logger.error(
             "Message processing has failed, further processing stopped",
             {
@@ -58,22 +61,14 @@ def _on_message(connection, service, msg):
                     "error": str(err)  # Include a short error description
                 }
             })
-        # Message has caused a crash, remove the message from the queue by returning true
-        # Define a result message to end the workflow
-        result_msg = {
-            'header': msg['header'],
-            'summary': {
-                'warnings': logger.get_warnings(),
-                'errors': logger.get_errors()
-            },
-            'contents': None
-        }
+        Heartbeat.progress(connection, service, msg, STATUS_FAIL)
 
-    # If a report_queue
+    # If a report_queue is defined, report the result message
     if 'report' in service and result_msg is not None:
         report = service['report']
         connection.publish(report, report['key'], result_msg)
 
+    # Remove the message from the queue by returning true
     return True
 
 
@@ -140,12 +135,7 @@ def messagedriven_service(services, name, params={}):
         print(f"{key} accepted from {queue}, start handling")
         service = _get_service(services, exchange, queue, key)
 
-        # A heartbeat updates the status of the process
-        # Send a heartbeat before and after the processing of the message to keep the overview up-to-date
-        # independent of the scheduled heartbeats
-        heartbeat.send_on_msg(queue, key, msg)
         result = _on_message(connection, service, msg)
-        heartbeat.send_on_msg(queue, key, msg)
 
         return result
 
@@ -179,4 +169,3 @@ def messagedriven_service(services, name, params={}):
                 n = 0
 
         print("Queue connection for servicedefinition has stopped")
-        heartbeat.send()

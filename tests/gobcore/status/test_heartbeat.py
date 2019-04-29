@@ -46,9 +46,37 @@ class TestHeartbeat(unittest.TestCase):
         self.assertEqual(MockHeartbeat.key, "HEARTBEAT")
         self.assertEqual(MockHeartbeat.msg["name"], "Myname")
 
-    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
-    def test_send_on_heartbeat_msg(self, mock_publish):
-        heartbeat_queue = get_queue(HEARTBEAT_QUEUE)
-        heartbeat = Heartbeat(MockHeartbeat(), "Myname")
-        heartbeat.send_on_msg(heartbeat_queue["name"], heartbeat_queue["key"], {})
-        mock_publish.assert_not_called()
+    def test_progress(self):
+        connection = MockHeartbeat()
+        connection.publish = mock.MagicMock()
+
+        msg = {
+            "header": {
+                "jobid": "any job",
+                "stepid": "any step"
+            }
+        }
+        service = {
+            "report": "any report"
+        }
+
+        Heartbeat.progress(None, {}, {}, None)
+        connection.publish.assert_not_called()
+
+        Heartbeat.progress(None, service, {}, None)
+        connection.publish.assert_not_called()
+
+        Heartbeat.progress(None, {}, msg, None)
+        connection.publish.assert_not_called()
+
+        Heartbeat.progress(connection, service, msg, "any status")
+        connection.publish.assert_called_with({
+            "exchange": "gob.status",
+            "name": "gob.status.heartbeat",
+            "key": "HEARTBEAT"
+        },
+        "PROGRESS", {
+            "jobid": "any job",
+            "stepid": "any step",
+            "status": "any status"
+        })

@@ -47,7 +47,7 @@ class TestMessageDrivenService(unittest.TestCase):
         service = fixtures.get_service_fixture(mocked_handler)
         single_service = [v for v in service.values()][0]
 
-        message = fixtures.random_string()
+        message = {}
         queue = {'name': single_service['queue']}
         key = {'name': single_service['key']}
         connection = AsyncConnection({})
@@ -96,5 +96,5 @@ class TestMessageDrivenService(unittest.TestCase):
                                   'name': expected_queue,
                                   'key': expected_key}], mock.ANY)  # Inner function
 
-        mocked_heartbeat.asssert_called_with("UNKNOWN")
-        mocked_send.assert_called()
+        mocked_heartbeat.asssert_not_called()
+        mocked_send.assert_not_called()

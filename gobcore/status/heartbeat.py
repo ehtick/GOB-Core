@@ -15,12 +15,40 @@ import atexit
 import socket
 import os
 
-from gobcore.message_broker.config import HEARTBEAT_QUEUE, LOG_QUEUE, get_queue
+from gobcore.message_broker.config import HEARTBEAT_QUEUE, get_queue
 
 HEARTBEAT_INTERVAL = 60     # Send a heartbeat every 60 seconds
 
+# Job status
+STATUS_START = "started"
+STATUS_OK = "ended"
+STATUS_FAIL = "failed"
+
 
 class Heartbeat():
+
+    @classmethod
+    def progress(cls, connection, service, msg, status):
+        """
+        Send a progress heartbeat
+
+        Progress is only reported for services that produce a result (service["report"])
+        The job and step are taken from the message header
+        :param connection: The message broker connection
+        :param service: The definition of the service that delivered the message
+        :param msg: The message being processed
+        :param status: The status to report (STATUS_START, STATUS_OK or STATUS_FAIL)
+        :return: None
+        """
+        if service.get("report") and msg.get("header"):
+            jobid = msg["header"].get("jobid")
+            stepid = msg["header"].get("stepid")
+            if jobid and stepid:
+                connection.publish(get_queue(HEARTBEAT_QUEUE), "PROGRESS", {
+                    "jobid": jobid,
+                    "stepid": stepid,
+                    "status": status
+                })
 
     def __init__(self, connection, name):
         """Hearbeat
@@ -38,19 +66,6 @@ class Heartbeat():
 
         # At exit send a final heartbeat that denotes the end of the process
         atexit.register(self.send)
-
-    def send_on_msg(self, queue_name, key, _):
-        """Send heartbeat on handle message
-
-        :param queue_name: queue from which the message is received
-        :param key: key for the message
-        :param _: not used yet; the message itself
-        :return: None
-        """
-        if queue_name == HEARTBEAT_QUEUE or queue_name == LOG_QUEUE:
-            # Do not send a heartbeat on handling a heartbeat or log message
-            return
-        self.send()
 
     def send(self):
         """Send a heartbeat signal

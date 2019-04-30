@@ -1553,6 +1553,10 @@
         "entity_id": "identificatie",
         "has_states": true,
         "attributes": {
+          "_nrn_id": {
+            "type": "GOB.String",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "De Ka­das­ter iden­ti­fi­ca­tie is een door het Ka­das­ter toe­ge­ken­de lan­de­lijk uniek num­mer aan dit za­ke­lijk recht bin­nen de ka­das­tra­le re­gi­stra­tie."

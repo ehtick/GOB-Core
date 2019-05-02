@@ -1629,6 +1629,128 @@
             "description": ""
           }
         }
+      },
+      "kadastralesubjecten": {
+        "version": "0.1",
+        "abbreviation": "SJT",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Het aan dit sub­ject toe­ge­ken­de lan­de­lijk unie­ke num­mer"
+          },
+          "type_subject": {
+            "type": "GOB.String",
+            "description": "Af­ge­leid ge­ge­ven. Is het sub­ject een na­tuur­lijk per­soon of een niet-na­tuur­lijk per­soon"
+          },
+          "beschikkingsbevoegdheid": {
+            "type": "GOB.JSON",
+            "description": "Aanduiding van de beschikkingsbevoegdheid van een persoon."
+          },
+          "heeft_bsn_voor": {
+            "type": "GOB.Reference",
+            "ref": "brp:personen",
+            "description": "Het bur­ger­ser­vi­ce­num­mer, be­doeld in ar­ti­kel 1.1 van de Wet al­ge­me­ne be­pa­lin­gen bur­ger­ser­vi­ce­num­mer."
+          },
+          "voornamen": {
+            "type": "GOB.String",
+            "description": "Voornamen van het subject"
+          },
+          "voorvoegsels": {
+            "type": "GOB.String",
+            "description": "Voorvoegsels bij de geslachtsnaam"
+          },
+          "geslachtsnaam": {
+            "type": "GOB.String",
+            "description": "Geslachtsnaam van de geregistreerde persoon"
+          },
+          "geslacht": {
+            "type": "GOB.JSON",
+            "description": "Geslacht van het geregistreerd persoon. Dit kenmerk kent een domein voor als de persoon in de BRP voorkomt en een domein voor als de persoon niet in de BRP voorkomt."
+          },
+          "naam_gebruik": {
+            "type": "GOB.JSON",
+            "description": "Aanduiding naam gebruik"
+          },
+          "geboortedatum": {
+            "type": "GOB.String",
+            "description": "De da­tum waar­op een na­tuur­lijk per­soon is ge­bo­ren. Deze da­tum kan on­vol­le­dig zijn (al­leen jaar, of al­leen jaar en maand be­kend)."
+          },
+          "geboorteplaats": {
+            "type": "GOB.String",
+            "description": "De ge­boor­te­plaats is een plaats­aan­dui­ding, die aan­geeft waar de na­tuur­lij­ke per­soon ge­bo­ren is."
+          },
+          "geboorteland": {
+            "type": "GOB.String",
+            "description": "Geboorteland is een aanduiding van het land waar de natuurlijke persoon geboren is."
+          },
+          "datum_overlijden": {
+            "type": "GOB.String",
+            "description": "De over­lij­dens­da­tum is de da­tum waar­op een na­tuur­lijk per­soon is over­le­den."
+          },
+          "indicatie_overleden": {
+            "type": "GOB.String",
+            "description": "In­di­ca­tie of de per­soon al dan niet over­le­den is. De da­tum van over­lij­den is soms niet be­kend, maar wel dat ie­mand over­le­den is. Dat is uit dit at­tri­buut af te lei­den."
+          },
+          "voornamen_partner": {
+            "type": "GOB.String",
+            "description": "Voor­na(a)m(en) van de ge­rig­streer­de part­ner"
+          },
+          "voorvoegsels_partner": {
+            "type": "GOB.String",
+            "description": "Voor­voeg­sel van de ge­re­gi­streer­de part­ner"
+          },
+          "geslachtsnaam_partner": {
+            "type": "GOB.String",
+            "description": "Ge­slachts­na(a)m(en) van de ge­re­gi­streer­de part­ner"
+          },
+          "heeft_rsin_voor": {
+            "type": "GOB.Reference",
+            "ref": "hr:nietnatuurlijkepersonen",
+            "description": "Het Rechts­per­so­nen Sa­men­wer­king Iden­ti­fi­ca­tie Num­mer uit het Han­dels­re­gis­ter."
+          },
+          "heeft_kvknummer_voor": {
+            "type": "GOB.Reference",
+            "ref": "hr:maatschappelijkeactiviteiten",
+            "description": "Het KvK-num­mer uit het Han­dels­re­gis­ter."
+          },
+          "rechtsvorm": {
+            "type": "GOB.JSON",
+            "description": "De juridische vorm van een niet-natuurlijk persoon."
+          },
+          "statutaire_naam": {
+            "type": "GOB.String",
+            "description": "De naam van de rechts­per­soon. Het be­treft de naam die is op­ge­no­men in de op­rich­tings­ak­te."
+          },
+          "statutaire_zetel": {
+            "type": "GOB.String",
+            "description": "De sta­tu­tai­re plaats van ves­ti­ging."
+          },
+          "woonadres": {
+            "type": "GOB.JSON",
+            "description": "BAG: Verblijfsobject / Standplaats / Ligplaats"
+          },
+          "land_waarnaar_vertrokken": {
+            "type": "GOB.JSON",
+            "description": "Land waar naar ver­trok­ken"
+          },
+          "woonadres_buitenland": {
+            "type": "GOB.JSON",
+            "description": "Buitenlands adres"
+          },
+          "postadres": {
+            "type": "GOB.JSON",
+            "description": ""
+          },
+          "postadres_buitenland": {
+            "type": "GOB.JSON",
+            "description": ""
+          },
+          "postadres_postbus": {
+            "type": "GOB.JSON",
+            "description": ""
+          }
+        }
       }
     }
   }

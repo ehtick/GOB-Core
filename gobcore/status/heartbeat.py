@@ -42,7 +42,7 @@ def _is_application_thread(t: threading.Thread) -> bool:
 class Heartbeat():
 
     @classmethod
-    def progress(cls, connection, service, msg, status):
+    def progress(cls, connection, service, msg, status, info_msg=None):
         """
         Send a progress heartbeat
 
@@ -59,9 +59,13 @@ class Heartbeat():
             stepid = msg["header"].get("stepid")
             if jobid and stepid:
                 connection.publish(get_queue(HEARTBEAT_QUEUE), "PROGRESS", {
+                    # Include header so that any logs get reported on the correct job
+                    "header": msg["header"],
+                    # Include the specific status fields
                     "jobid": jobid,
                     "stepid": stepid,
-                    "status": status
+                    "status": status,
+                    "info_msg": info_msg
                 })
 
     def __init__(self, connection, name):

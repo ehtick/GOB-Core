@@ -100,14 +100,16 @@ class TestHeartbeat(unittest.TestCase):
         Heartbeat.progress(None, {}, msg, None)
         connection.publish.assert_not_called()
 
-        Heartbeat.progress(connection, service, msg, "any status")
+        Heartbeat.progress(connection, service, msg, "any status", "any info")
         connection.publish.assert_called_with({
             "exchange": "gob.status",
             "name": "gob.status.heartbeat",
             "key": "HEARTBEAT"
         },
         "PROGRESS", {
+            'header': {'jobid': 'any job', 'stepid': 'any step'},
             "jobid": "any job",
             "stepid": "any step",
-            "status": "any status"
+            "status": "any status",
+            "info_msg": "any info"
         })

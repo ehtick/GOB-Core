@@ -7,7 +7,6 @@ from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, STATUS_START, STATUS_FAIL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
-from gobcore.logging.logger import logger
 
 keep_running = True
 
@@ -48,22 +47,12 @@ def _on_message(connection, service, msg):
         result_msg = handler(msg)
         Heartbeat.progress(connection, service, msg, STATUS_OK)
     except Exception as err:
+        Heartbeat.progress(connection, service, msg, STATUS_FAIL, str(err))
         # Print error message, the message that caused the error and a short stacktrace
         stacktrace = traceback.format_exc(limit=-5)
-        print("Message processing has failed, further processing stopped", stacktrace)
-        # Log the error and a short error description
-        logger.set_name("CORE")
-        logger.error(
-            "Message processing has failed, further processing stopped",
-            {
-                **msg.get('header', {}),
-                "data": {
-                    "error": str(err)  # Include a short error description
-                }
-            })
-        Heartbeat.progress(connection, service, msg, STATUS_FAIL)
+        print("FATAL ERROR: Message processing has failed, further processing stopped", str(err), stacktrace)
 
-    # If a report_queue is defined, report the result message
+    # If a report_queue is defined, report the result message (if any)
     if 'report' in service and result_msg is not None:
         report = service['report']
         connection.publish(report, report['key'], result_msg)

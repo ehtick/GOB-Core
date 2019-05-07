@@ -78,6 +78,29 @@
         "api": {
           "filters": []
         }
+      },
+      "secure": {
+        "version": "0.1",
+        "abbreviation": "SEC",
+        "entity_id": "id",
+        "attributes": {
+          "id": {
+            "type": "GOB.String",
+            "description": "Identification."
+          },
+          "secure_string": {
+            "type": "GOB.String",
+            "description": "Secure string."
+          },
+          "secure_number": {
+            "type": "GOB.Decimal",
+            "description": "Secure number."
+          },
+          "secure_datetime": {
+            "type": "GOB.DateTime",
+            "description": "Secure date time."
+          }
+        }
       }
     }
   },

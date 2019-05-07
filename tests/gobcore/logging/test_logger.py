@@ -56,6 +56,7 @@ class TestLogger(TestCase):
             "header": {
                 'process_id': 'any process_id',
                 'source': 'any source',
+                'destination': 'any destination',
                 'application': 'any application',
                 'catalogue': 'any catalogue',
                 'entity': 'any entity',

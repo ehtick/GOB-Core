@@ -130,6 +130,7 @@ class Logger:
         self.set_default_args({
             'process_id': header.get('process_id'),
             'source': header.get('source'),
+            'destination': header.get('destination'),
             'application': header.get('application'),
             'catalogue': header.get('catalogue'),
             'entity': header.get('entity'),

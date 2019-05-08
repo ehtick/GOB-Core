@@ -312,6 +312,16 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         }
+      },
+      "tenaamstellingen": {
+        "van_kadastraalsubject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "van_zakelijkrecht": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   }

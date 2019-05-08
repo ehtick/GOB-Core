@@ -1580,12 +1580,22 @@
             "description": "Dit za­ke­lijk recht is be­last met de vol­gen­de Aard­za­ke­lijk­rech­ten"
           },
           "ontstaan_uit": {
-            "type": "GOB.String",
+            "type": "GOB.ManyReference",
+            "ref": "brk:zakelijkerechten",
             "description": "Als deze waar­de is ge­vuld, dan is dit recht ont­staan uit een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
           },
+          "_ontstaan_uit_asg": {
+            "type": "GOB.JSON",
+            "description": ""
+          },
           "betrokken_bij": {
-            "type": "GOB.String",
+            "type": "GOB.ManyReference",
+            "ref": "brk:zakelijkerechten",
             "description": "Als deze waar­de is ge­vuld, dan is dit recht be­trok­ken bij een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
+          },
+          "_betrokken_bij_asg": {
+            "type": "GOB.JSON",
+            "description": ""
           },
           "is_beperkt_tot": {
             "type": "GOB.Integer",
@@ -1749,6 +1759,94 @@
           "postadres_postbus": {
             "type": "GOB.JSON",
             "description": ""
+          }
+        }
+      },
+      "tenaamstellingen": {
+        "version": "0.1",
+        "abbreviation": "TNG",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "De iden­ti­fi­ca­tie is een uniek num­mer aan deze te­naam­stel­ling bin­nen de ka­das­tra­le re­gi­stra­tie."
+          },
+          "van_kadastraal_subject": {
+            "type": "GOB.Reference",
+            "ref": "brk:kadastralesubjecten",
+            "description": "Het Sub­ject waar­voor deze te­naam­stel­ling geldt."
+          },
+          "aandeel": {
+            "type": "GOB.JSON",
+            "description": "Aan­deel in Recht is het aan­deel waar­voor een per­soon deel­neemt in het Recht"
+          },
+          "geldt_voor": {
+            "type": "GOB.JSON",
+            "description": "Twee of meer personen kunnen gezamenlijk een aandeel hebben in een recht, waarbij het afzonderlijke aandeel in het gezamenlijk aandeel niet bekend is (als gezamenlijkAandeel bekend is dan is het individuele aandeel niet bekend en omgekeerd)."
+          },
+          "burgerlijke_staat_ten_tijde_van_verkrijging": {
+            "type": "GOB.JSON",
+            "description": "De bur­ger­lij­ke staat is een aan­dui­ding voor de leef­vorm van een per­soon, zo­als deze vol­gens het bron­d­o­cu­ment ten tij­de van de ver­krij­ging van het recht be­stond. Leef­vorm van een per­soon heeft be­trek­king op hu­we­lijk c.q. ge­re­gi­streerd part­ner­schap."
+          },
+          "verkregen_namens_samenwerkingsverband": {
+            "type": "GOB.JSON",
+            "description": "De aard van het sa­men­wer­kings­ver­band (zo­als Maat­schap, VOF of CV) na­mens wel­ke een na­tuur­lijk per­soon deze te­naam­stel­ling heeft ver­kre­gen."
+          },
+          "in_onderzoek": {
+            "type": "GOB.String",
+            "description": ""
+          },
+          "van_zakelijk_recht": {
+            "type": "GOB.Reference",
+            "ref": "brk:zakelijkerechten",
+            "description": "Het Za­ke­lijk recht waar­over deze te­naam­stel­ling gaat."
+          },
+          "gebaseerd_op": {
+            "type": "GOB.Reference",
+            "ref": "brk:stukdelen",
+            "description": "Het Stuk­deel waar deze te­naam­stel­ling op ge­ba­seerd is."
+          }
+        }
+      },
+      "aantekeningenrechten": {
+        "version": "0.1",
+        "abbreviation": "ART",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Het aan deze aan­te­ke­ning toe­ge­ken­de lan­de­lijk unie­ke num­mer."
+          },
+          "aard": {
+            "type": "GOB.JSON",
+            "description": "De aard van de aantekening."
+          },
+          "omschrijving": {
+            "type": "GOB.String",
+            "description": "Om­schrij­ving bij de aan­te­ke­ning"
+          },
+          "betrokken_tenaamstelling": {
+            "type": "GOB.Reference",
+            "ref": "brk:tenaamstellingen",
+            "description": "Iden­ti­fi­ca­tie van de be­trok­ken te­naam­stel­ling"
+          },
+          "heeft_betrokken_persoon": {
+            "type": "GOB.Reference",
+            "ref": "brk:kadastralesubjecten",
+            "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
+          },
+          "is_gebaseerd_op": {
+            "type": "GOB.Reference",
+            "ref": "brk:stukdelen",
+            "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
+          },
+          "aard_zakelijk_recht": {
+            "type": "GOB.JSON",
+            "description": "Aard zakelijk recht"
+          },
+          "einddatum": {
+            "type": "GOB.DateTime",
+            "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
           }
         }
       }

@@ -292,23 +292,23 @@
         }
       },
       "zakelijkerechten": {
-        "belast": {
+        "belast_zakelijkerechten": {
           "method": "equals",
           "destination_attribute": "identificatie"
         },
-        "belast_met": {
+        "belast_met_zakelijkerechten": {
           "method": "equals",
           "destination_attribute": "identificatie"
         },
-        "rust_op": {
+        "rust_op_kadastraalobject": {
           "method": "equals",
           "destination_attribute": "identificatie"
         },
-        "ontstaan_uit": {
+        "ontstaan_uit_zakelijkerechten": {
           "method": "equals",
           "destination_attribute": "identificatie"
         },
-        "betrokken_bij": {
+        "betrokken_bij_zakelijkerechten": {
           "method": "equals",
           "destination_attribute": "identificatie"
         }

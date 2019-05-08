@@ -1593,7 +1593,7 @@
             "type": "GOB.Integer",
             "description": "Is be­perkt tot te­naam­stel­ling, dat wil zeg­gen is be­perkt tot een sub­ject"
           },
-          "rust_op": {
+          "rust_op_kadastraalobject": {
             "type": "GOB.Reference",
             "ref": "brk:kadastraleobjecten",
             "description": "Het kadastraal object en volgnummer waarop het zakelijk recht rust"

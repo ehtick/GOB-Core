@@ -1827,7 +1827,7 @@
             "ref": "brk:kadastralesubjecten",
             "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
           },
-          "is_gebaseerd_op": {
+          "is_gebaseerd_op_stukdeel": {
             "type": "GOB.Reference",
             "ref": "brk:stukdelen",
             "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"

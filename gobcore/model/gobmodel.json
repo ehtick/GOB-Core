@@ -1569,33 +1569,25 @@
             "type": "GOB.DateTime",
             "description": ""
           },
-          "belast": {
+          "belast_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
             "description": "Dit za­ke­lijk recht be­last de vol­gen­de Aard­za­ke­lijk­rech­ten"
           },
-          "belast_met": {
+          "belast_met_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
             "description": "Dit za­ke­lijk recht is be­last met de vol­gen­de Aard­za­ke­lijk­rech­ten"
           },
-          "ontstaan_uit": {
+          "ontstaan_uit_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
             "description": "Als deze waar­de is ge­vuld, dan is dit recht ont­staan uit een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
           },
-          "_ontstaan_uit_asg": {
-            "type": "GOB.JSON",
-            "description": ""
-          },
-          "betrokken_bij": {
+          "betrokken_bij_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
             "description": "Als deze waar­de is ge­vuld, dan is dit recht be­trok­ken bij een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
-          },
-          "_betrokken_bij_asg": {
-            "type": "GOB.JSON",
-            "description": ""
           },
           "is_beperkt_tot": {
             "type": "GOB.Integer",
@@ -1771,7 +1763,7 @@
             "type": "GOB.String",
             "description": "De iden­ti­fi­ca­tie is een uniek num­mer aan deze te­naam­stel­ling bin­nen de ka­das­tra­le re­gi­stra­tie."
           },
-          "van_kadastraal_subject": {
+          "van_kadastraalsubject": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralesubjecten",
             "description": "Het Sub­ject waar­voor deze te­naam­stel­ling geldt."
@@ -1796,7 +1788,7 @@
             "type": "GOB.String",
             "description": ""
           },
-          "van_zakelijk_recht": {
+          "van_zakelijkrecht": {
             "type": "GOB.Reference",
             "ref": "brk:zakelijkerechten",
             "description": "Het Za­ke­lijk recht waar­over deze te­naam­stel­ling gaat."

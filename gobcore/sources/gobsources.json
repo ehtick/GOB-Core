@@ -241,6 +241,10 @@
         "heeft_brondocumenten": {
           "method": "equals",
           "destination_attribute": "dossier"
+        },
+        "ligt_in_woonplaats": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "verblijfsobjecten": {

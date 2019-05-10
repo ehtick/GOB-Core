@@ -1,6 +1,6 @@
 import os
 
-from gobcore.secure.config import ROLES, LEVELS
+from gobcore.secure.config import ROLES
 from gobcore.secure.crypto import confidence_level
 
 

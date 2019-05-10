@@ -1,8 +1,12 @@
 """GOB cryptograhic functions
 
 """
+import random
 import json
 import base64
+
+
+_safe_storage = {}
 
 
 def is_encrypted(value):
@@ -84,13 +88,28 @@ def _decrypt(value, _):
 
 
 # Use a safe symetric encryption algorithm within GOB
+# Or store it locally when used within one process cycle
 
 
-def read_protect(value):
-    json_value = json.dumps(value)
-    return base64.b64encode(json_value.encode()).decode('UTF-8')
+def read_protect(value, save_local=True):
+    if save_local:
+        key = random.random()
+        print("Save local", value, key)
+        _safe_storage[key] = value
+        return key
+    else:
+        json_value = json.dumps(value)
+        return base64.b64encode(json_value.encode()).decode('UTF-8')
 
 
 def read_unprotect(value):
-    json_value = base64.b64decode(value).decode('UTF-8')
-    return json.loads(json_value)
+    print("Read", value)
+    if value in _safe_storage:
+        saved_value = _safe_storage[value]
+        del _safe_storage[value]
+        print("Restore local", saved_value, value)
+        print("Storage", _safe_storage)
+        return saved_value
+    else:
+        json_value = base64.b64decode(value).decode('UTF-8')
+        return json.loads(json_value)

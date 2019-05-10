@@ -13,9 +13,9 @@ def is_encrypted(value):
     :return: True when the value is an encrypted value
     """
     keys = ["i", "l", "v"]
-    return isinstance(value, dict) and\
-           all([key in value for key in keys]) and\
-           len(value.keys()) == len(keys)
+    return isinstance(value, dict) and \
+        all([key in value for key in keys]) and \
+        len(value.keys()) == len(keys)
 
 
 def confidence_level(encrypted_value):

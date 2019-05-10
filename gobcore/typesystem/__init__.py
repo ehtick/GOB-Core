@@ -9,10 +9,11 @@ import sqlalchemy
 import geoalchemy2
 
 from gobcore.exceptions import GOBException
-from gobcore.typesystem import gob_types, gob_geotypes
+from gobcore.typesystem import gob_types, gob_secure_types, gob_geotypes
 
 # The possible type definitions are imported from the gob_types module
 GOB = gob_types
+SEC = gob_secure_types
 GEO = gob_geotypes
 
 # The actual types that are used within GOB
@@ -30,6 +31,12 @@ GOB_TYPES = [
     GOB.ManyReference,
 ]
 
+GOB_SECURE_TYPES = [
+    SEC.SecureString,
+    SEC.SecureDecimal,
+    SEC.SecureDateTime
+]
+
 GEO_TYPES = [
     GEO.Point,
     GEO.Polygon,
@@ -38,8 +45,9 @@ GEO_TYPES = [
 
 # Convert GOB_TYPES to a dictionary indexed by the name of the type, prefixed by GOB.
 _gob_types = {f'GOB.{gob_type.name}': gob_type for gob_type in GOB_TYPES}
+_gob_securetypes = {f'GOB.{gob_type.name}': gob_type for gob_type in GOB_SECURE_TYPES}
 _gob_geotypes = {f'GOB.Geo.{gob_type.name}': gob_type for gob_type in GEO_TYPES}
-_gob_types_dict = {**_gob_types, **_gob_geotypes}
+_gob_types_dict = {**_gob_types, **_gob_securetypes, **_gob_geotypes}
 
 
 # Convert GOB_TYPES to a dictionary indexed by the name of the type, prefixed by GOB.

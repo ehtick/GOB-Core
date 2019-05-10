@@ -89,16 +89,31 @@
             "description": "Identification."
           },
           "secure_string": {
-            "type": "GOB.String",
+            "type": "GOB.SecureString",
+            "level": 10,
             "description": "Secure string."
           },
           "secure_number": {
-            "type": "GOB.Decimal",
+            "type": "GOB.SecureDecimal",
+            "level": 20,
             "description": "Secure number."
           },
           "secure_datetime": {
-            "type": "GOB.DateTime",
+            "type": "GOB.SecureDateTime",
+            "level": 30,
             "description": "Secure date time."
+          },
+          "string": {
+            "type": "GOB.String",
+            "description": "string."
+          },
+          "number": {
+            "type": "GOB.Decimal",
+            "description": "number."
+          },
+          "datetime": {
+            "type": "GOB.DateTime",
+            "description": "date time."
           }
         }
       }

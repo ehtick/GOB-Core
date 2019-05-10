@@ -46,6 +46,7 @@ class GOBType(metaclass=ABCMeta):
     """
     is_pk = False
     is_composite = False
+    is_secure = False
     name = "type"
     sql_type = sqlalchemy.Column
 
@@ -80,6 +81,12 @@ class GOBType(metaclass=ABCMeta):
             return self.json == other.json
 
         return self._string == str(other) if isinstance(other, GOBType) else self._string == other
+
+    @classmethod
+    def from_value_secure(cls, value, typeinfo, **kwargs):
+        if cls.is_secure:
+            kwargs["level"] = typeinfo["level"]
+        return cls.from_value(value, **kwargs)
 
     @classmethod
     @abstractmethod

@@ -14,8 +14,7 @@ class User:
         """
         # roles = request.headers.get("X-Auth-Roles", "")
         roles = os.getenv("ROLES", "")
-        self.roles = roles.split(",")
-        print(f"ROLES: '{roles}'")
+        self._roles = roles.split(",")
 
     def has_access_to(self, encrypted_value):
         """
@@ -25,4 +24,4 @@ class User:
         :return:
         """
         required_level = confidence_level(encrypted_value)
-        return any(ROLES.get(user_level, -1) >= required_level for user_level in self.roles)
+        return any(ROLES.get(user_level, -1) >= required_level for user_level in self._roles)

@@ -12,6 +12,14 @@ class Secure(JSON):
     is_secure = True
 
     def __init__(self, value, level=None):
+        """
+        Initialize a secure value.
+
+        If the value is not yet secured, secure it
+
+        :param value: the secure value
+        :param level: the level to encrypt the value if it is still unencrypted
+        """
         if not is_encrypted(value):
             assert level is not None, "Missing level to encrypt the given value"
             value = encrypt(value, confidence_level=level)
@@ -19,6 +27,17 @@ class Secure(JSON):
 
     @classmethod
     def from_value(cls, value, **kwargs):
+        """
+        Initialize a secure value from a read value (import or database)
+
+        If the date is read via an import, a confidence level should be supplied
+        to encrypt the data. Also the data should first be unprotected, as all
+        data that is read from any external source is protected upon retrieval.
+
+        :param value: a value read via an import or from the database
+        :param kwargs:
+        :return: an instance of a Secure datatype
+        """
         if "level" in kwargs:
             level = kwargs["level"]
             del kwargs["level"]
@@ -26,14 +45,23 @@ class Secure(JSON):
         else:
             level = None
 
-        print(f"{cls.BaseType.name} from value", value, type(value))
         if not is_encrypted(value):
             value = cls.BaseType.from_value(value, **kwargs)
 
         return cls(value, level)
 
     def get_value(self, user=None):
-        print("Get secure value", self._string)
+        """
+        Get the value from a secure datatype.
+
+        Access to the value is protected by checking the user authorization levels.
+        Only if the authorization level meets the requirements for the given value,
+        its value will be returned.
+
+        Otherwise a no-access value will be returned
+        :param user:
+        :return:
+        """
         if user is None:
             has_access = False
         else:

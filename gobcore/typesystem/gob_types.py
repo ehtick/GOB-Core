@@ -84,7 +84,18 @@ class GOBType(metaclass=ABCMeta):
 
     @classmethod
     def from_value_secure(cls, value, typeinfo, **kwargs):
+        """
+        A mapper around from_value to handle secure data.
+
+        The type information is used to protect the data with the right confidence level.
+
+        :param value: the value of the GOBType instance
+        :param typeinfo: the GOB Model type information for the given value
+        :param kwargs:
+        :return: GOBType
+        """
         if cls.is_secure:
+            # Secure types require a confidence level
             kwargs["level"] = typeinfo["level"]
         return cls.from_value(value, **kwargs)
 

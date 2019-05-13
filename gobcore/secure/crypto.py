@@ -3,7 +3,9 @@
 """
 import random
 import json
-import base64
+# import base64
+
+from gobcore.secure.demo import demo
 
 
 _safe_storage = {}
@@ -65,26 +67,47 @@ def decrypt(value):
 
 
 def _get_encrypt_secret(confidence_level):
-    # return id and secret
-    key_index = 0
-    secret = "Some very complex asymetric cryptograhic thing"
-    return key_index, secret
+    """
+    Get the secret and its index to encrypt a value with the given confidence level
+
+    :param confidence_level: confidence level of the value to encrypt
+    :return: secret
+    """
+    return demo["index"], demo["secret"]
 
 
 def _get_decrypt_secret(key_index, confidence_level):
-    return "Some very complex asymetric cryptograhic thing"
+    """
+    Get the secret to decrypt an encrypted value with the given confidence level
+
+    :param key_index: index of the secret
+    :param confidence_level: confidence level of the encrypted value
+    :return:
+    """
+    return demo["secret"]
 
 
-def _encrypt(value, _):
+def _encrypt(value, secret):
+    """
+    Encrypt a value using the give secret
+
+    :param value: value to encrypt
+    :param secret: secret to use to encrypt the value
+    :return: the encrypted value
+    """
+    return demo["encrypt"](value, secret)
+
+
+def _decrypt(value, secret):
+    """
+    Decrypt a valye using the given secret
+
+    :param value: value to decrypt
+    :param secret: secret to use to decrypt the value
+    :return: the decrypted value
+    """
     # Use a strong and fast asymetric encryption mechanism
-    return base64.b64encode(str(value).encode()).decode('UTF-8')
-
-
-def _decrypt(value, _):
-    # Use a strong and fast asymetric encryption mechanism
-    value = base64.b64decode(value).decode('UTF-8')
-    print("DECRYPT", value, type(value), value == "None")
-    return None if value == "None" else value
+    return demo["decrypt"](value, secret)
 
 
 # Use a safe symetric encryption algorithm within GOB
@@ -92,24 +115,31 @@ def _decrypt(value, _):
 
 
 def read_protect(value, save_local=True):
+    """
+    Protect sensitive data by storing it locally or encrypt its value
+
+    :param value: any sensitive data
+    :param save_local: store it locally if true, else encrypt
+    :return: the key to the sensitive data or the encrypted value
+    """
     if save_local:
         key = random.random()
-        print("Save local", value, key)
         _safe_storage[key] = value
         return key
     else:
-        json_value = json.dumps(value)
-        return base64.b64encode(json_value.encode()).decode('UTF-8')
+        return demo["encrypt"](json.dumps(value), None)
 
 
 def read_unprotect(value):
-    print("Read", value)
+    """
+    Unprotect a previously read protected data
+
+    :param value: the key to the sensitive data or the encrypted value
+    :return: the unprotected value
+    """
     if value in _safe_storage:
         saved_value = _safe_storage[value]
         del _safe_storage[value]
-        print("Restore local", saved_value, value)
-        print("Storage", _safe_storage)
         return saved_value
     else:
-        json_value = base64.b64decode(value).decode('UTF-8')
-        return json.loads(json_value)
+        return json.loads(demo["decrypt"](value, None))

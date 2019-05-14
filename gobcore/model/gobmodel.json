@@ -1865,7 +1865,7 @@
       "aantekeningenrechten": {
         "version": "0.1",
         "abbreviation": "ART",
-        "entity_id": "id",
+        "entity_id": "identificatie",
         "attributes": {
           "id": {
             "type": "GOB.Integer",

@@ -1,9 +1,9 @@
 import types
 
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
-from gobcore.database.reader.postgresql import query_postgresql
+from gobcore.database.reader.postgresql import list_tables_for_schema, query_postgresql
 
 
 class MockConnection():
@@ -53,3 +53,18 @@ class TestPostgresReader(TestCase):
 
         connection.cursor_obj.execute.assert_called_with(query)
 
+    @patch('gobcore.database.reader.postgresql.query_postgresql')
+    def list_tables_for_schema(self, mock_query_postgresql):
+        mock_query_postgresql.return_value = [
+            {'table_name': 'table1'},
+            {'table_name': 'table2'}
+        ]
+        connection = MagicMock()
+
+        result = list_tables_for_schema(connection, 'someschema')
+        self.assertEquals(['table1', 'table2'], result)
+
+        mock_query_postgresql.assert_called_with(
+            connection,
+            "SELECT table_name FROM information_schema.tables WHERE table_schema='someschema'"
+        )

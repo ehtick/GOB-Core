@@ -1461,6 +1461,10 @@
         "entity_id": "identificatie",
         "has_states": true,
         "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "De unieke aanduiding van een Kadastraal object."
@@ -1574,7 +1578,7 @@
             "description": "Als dit veld is ge­vuld geeft dit de omschrijving waarom dit gegeven in onderzoek staat (art. 7n en 7r Kadasterwet)."
           },
           "is_ontstaan_uit_g_perceel": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "description": "Dit veld is al­léén ge­vuld wan­neer het be­schre­ven ka­das­tra­le ob­ject een A-per­ceel be­treft.",
             "ref": "brk:kadastraleobjecten"
           },
@@ -1591,8 +1595,8 @@
         "entity_id": "identificatie",
         "has_states": true,
         "attributes": {
-          "_nrn_id": {
-            "type": "GOB.String",
+          "id": {
+            "type": "GOB.Integer",
             "description": ""
           },
           "identificatie": {
@@ -1675,6 +1679,10 @@
         "abbreviation": "SJT",
         "entity_id": "identificatie",
         "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "Het aan dit sub­ject toe­ge­ken­de lan­de­lijk unie­ke num­mer"
@@ -1795,12 +1803,19 @@
       "tenaamstellingen": {
         "version": "0.1",
         "abbreviation": "TNG",
-        "entity_id": "identificatie",
-        "has_states": true,
+        "entity_id": "id",
         "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "De iden­ti­fi­ca­tie is een uniek num­mer aan deze te­naam­stel­ling bin­nen de ka­das­tra­le re­gi­stra­tie."
+          },
+          "volgnummer": {
+            "type": "GOB.Integer",
+            "description": ""
           },
           "van_kadastraalsubject": {
             "type": "GOB.Reference",
@@ -1850,8 +1865,12 @@
       "aantekeningenrechten": {
         "version": "0.1",
         "abbreviation": "ART",
-        "entity_id": "identificatie",
+        "entity_id": "id",
         "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
           "identificatie": {
             "type": "GOB.String",
             "description": "Het aan deze aan­te­ke­ning toe­ge­ken­de lan­de­lijk unie­ke num­mer."
@@ -1865,17 +1884,17 @@
             "description": "Om­schrij­ving bij de aan­te­ke­ning"
           },
           "betrokken_tenaamstelling": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:tenaamstellingen",
             "description": "Iden­ti­fi­ca­tie van de be­trok­ken te­naam­stel­ling"
           },
           "heeft_betrokken_persoon": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:kadastralesubjecten",
             "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
           },
           "is_gebaseerd_op_stukdeel": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
             "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
           },

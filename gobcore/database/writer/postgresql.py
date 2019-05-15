@@ -65,12 +65,13 @@ def create_schema(connection, schema: str) -> None:
     execute_postgresql_query(connection, query)
 
 
-def drop_table(connection, table: str) -> None:
+def drop_table(connection, table: str, cascade=True) -> None:
     """Drops table
 
+    :param cascade:
     :param connection:
     :param table:
     :return:
     """
-    query = f"DROP TABLE IF EXISTS {table}"
+    query = f"DROP TABLE IF EXISTS {table}{' CASCADE' if cascade else ''}"
     execute_postgresql_query(connection, query)

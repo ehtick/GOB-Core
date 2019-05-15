@@ -79,6 +79,9 @@ class Log(Base):
         return f'<Msg {self.msg}>'
 
 
+Index("ix_logs_logid_desc", Log.logid.desc())
+
+
 class Service(Base):
     """Service
 

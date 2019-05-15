@@ -82,5 +82,9 @@ class TestPostgresqlWriter(TestCase):
     @patch("gobcore.database.writer.postgresql.execute_postgresql_query")
     def test_drop_table(self, mock_execute):
         drop_table(None, "example_table")
+        expected = "DROP TABLE IF EXISTS example_table CASCADE"
+        mock_execute.assert_called_with(None, expected)
+
+        drop_table(None, "example_table", False)
         expected = "DROP TABLE IF EXISTS example_table"
         mock_execute.assert_called_with(None, expected)

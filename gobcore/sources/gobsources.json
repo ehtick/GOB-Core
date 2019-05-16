@@ -293,6 +293,10 @@
         "is_ontstaan_uit_g_perceel": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "is_ontstaan_uit_kadastraalobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "zakelijkerechten": {

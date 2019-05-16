@@ -336,6 +336,12 @@
           "method": "equals",
           "destination_attribute": "id"
         }
+      },
+      "aantekeningenkadastraleobjecten": {
+        "heeft_betrekking_op_kadastraal_object": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   }

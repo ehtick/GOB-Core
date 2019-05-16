@@ -1586,6 +1586,11 @@
             "type": "GOB.ManyReference",
             "description": "Relatie naar verblijfsobject",
             "ref": "bag:verblijfsobjecten"
+          },
+          "is_ontstaan_uit_kadastraalobject": {
+            "type": "GOB.ManyReference",
+            "description": "Onderliggende percelen. Alleen gevuld wanneer het beschreven kadastrale object een A-perceel betreft.",
+            "ref": "brk:kadastraleobjecten"
           }
         }
       },
@@ -1901,6 +1906,48 @@
           "aard_zakelijk_recht": {
             "type": "GOB.JSON",
             "description": "Aard zakelijk recht"
+          },
+          "einddatum": {
+            "type": "GOB.DateTime",
+            "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
+          }
+        }
+      },
+      "aantekeningenkadastraleobjecten": {
+        "version": "0.1",
+        "abbreviation": "AKT",
+        "entity_id": "identificatie",
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Neuron ID"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan deze aan­te­ke­ning."
+          },
+          "aard": {
+            "type": "GOB.JSON",
+            "description": "De aard van de aantekening"
+          },
+          "omschrijving": {
+            "type": "GOB.String",
+            "description": "Om­schrij­ving bij de aan­te­ke­ning"
+          },
+          "heeft_betrokken_persoon": {
+            "type": "GOB.ManyReference",
+            "ref": "brk:kadastralesubjecten",
+            "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
+          },
+          "heeft_betrekking_op_kadastraal_object": {
+            "type": "GOB.Reference",
+            "ref": "brk:kadastraleobjecten",
+            "description": "Iden­ti­fi­ca­tie van het ka­das­tra­le ob­ject (on­roe­ren­de zaak)"
+          },
+          "is_gebaseerd_op_stukdeel": {
+            "type": "GOB.ManyReference",
+            "ref": "brk:stukdelen",
+            "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
           },
           "einddatum": {
             "type": "GOB.DateTime",

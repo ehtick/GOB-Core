@@ -335,12 +335,28 @@
         "betrokken_tenaamstelling": {
           "method": "equals",
           "destination_attribute": "id"
+        },
+        "heeft_betrokken_persoon": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_gebaseerd_op_stukdeel": {
+          "method": "equals",
+          "destination_attribute": "id"
         }
       },
       "aantekeningenkadastraleobjecten": {
         "heeft_betrekking_op_kadastraal_object": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "heeft_betrokken_persoon": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_gebaseerd_op_stukdeel": {
+          "method": "equals",
+          "destination_attribute": "id"
         }
       },
       "stukdelen": {

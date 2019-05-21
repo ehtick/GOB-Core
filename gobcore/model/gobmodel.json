@@ -1963,6 +1963,81 @@
             "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
           }
         }
+      },
+      "stukdelen": {
+        "version": "0.1",
+        "abbreviation": "SDL",
+        "entity_id": "id",
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Neuron ID"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan het stuk­deel."
+          },
+          "aard": {
+            "type": "GOB.JSON",
+            "description": "Aanduiding voor de aard van een deel van het ter inschrijving aangeboden stuk (rechtsfeit)."
+          },
+          "bedrag_transactie": {
+            "type": "GOB.JSON",
+            "description": "Het in een ter in­schrij­ving aan­ge­bo­den stuk ver­mel­de be­drag, waar­voor 1 of meer on­roe­ren­de za­ken zijn ver­kre­gen."
+          },
+          "is_bron_voor_tenaamstelling": {
+            "type": "GOB.Reference",
+            "ref": "brk:tenaamstellingen",
+            "description": "Geeft weer wel­ke te­naam­stel­ling is ont­staan op ba­sis van dit stuk­deel"
+          },
+          "is_bron_voor_aantekening_kadastraal_object": {
+            "type": "GOB.Reference",
+            "ref": "brk:aantekeningenkadastraleobjecten",
+            "description": "Geeft weer wel­ke aan­te­ke­ning kadastraal object is ont­staan op ba­sis van dit stuk­deel"
+          },
+          "is_bron_voor_aantekening_recht": {
+            "type": "GOB.Reference",
+            "ref": "brk:aantekeningenrechten",
+            "description": "Geeft weer wel­ke aan­te­ke­ning recht is ont­staan op ba­sis van dit stuk­deel"
+          },
+          "is_bron_voor_zakelijk_recht_ontstaan_uit_appartementsrechtsplitsing": {
+            "type": "GOB.ManyReference",
+            "ref": "brk:zakelijkerechten",
+            "description": "Geeft weer wel­ke ap­par­te­ments­recht­s­plit­sing is ont­staan op ba­sis van dit stuk­deel"
+          },
+          "stukidentificatie": {
+            "type": "GOB.String",
+            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan het stuk."
+          },
+          "portefeuillenummer_akr": {
+            "type": "GOB.String",
+            "description": "Por­te­feuil­le­num­mer toe­ge­kend aan het stuk in het AKR-sys­teem."
+          },
+          "tijdstip_aanbieding_stuk": {
+            "type": "GOB.String",
+            "description": "Het tijd­stip waar­op een ter in­schrij­ving aan­ge­bo­den stuk is ont­van­gen met in­acht­ne­ming van de ope­nings­tij­den en -da­gen van het Ka­das­ter. Als tijd­stip van in­schrij­ving geldt het tijd­stip van aan­bie­ding van de voor de in­schrij­ving ver­eis­te stuk­ken."
+          },
+          "reeks": {
+            "type": "GOB.String",
+            "description": "Ver­wij­zing naar de oorspronkelijke (mogelijk tussentijds vervallen) Kadastervestiging waar het stuk oor­spron­ke­lijk is in­ge­schre­ven."
+          },
+          "volgnummer_stuk": {
+            "type": "GOB.Integer",
+            "description": "Volgnummer van het stuk."
+          },
+          "registercode_stuk": {
+            "type": "GOB.JSON",
+            "description": "Het soort register, aan­ge­duid met een code."
+          },
+          "soort_register_stuk": {
+            "type": "GOB.JSON",
+            "description": "Het register waar­van een ter in­schrij­ving aan­ge­bo­den stuk deel uit­maakt."
+          },
+          "deel_soort_stuk": {
+            "type": "GOB.String",
+            "description": "Iden­ti­fi­ca­tie van het stuk bin­nen zijn soort."
+          }
+        }
       }
     }
   }

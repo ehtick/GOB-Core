@@ -342,6 +342,24 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         }
+      },
+      "stukdelen": {
+        "is_bron_voor_tenaamstelling": {
+          "method": "equals",
+          "destination_attribute": "id"
+        },
+        "is_bron_voor_aantekening_kadastraal_object": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_bron_voor_aantekening_recht": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_bron_voor_zakelijk_recht_ontstaan_uit_appartementsrechtsplitsing": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   }

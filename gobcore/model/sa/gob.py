@@ -44,11 +44,12 @@ def _derive_models():
         # e.g. "meetbouten_rollagen": <BASE>
     }
 
-    def columns_to_model(table_name, columns):
+    def columns_to_model(table_name, columns, has_states=False):
         """Create a model out of table_name and GOB column specification
 
         :param table_name: name of the table
         :param columns: GOB column specification
+        :param has_states:
         :return: Model class
         """
         # Convert columns to SQLAlchemy Columns
@@ -58,6 +59,7 @@ def _derive_models():
         return type(table_name, (Base,), {
             "__tablename__": table_name,
             **columns,
+            "__has_states__": has_states,
             "__repr__": lambda self: f"{table_name}"
         })
 
@@ -80,7 +82,8 @@ def _derive_models():
 
             # the GOB model for the specified entity
             table_name = model.get_table_name(catalog_name, collection_name)
-            models[table_name] = columns_to_model(table_name, collection['all_fields'])
+            models[table_name] = columns_to_model(table_name, collection['all_fields'],
+                                                  has_states=collection.get('has_states', False))
 
     return models
 

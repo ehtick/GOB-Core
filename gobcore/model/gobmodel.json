@@ -2000,10 +2000,10 @@
             "ref": "brk:aantekeningenrechten",
             "description": "Geeft weer wel­ke aan­te­ke­ning recht is ont­staan op ba­sis van dit stuk­deel"
           },
-          "is_bron_voor_zakelijk_recht_ontstaan_uit_appartementsrechtsplitsing": {
+          "is_bron_voor_zakelijk_recht": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
-            "description": "Geeft weer wel­ke ap­par­te­ments­recht­s­plit­sing is ont­staan op ba­sis van dit stuk­deel"
+            "description": "Geeft weer welk zakelijk recht is ontstaan op basis van dit stukdeel."
           },
           "stukidentificatie": {
             "type": "GOB.String",

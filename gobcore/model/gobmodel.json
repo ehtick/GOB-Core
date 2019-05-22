@@ -1462,7 +1462,7 @@
         "has_states": true,
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "identificatie": {
@@ -1601,7 +1601,7 @@
         "has_states": true,
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "identificatie": {
@@ -1811,7 +1811,7 @@
         "entity_id": "id",
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "identificatie": {
@@ -1873,7 +1873,7 @@
         "entity_id": "identificatie",
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "identificatie": {
@@ -1920,7 +1920,7 @@
         "has_states": true,
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "begin_geldigheid": {
@@ -1970,7 +1970,7 @@
         "entity_id": "id",
         "attributes": {
           "id": {
-            "type": "GOB.Integer",
+            "type": "GOB.String",
             "description": "Neuron ID"
           },
           "identificatie": {

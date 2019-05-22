@@ -16,7 +16,7 @@ from gobcore.message_broker.config import GOB_SHARED_DIR
 from gobcore.typesystem.json import GobTypeJSONEncoder
 from gobcore.utils import gettotalsizeof
 
-_MAX_CONTENTS_SIZE = 4096                   # Any message contents larger than this size is stored offline
+_MAX_CONTENTS_SIZE = 8192                   # Any message contents larger than this size is stored offline
 _CONTENTS = "contents"                      # The name of the message attribute to check for its contents
 _CONTENTS_READER = "contents_reader"        # Message contents is exposed by a ContentsReader instance
 _CONTENTS_REF = "contents_ref"              # The name of the attribute for the reference to the offloaded contents

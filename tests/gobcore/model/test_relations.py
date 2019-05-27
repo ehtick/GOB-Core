@@ -1,7 +1,9 @@
 import unittest
 from unittest import mock
 
-from gobcore.model.relations import _get_relation, _get_relation_name, get_relation_name, get_relations, create_relation
+from gobcore.model.relations import _get_relation, _get_relation_name, get_relation_name, get_relations, \
+    create_relation, get_inverse_relations
+from gobcore.model import GOBModel
 
 
 class TestRelations(unittest.TestCase):
@@ -31,7 +33,7 @@ class TestRelations(unittest.TestCase):
             self.assertEqual(result['attributes'][validity]['type'], 'GOB.Date')
         self.assertEqual(len(result['attributes'].keys()), len(attributes))
 
-        result = _get_relation("name",  {'type': 'GOB.Date'}, None)
+        result = _get_relation("name", {'type': 'GOB.Date'}, None)
         for validity in ['begin_geldigheid', 'eind_geldigheid']:
             self.assertEqual(result['attributes'][validity]['type'], 'GOB.Date')
 
@@ -76,7 +78,6 @@ class TestRelations(unittest.TestCase):
         name = get_relation_name(model, "catalog", "collection", "reference")
         expect = 'cat_col_cat_col_reference'
         self.assertEqual(name, expect)
-
 
     @mock.patch('gobcore.model.relations._get_relation_name')
     def test_relations(self, mock_get_relation_name):
@@ -150,3 +151,78 @@ class TestRelations(unittest.TestCase):
         dst['volgnummer'] = None
         result = create_relation(src, validity, dst, "derivation")
         self.assertEqual(result['id'], 'src_id.dst_id')
+
+    def test_get_inverse_relations(self):
+        model = {
+            "cat": {
+                "collections": {
+                    "entity_a": {
+                        "attributes": {
+                            "ref_to_d": {
+                                "type": "GOB.Reference",
+                                "description": "",
+                                "ref": "cat2:entity_d"
+                            },
+                            "manyref_to_c": {
+                                "type": "GOB.ManyReference",
+                                "description": "",
+                                "ref": "cat:entity_c"
+                            }
+                        }
+                    },
+                }
+            },
+            "cat2": {
+                "collections": {
+                    "entity_d": {
+                        "attributes": {
+                            "ref_to_a": {
+                                "type": "GOB.Reference",
+                                "description": "",
+                                "ref": "cat:entity_a"
+                            },
+                            "manyref_to_d": {
+                                "type": "GOB.ManyReference",
+                                "description": "",
+                                "ref": "cat2:entity_d"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        class MockModel:
+            gobmodel = GOBModel()
+            _data = model
+
+            # Wire original GOBModel _extract_references method
+            def _extract_references(self, attributes):
+                return self.gobmodel._extract_references(attributes)
+
+        expected_result = {
+            "cat": {
+                "entity_a": {
+                    "cat2": {
+                        "entity_d": ["ref_to_a"]
+                    }
+                },
+                "entity_c": {
+                    "cat": {
+                        "entity_a": ["manyref_to_c"],
+                    }
+                }
+            },
+            "cat2": {
+                "entity_d": {
+                    "cat": {
+                        "entity_a": ["ref_to_d"]
+                    },
+                    "cat2": {
+                        "entity_d": ["manyref_to_d"]
+                    }
+                }
+            }
+        }
+        result = get_inverse_relations(MockModel())
+        self.assertEqual(expected_result, result)

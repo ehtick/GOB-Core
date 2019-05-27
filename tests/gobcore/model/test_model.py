@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from gobcore.exceptions import GOBException
 from gobcore.model import GOBModel
@@ -92,3 +92,13 @@ class TestModel(unittest.TestCase):
         self.assertEqual({"fake": "collection"}, result)
         self.model.split_ref.assert_called_with("some:reference")
         self.model.get_collection.assert_called_with("some", "reference")
+
+    @patch("gobcore.model.get_inverse_relations")
+    def test_get_inverse_relations(self, mock_get_inverse_relations):
+        model = GOBModel()
+        self.assertEqual(mock_get_inverse_relations.return_value, model.get_inverse_relations())
+
+        # Call twice. Expect same result
+        self.assertEqual(mock_get_inverse_relations.return_value, model.get_inverse_relations())
+        # But should only be evaluated once
+        mock_get_inverse_relations.assert_called_once()

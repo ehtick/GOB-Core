@@ -3,6 +3,8 @@ GOB Relations module
 
 Relations are automatically derived from the GOB Model specification.
 """
+
+from collections import defaultdict
 from gobcore.model.metadata import FIELD, DESCRIPTION
 
 # Derivation of relation
@@ -190,6 +192,47 @@ def get_relations(model):
                 relations["collections"][name] = _get_relation(name, src_begin_geldigheid, dst_begin_geldigheid)
     _startup = False
     return relations
+
+
+def get_inverse_relations(model):
+    """Returns a list of inverse relations for each collection, grouped by owning collection.
+
+    For example, when brk:tenaamstellingen has a relation heeft_zrt with brk:zakelijkerechten, the result of this
+    function would be:
+
+
+    brk: {
+      zakelijkerechten: { # Dict of all collections that reference brk:zakelijkerechten
+        brk: {
+            tenaamstellingen: [ # List of the names of all references in brk:tenaamstellingen to brk:zakelijkerechten
+                heeft_zrt,
+                ..,
+            ]
+        }
+      },
+      ..,
+      kadastraleobjecten: [ .. ] # List of all collections that reference brk:kadastraleobjecten
+    }
+
+    :param model:
+    :return:
+    """
+    inverse_relations = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+
+    for src_cat_name, src_catalog in model._data.items():
+        for src_col_name, src_collection in src_catalog['collections'].items():
+            references = model._extract_references(src_collection['attributes'])
+
+            for reference_name, reference in references.items():
+                dst_cat_name, dst_col_name = reference['ref'].split(':')
+
+                try:
+                    inverse_relations[dst_cat_name][dst_col_name][src_cat_name][src_col_name]
+                except KeyError:
+                    inverse_relations[dst_cat_name][dst_col_name][src_cat_name][src_col_name] = []
+
+                inverse_relations[dst_cat_name][dst_col_name][src_cat_name][src_col_name].append(reference_name)
+    return inverse_relations
 
 
 def create_relation(src, validity, dst, derivation):

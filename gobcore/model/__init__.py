@@ -5,7 +5,7 @@ from gobcore.exceptions import GOBException
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import STATE_FIELDS
 from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
-from gobcore.model.relations import get_relations
+from gobcore.model.relations import get_relations, get_inverse_relations
 
 
 EVENTS_DESCRIPTION = {
@@ -36,6 +36,8 @@ EVENTS = {
 
 
 class GOBModel():
+    inverse_relations = None
+
     def __init__(self):
         path = os.path.join(os.path.dirname(__file__), 'gobmodel.json')
         with open(path) as file:
@@ -105,6 +107,11 @@ class GOBModel():
     def _extract_references(self, attributes):
         return {field_name: spec for field_name, spec in attributes.items()
                 if spec['type'] in ['GOB.Reference', 'GOB.ManyReference']}
+
+    def get_inverse_relations(self):
+        if not self.inverse_relations:
+            self.inverse_relations = get_inverse_relations(self)
+        return self.inverse_relations
 
     def get_catalog_names(self):
         return self._data.keys()

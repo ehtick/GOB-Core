@@ -233,3 +233,27 @@ class GOBModel():
         """
         catalog_name, collection_name = self.split_ref(ref)
         return self.get_collection(catalog_name, collection_name)
+
+    def _split_table_name(self, table_name: str):
+        split = [part for part in table_name.split('_') if part]
+
+        if len(split) < 2:
+            raise GOBException("Invalid table name")
+
+        return split
+
+    def get_catalog_from_table_name(self, table_name: str):
+        """Returns catalog name from table name
+
+        :param table_name:
+        :return:
+        """
+        return self._split_table_name(table_name)[0]
+
+    def get_collection_from_table_name(self, table_name: str):
+        """Returns collection name from table name
+
+        :param table_name:
+        :return:
+        """
+        return "_".join(self._split_table_name(table_name)[1:])

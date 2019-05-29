@@ -102,3 +102,43 @@ class TestModel(unittest.TestCase):
         self.assertEqual(mock_get_inverse_relations.return_value, model.get_inverse_relations())
         # But should only be evaluated once
         mock_get_inverse_relations.assert_called_once()
+
+    def test_get_catalog_from_table_name(self):
+        model = GOBModel()
+        testcases = [
+            ('brk_something', 'brk'),
+            ('brk_long_table_name', 'brk'),
+        ]
+
+        for arg, result in testcases:
+            self.assertEqual(result, model.get_catalog_from_table_name(arg))
+
+        with self.assertRaisesRegexp(GOBException, "Invalid table name"):
+            model.get_catalog_from_table_name('brk_')
+
+    def test_get_collection_from_table_name(self):
+        model = GOBModel()
+        testcases = [
+            ('brk_collection', 'collection'),
+            ('brk_coll_lection', 'coll_lection'),
+        ]
+
+        for arg, result in testcases:
+            self.assertEqual(result, model.get_collection_from_table_name(arg))
+
+        with self.assertRaisesRegexp(GOBException, "Invalid table name"):
+            model.get_collection_from_table_name('brk_')
+
+    def test_split_table_name(self):
+        model = GOBModel()
+        testcases = [
+            'brk_',
+            '_brk',
+            '',
+            '_',
+            'brk'
+        ]
+
+        for testcase in testcases:
+            with self.assertRaisesRegexp(GOBException, "Invalid table name"):
+                model._split_table_name(testcase)

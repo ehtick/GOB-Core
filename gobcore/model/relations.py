@@ -6,6 +6,7 @@ Relations are automatically derived from the GOB Model specification.
 
 from collections import defaultdict
 from gobcore.model.metadata import FIELD, DESCRIPTION
+from gobcore.exceptions import GOBException
 
 # Derivation of relation
 DERIVATION = {
@@ -126,6 +127,28 @@ def _get_relation_name(src, dst, reference_name):
         return None
 
 
+def _split_relation_table_name(table_name: str):
+    split = table_name.split('_')
+
+    if len(split) < 6:
+        raise GOBException("Invalid table name")
+
+    # Example: rel_brk_tng_brk_sjt_van_kadastraalsubject
+    #          0   1   2   3   4   5 ......
+
+    return {
+        'src_cat_abbr': split[1],
+        'src_col_abbr': split[2],
+        'dst_cat_abbr': split[3],
+        'dst_col_abbr': split[4],
+        'reference_name': "_".join(split[5:]),
+    }
+
+
+def get_reference_name_from_relation_table_name(table_name: str):
+    return _split_relation_table_name(table_name)['reference_name']
+
+
 def get_relation_name(model, catalog_name, collection_name, reference_name):
     """
     Get the name of the relation. This name can be used as table name
@@ -192,6 +215,35 @@ def get_relations(model):
                 relations["collections"][name] = _get_relation(name, src_begin_geldigheid, dst_begin_geldigheid)
     _startup = False
     return relations
+
+
+def get_fieldnames_for_missing_relations(model):
+    """Returns the field names in a catalog -> collection -> [fieldnames] dict for which no relation is defined, for
+    example in case a collection is referenced that doesn't exist yet.
+
+    :param model:
+    :return:
+    """
+    result = {}
+    for src_catalog_name, src_catalog in model._data.items():
+        result[src_catalog_name] = {}
+        for src_collection_name, src_collection in src_catalog['collections'].items():
+            result[src_catalog_name][src_collection_name] = []
+            references = model._extract_references(src_collection['attributes'])
+            for reference_name, reference in references.items():
+                src = {
+                    "catalog": src_catalog,
+                    "catalog_name": src_catalog_name,
+                    "collection": src_collection,
+                    "collection_name": src_collection_name
+                }
+                dst_catalog_name, dst_collection_name = reference['ref'].split(':')
+                dst = _get_destination(model, dst_catalog_name, dst_collection_name)
+                name = _get_relation_name(src=src, dst=dst, reference_name=reference_name)
+
+                if not (dst and name):
+                    result[src_catalog_name][src_collection_name].append(reference_name)
+    return result
 
 
 def get_inverse_relations(model):

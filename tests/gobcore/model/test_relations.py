@@ -2,8 +2,10 @@ import unittest
 from unittest import mock
 
 from gobcore.model.relations import _get_relation, _get_relation_name, get_relation_name, get_relations, \
-    create_relation, get_inverse_relations
+    create_relation, get_inverse_relations, get_fieldnames_for_missing_relations, _split_relation_table_name, \
+    get_reference_name_from_relation_table_name
 from gobcore.model import GOBModel
+from gobcore.exceptions import GOBException
 
 
 class TestRelations(unittest.TestCase):
@@ -112,6 +114,26 @@ class TestRelations(unittest.TestCase):
         relations = get_relations(model)
         self.assertIsNotNone(relations['collections']['name'])
         self.assertEqual(len(relations['collections'].items()), 1)
+
+    def test_split_relation_table_name(self):
+        test_case = "rel_srccat_srccol_dstcat_dstcol_relation_name"
+
+        res = _split_relation_table_name(test_case)
+        self.assertEqual({
+            'src_cat_abbr': 'srccat',
+            'src_col_abbr': 'srccol',
+            'dst_cat_abbr': 'dstcat',
+            'dst_col_abbr': 'dstcol',
+            'reference_name': 'relation_name'
+        }, res)
+
+        with self.assertRaisesRegexp(GOBException, "Invalid table name"):
+            _split_relation_table_name("rel_srccat_srccol_dstcat_dstcol")
+
+    def test_get_reference_name_from_relation_table_name(self):
+        test_case = "rel_srccat_srccol_dstcat_dstcol_relation_name"
+
+        self.assertEqual("relation_name", get_reference_name_from_relation_table_name(test_case))
 
     def test_create_relation(self):
         src = {
@@ -226,3 +248,53 @@ class TestRelations(unittest.TestCase):
         }
         result = get_inverse_relations(MockModel())
         self.assertEqual(expected_result, result)
+
+    def test_get_fieldnames_for_missing_relations(self):
+
+        model = {
+            "cat": {
+                "collections": {
+                    "entity": {
+                        "attributes": {
+                            "refa": {
+                                "type": "GOB.Reference",
+                                "description": "",
+                                "ref": "some:ref"
+                            },
+                            "refb": {
+                                "type": "GOB.Reference",
+                                "description": "",
+                                "ref": "some:ref"
+                            },
+                            "refc": {
+                                "type": "GOB.Reference",
+                                "description": "",
+                                "ref": "some:ref"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        class MockModel:
+            gobmodel = GOBModel()
+            _data = model
+
+            # Wire original GOBModel _extract_references method
+            def _extract_references(self, attributes):
+                return self.gobmodel._extract_references(attributes)
+
+        expected_result = {
+            "cat": {
+                "entity": ["refa", "refb"]
+            }
+        }
+
+        with mock.patch("gobcore.model.relations._get_destination") as mock_get_destination, \
+            mock.patch("gobcore.model.relations._get_relation_name") as mock_get_relation_name:
+
+            mock_get_relation_name.side_effect = ["name", None, "name2"]
+            mock_get_destination.side_effect = [None, "destination", "destination2"]
+            result = get_fieldnames_for_missing_relations(MockModel())
+            self.assertEqual(expected_result, result)

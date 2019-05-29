@@ -238,10 +238,6 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         },
-        "heeft_brondocumenten": {
-          "method": "equals",
-          "destination_attribute": "dossier"
-        },
         "ligt_in_woonplaats": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -264,10 +260,6 @@
           "method": "lies_in",
           "source_attribute": "geometrie",
           "destination_attribute": "geometrie"
-        },
-        "heeft_brondocumenten": {
-          "method": "equals",
-          "destination_attribute": "dossier"
         }
       },
       "panden": {
@@ -275,10 +267,6 @@
           "method": "lies_in",
           "source_attribute": "geometrie",
           "destination_attribute": "geometrie"
-        },
-        "heeft_brondocumenten": {
-          "method": "equals",
-          "destination_attribute": "dossier"
         }
       }
     }

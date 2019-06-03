@@ -871,10 +871,10 @@
             "ref": "kadaster:gemeenten",
             "description": "De gemeente waarin de woonplaats ligt."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -943,10 +943,10 @@
             "ref": "gebieden:buurten",
             "description": "De buurt waarin een standplaats ligt."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -1015,10 +1015,10 @@
             "ref": "gebieden:buurten",
             "description": "De buurt waarin een ligplaats ligt."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -1085,10 +1085,10 @@
             "type": "GOB.String",
             "description": "Beschrijving van de openbare ruimte bijvoorbeeld: Vogel. Wereldwijd komen 24 soorten albatrossen voor. De meeste leven op het zuidelijk halfrond. De grootste albatros heeft een spanwijdte van meer dan drie meter en is daarmee de grootste zeevogel ter wereld."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -1187,10 +1187,10 @@
             "ref": "bag:standplaatsen",
             "description": "De stand­plaats (lan­de­lij­ke iden­ti­fi­ca­tie) die door de num­mer­aan­dui­ding wordt aan­ge­duid."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -1320,10 +1320,10 @@
             "ref": "gebieden:buurten",
             "description": "Buurt waar­in het ver­blijfs­ob­ject ligt."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
@@ -1406,14 +1406,30 @@
             "type": "GOB.Integer",
             "description": "Laagste bouw­laag van een pand."
           },
-          "heeft_brondocumenten": {
-            "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+          "heeft_dossier": {
+            "type": "GOB.Reference",
+            "ref": "bag:dossiers",
+            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
           },
           "bagproces": {
             "type": "GOB.JSON",
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+          }
+        }
+      },
+      "dossiers": {
+        "version": "0.1",
+        "abbreviation": "DSR",
+        "entity_id": "dossier",
+        "attributes": {
+          "dossier": {
+            "type": "GOB.String",
+            "description": "Verwijzing vanuit de overige objectklassen."
+          },
+          "heeft_brondocumenten": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:brondocumenten",
+            "description": "De bron­d­o­cu­ment(en) behorende bij het dossier."
           }
         }
       },
@@ -1425,10 +1441,6 @@
           "documentnummer": {
             "type": "GOB.String",
             "description": "Iden­ti­fi­ce­ren­de num­mer van het do­cu­ment."
-          },
-          "dossier": {
-            "type": "GOB.String",
-            "description": "Verwijzing vanuit de overige objectklassen."
           },
           "bronleverancier": {
             "type": "GOB.JSON",

@@ -119,7 +119,7 @@
       }
     }
   },
-  "meetbouten":{
+  "meetbouten": {
     "version": "0.1",
     "description": "De meetgegevens van bouten in de Amsterdamse panden.",
     "abbreviation": "MBN",
@@ -1534,7 +1534,7 @@
             "description": "De soort cultuur onbebouwd is een aan­dui­ding voor de aard van de meest sig­ni­fi­can­te cul­tuur van het on­be­bouw­de deel van het ka­das­traal ob­ject, weer­ge­ge­ven als ‘om­schrij­ving ka­das­traal ob­jec­t’ in Mijn.ka­das­ter.nl Dit ken­merk is in be­gin­sel af­ge­leid van de no­ta­riële akte, maar kan wor­den bij­ge­steld op grond van een ver­zoek van de ei­ge­naar (of een schrif­te­lijk ge­vol­mach­tig­de na­mens de ei­ge­naar)per brief, fax of e-mail­be­richt. Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR."
           },
           "status": {
-            "type":"GOB.Character",
+            "type": "GOB.Character",
             "description": "Status van het Kadastraal Object ('B' is bestaand)"
           },
           "geometrie": {
@@ -2060,6 +2060,37 @@
           "deel_soort_stuk": {
             "type": "GOB.String",
             "description": "Iden­ti­fi­ca­tie van het stuk bin­nen zijn soort."
+          }
+        }
+      },
+      "aardzakelijkerechten": {
+        "version": "0.1",
+        "abbreviation": "AZT",
+        "entity_id": "code",
+        "attributes": {
+          "code": {
+            "type": "GOB.Integer",
+            "description": "De aard zakelijk recht code"
+          },
+          "waarde": {
+            "type": "GOB.String",
+            "description": "Beschrijving van dit aard zakelijk recht"
+          },
+          "datum_vanaf": {
+            "type": "GOB.Date",
+            "description": "De datum vanaf wanneer dit aard zakelijk recht in gebruik genomen is"
+          },
+          "datum_tot": {
+            "type": "GOB.Date",
+            "description": "De datum tot wanneer dit aard zakelijk recht in gebruik geweest is"
+          },
+          "toelichting": {
+            "type": "GOB.String",
+            "description": "Toelichting op het gebruik van dit aard zakelijk recht"
+          },
+          "akr_code": {
+            "type": "GOB.String",
+            "description": "De AKR Code van dit aard zakelijk recht"
           }
         }
       }

@@ -2010,17 +2010,17 @@
             "description": "Het in een ter in­schrij­ving aan­ge­bo­den stuk ver­mel­de be­drag, waar­voor 1 of meer on­roe­ren­de za­ken zijn ver­kre­gen."
           },
           "is_bron_voor_tenaamstelling": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:tenaamstellingen",
             "description": "Geeft weer wel­ke te­naam­stel­ling is ont­staan op ba­sis van dit stuk­deel"
           },
           "is_bron_voor_aantekening_kadastraal_object": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:aantekeningenkadastraleobjecten",
             "description": "Geeft weer wel­ke aan­te­ke­ning kadastraal object is ont­staan op ba­sis van dit stuk­deel"
           },
           "is_bron_voor_aantekening_recht": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "brk:aantekeningenrechten",
             "description": "Geeft weer wel­ke aan­te­ke­ning recht is ont­staan op ba­sis van dit stuk­deel"
           },

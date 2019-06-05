@@ -181,9 +181,9 @@ def _derive_indexes() -> dict:
             "table_name": "events"
         }
 
-    # Add source catalogue, entity, eventid index
-    indexes[f'events.idx.source_catalogue_entity_action_eventid'] = {
-        "columns": ['source', 'catalogue', 'entity', 'action', 'eventid DESC'],
+    # Add entity, timestamp index
+    indexes[f'events.idx.entity_timestamp'] = {
+        "columns": ['entity', 'timestamp DESC'],
         "table_name": "events",
     }
 

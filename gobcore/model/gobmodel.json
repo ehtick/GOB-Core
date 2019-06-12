@@ -1553,6 +1553,10 @@
             "type": "GOB.JSON",
             "description": "Co­ör­di­na­ten voor het ver­schui­ven van het per­ceel­num­mer op de kaart naar een lo­ca­tie waar meer ruim­te is om het num­mer af te beel­den"
           },
+          "bijpijling_geometrie": {
+            "type": "GOB.Geo.Geometry",
+            "description": "Vorm en lig­ging van de bij­p­ijling (de puur gra­fi­sche lijn tus­sen het per­ceel en het per­ceel­num­mer)  in het stel­sel van de Rijks­drie­hoeks­me­ting (RD)"
+          },
           "indicatie_voorlopige_geometrie": {
             "type": "GOB.Character",
             "description": "Indicatie of de geometrie (kadastrale grens) voorlopig is of niet J N"

@@ -120,3 +120,30 @@ class ServiceTask(Base):
 
     def __repr__(self):
         return f'<ServiceTask {self.service_name}:{self.name}>'
+
+
+class Task(Base):
+    """Task
+
+    A task that comprises a small unit of work as part of a larger Job(Step).
+    Tasks can be parallelised by the workflow manager.
+    """
+
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    dependencies = Column(ARRAY(String))
+    status = Column(String)
+    start = Column(DateTime)
+    end = Column(DateTime)
+    jobid = Column(ForeignKey(Job.id))
+    stepid = Column(ForeignKey(JobStep.id), index=True)
+    lock = Column(Integer)
+    dst_queue = Column(String)
+    key_prefix = Column(String)
+    extra_msg = Column(JSON)
+    summary = Column(JSON)
+
+    def __repr__(self):
+        return f'<Task {self.name} ({self.stepid})'

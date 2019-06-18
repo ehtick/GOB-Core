@@ -39,6 +39,8 @@ PREPARE_QUEUE = WORKFLOW_EXCHANGE + '.prepare'
 IMPORT_QUEUE = WORKFLOW_EXCHANGE + '.import'
 EXPORT_QUEUE = WORKFLOW_EXCHANGE + '.export'
 RESULT_QUEUE = WORKFLOW_EXCHANGE + '.result'
+TASK_QUEUE = WORKFLOW_EXCHANGE + '.task'
+TASK_RESULT_QUEUE = WORKFLOW_EXCHANGE + '.task.result'
 HEARTBEAT_QUEUE = STATUS_EXCHANGE + '.heartbeat'
 LOG_QUEUE = LOG_EXCHANGE + '.all'
 
@@ -79,10 +81,20 @@ QUEUES = [
         "key": "#"
     },
     {
+        "exchange": WORKFLOW_EXCHANGE,
+        "name": TASK_QUEUE,
+        "key": "task.start"
+    },
+    {
+        "exchange": WORKFLOW_EXCHANGE,
+        "name": TASK_RESULT_QUEUE,
+        "key": "task.result"
+    },
+    {
         "exchange": STATUS_EXCHANGE,
         "name": HEARTBEAT_QUEUE,
         "key": "HEARTBEAT"
-    }
+    },
 ]
 
 

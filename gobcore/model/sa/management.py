@@ -144,6 +144,7 @@ class Task(Base):
     key_prefix = Column(String)
     extra_msg = Column(JSON)
     summary = Column(JSON)
+    process_id = Column(String)
 
     def __repr__(self):
         return f'<Task {self.name} ({self.stepid})'

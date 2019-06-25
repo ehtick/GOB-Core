@@ -906,7 +906,7 @@
             "description": "Het HOOFDadres dat de standplaats heeft."
           },
           "heeft_nevenadres": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "bag:nummeraanduidingen",
             "description": "Het NEVENadres dat de standplaats (optioneel) heeft."
           },
@@ -978,7 +978,7 @@
             "description": "Het HOOFDadres dat de ligplaats heeft."
           },
           "heeft_nevenadres": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "bag:nummeraanduidingen",
             "description": "Het NEVENadres dat de ligplaats (optioneel) heeft."
           },
@@ -1218,7 +1218,7 @@
             "description": "Het HOOFDadres dat het verblijfsobject heeft."
           },
           "heeft_nevenadres": {
-            "type": "GOB.Reference",
+            "type": "GOB.ManyReference",
             "ref": "bag:nummeraanduidingen",
             "description": "Het NEVENadres dat het verblijfsobject (optioneel) heeft."
           },

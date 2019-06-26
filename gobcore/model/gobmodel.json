@@ -1888,8 +1888,8 @@
             "ref": "brk:zakelijkerechten",
             "description": "Het Za­ke­lijk recht waar­over deze te­naam­stel­ling gaat."
           },
-          "gebaseerd_op_stukdeel": {
-            "type": "GOB.Reference",
+          "is_gebaseerd_op_stukdeel": {
+            "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
             "description": "Het Stuk­deel waar deze te­naam­stel­ling op ge­ba­seerd is."
           }

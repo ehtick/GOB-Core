@@ -335,6 +335,10 @@
         "van_zakelijkrecht": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "is_gebaseerd_op_stukdeel": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "aantekeningenrechten": {
@@ -348,7 +352,7 @@
         },
         "is_gebaseerd_op_stukdeel": {
           "method": "equals",
-          "destination_attribute": "id"
+          "destination_attribute": "identificatie"
         }
       },
       "aantekeningenkadastraleobjecten": {
@@ -362,7 +366,7 @@
         },
         "is_gebaseerd_op_stukdeel": {
           "method": "equals",
-          "destination_attribute": "id"
+          "destination_attribute": "identificatie"
         }
       },
       "stukdelen": {

@@ -48,7 +48,7 @@ class Connection(object):
         self._connection = pika.BlockingConnection(self._connection_params)
         self._channel = self._connection.channel()
 
-    def publish(self, queue, key, msg):
+    def publish(self, exchange, key, msg):
         # Check whether a connection has been established
         if self._channel is None or not self._channel.is_open:
             raise Exception("Connection with message broker not available")
@@ -57,7 +57,7 @@ class Connection(object):
         json_msg = json.dumps(msg, cls=GobTypeJSONEncoder, allow_nan=False)
 
         self._channel.basic_publish(
-            exchange=queue["exchange"],
+            exchange=exchange,
             routing_key=key,
             properties=pika.BasicProperties(
                 delivery_mode=2  # Make messages persistent

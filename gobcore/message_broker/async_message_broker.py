@@ -216,12 +216,13 @@ class AsyncConnection(object):
         # Check whether a channel has been created, which means the connection has been established
         return self._channel is not None
 
-    def publish(self, queue, key, msg):
+    def publish(self, exchange, key, msg):
         """Publish a message on a queue
 
         The message will be converted to json before publishing it on the queue
 
-        :param queue: The queue object
+        :param exchange: The exchange to publish to
+        :param key: The routing key of the message
         :param msg: The message
         :return: None
         """
@@ -240,7 +241,7 @@ class AsyncConnection(object):
 
         # Publish the message as a persistent message on the queue
         self._channel.basic_publish(
-            exchange=queue["exchange"],
+            exchange=exchange,
             routing_key=key,
             properties=pika.BasicProperties(
                 delivery_mode=2  # Make messages persistent
@@ -329,29 +330,10 @@ class AsyncConnection(object):
 
             return handle_message
 
-        def on_queue_bind(queue):
-            """Calles on successfully bind to the given queue
-
-            A consumer will be created to consume the messages from the queue
-
-            :param queue: The queue that is consumed by this on_message
-            :return: A method that links the handler to a consumer
-            """
-            return lambda frame: self._channel.basic_consume(
-                consumer_callback=on_message(queue),
-                queue=queue)
-
-        # Provide for a callback for every queue
-        queue_names = set([queue["name"] for queue in queues])
-        callback = {name: on_queue_bind(name) for name in queue_names}
-
-        # Subscribe to each queue in the list
         for queue in queues:
-            self._channel.queue_bind(
-                callback=callback[queue["name"]],
-                exchange=queue["exchange"],
-                queue=queue["name"],
-                routing_key=queue["key"]
+            self._channel.basic_consume(
+                consumer_callback=on_message(queue),
+                queue=queue
             )
 
     def disconnect(self):

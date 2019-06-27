@@ -15,9 +15,7 @@ import pika
 
 from gobcore.message_broker.config import CONNECTION_PARAMS,\
                                           MESSAGE_BROKER, MESSAGE_BROKER_PORT, MESSAGE_BROKER_VHOST,\
-                                          MESSAGE_BROKER_USER, MESSAGE_BROKER_PASSWORD,\
-                                          WORKFLOW_EXCHANGE, LOG_EXCHANGE, STATUS_EXCHANGE,\
-                                          QUEUES
+                                          MESSAGE_BROKER_USER, MESSAGE_BROKER_PASSWORD, QUEUE_CONFIGURATION
 
 
 def _create_vhost(vhost):
@@ -69,6 +67,23 @@ def _create_queue(channel, queue, durable):
     )
 
 
+def _bind_queue(channel, exchange, queue, key):
+    """
+    Binds queue to exchange with given key
+
+    :param channel: the RabbitMQ connection channel
+    :param exchange: the name of the exchange
+    :param queue: the name of the queue
+    :param key: the key
+    :return:
+    """
+    channel.queue_bind(
+        exchange=exchange,
+        queue=queue,
+        routing_key=key
+    )
+
+
 def initialize_message_broker():
     """
     Initializes the RabbitMQ message broker.
@@ -87,10 +102,14 @@ def initialize_message_broker():
         print("Connect to message broker")
         channel = connection.channel()
 
-        for exchange in [WORKFLOW_EXCHANGE, LOG_EXCHANGE, STATUS_EXCHANGE]:
+        for exchange, queues in QUEUE_CONFIGURATION.items():
             print(f"Create exchange {exchange}")
             _create_exchange(channel=channel, exchange=exchange, durable=True)
 
-        for queue in QUEUES:
-            print(f"Create queue {queue['name']}")
-            _create_queue(channel=channel, queue=queue["name"], durable=True)
+            for queue, keys in queues.items():
+                print(f"Create queue {queue}")
+                _create_queue(channel=channel, queue=queue, durable=True)
+
+                for key in keys:
+                    print(f"Binding key {key} to queue {queue}")
+                    _bind_queue(channel=channel, exchange=exchange, queue=queue, key=key)

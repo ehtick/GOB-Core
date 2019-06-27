@@ -1,10 +1,8 @@
-import collections
 import unittest
 import mock
 
-from gobcore.message_broker.config import HEARTBEAT_QUEUE, get_queue
 from gobcore.status.heartbeat import Heartbeat
-
+from gobcore.message_broker.config import STATUS_EXCHANGE, HEARTBEAT_KEY
 
 class MockHeartbeatConnection:
 
@@ -61,8 +59,8 @@ class TestHeartbeat(unittest.TestCase):
 
         heartbeat.send()
         self.assertIsNotNone(connection.msg)
-        self.assertEqual(connection.queue["name"], "gob.status.heartbeat")
-        self.assertEqual(connection.key, "HEARTBEAT")
+        self.assertEqual(connection.queue, STATUS_EXCHANGE)
+        self.assertEqual(connection.key, HEARTBEAT_KEY)
         self.assertEqual(connection.msg["name"], "Myname")
 
     @mock.patch("threading.enumerate", new=generate_threads(["a"]))
@@ -101,12 +99,7 @@ class TestHeartbeat(unittest.TestCase):
         connection.publish.assert_not_called()
 
         Heartbeat.progress(connection, service, msg, "any status", "any info")
-        connection.publish.assert_called_with({
-            "exchange": "gob.status",
-            "name": "gob.status.heartbeat",
-            "key": "HEARTBEAT"
-        },
-        "PROGRESS", {
+        connection.publish.assert_called_with("gob.status", "status.progress", {
             'header': {'jobid': 'any job', 'stepid': 'any step'},
             "jobid": "any job",
             "stepid": "any step",

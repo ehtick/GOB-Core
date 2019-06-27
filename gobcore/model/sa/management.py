@@ -140,7 +140,6 @@ class Task(Base):
     jobid = Column(ForeignKey(Job.id))
     stepid = Column(ForeignKey(JobStep.id), index=True)
     lock = Column(Integer)
-    dst_queue = Column(String)
     key_prefix = Column(String)
     extra_msg = Column(JSON)
     summary = Column(JSON)

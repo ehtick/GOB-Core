@@ -1,6 +1,5 @@
 import sys
 import time
-import re
 import traceback
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
@@ -16,19 +15,14 @@ CHECK_CONNECTION = 5    # Check connection every n seconds
 assert(HEARTBEAT_INTERVAL % CHECK_CONNECTION == 0)
 
 
-def _get_service(services, exchange, queue, key):
-    """Gets the service for the specified exchange, queue and key combination
+def _get_service(services, queue):
+    """Gets the service for the specified queue
 
     :param services:
-    :param exchange:
     :param queue:
-    :param key:
     :return:
     """
-    return next(s for s in services.values() if
-                s["exchange"] == exchange and
-                s["queue"] == queue and
-                (re.match(s["key"].replace("*", "\w+"), key) or s["key"] == "#"))
+    return next(s for s in services.values() if s["queue"] == queue)
 
 
 def _on_message(connection, service, msg):
@@ -55,7 +49,7 @@ def _on_message(connection, service, msg):
     # If a report_queue is defined, report the result message (if any)
     if 'report' in service and result_msg is not None:
         report = service['report']
-        connection.publish(report, report['key'], result_msg)
+        connection.publish(report['exchange'], report['key'], result_msg)
 
     # Remove the message from the queue by returning true
     return True
@@ -122,7 +116,7 @@ def messagedriven_service(services, name, params={}):
         :return:
         """
         print(f"{key} accepted from {queue}, start handling")
-        service = _get_service(services, exchange, queue, key)
+        service = _get_service(services, queue)
 
         result = _on_message(connection, service, msg)
 
@@ -133,15 +127,7 @@ def messagedriven_service(services, name, params={}):
 
     with AsyncConnection(CONNECTION_PARAMS, params) as connection:
         # Subscribe to the queues, handle messages in the on_message function (runs in another thread)
-        queues = []
-        for key, service in services.items():
-
-            queues.append({
-                "exchange": service['exchange'],
-                "name": service['queue'],
-                "key": service['key']
-            })
-            print(f"Listening to messages {service['key']} on queue {service['queue']}")
+        queues = [service['queue'] for _, service in services.items()]
 
         heartbeat = Heartbeat(connection, name)
 

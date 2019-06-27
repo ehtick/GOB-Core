@@ -9,10 +9,8 @@ import threading
 import time
 
 from gobcore.message_broker.message_broker import Connection
-from gobcore.message_broker.config import get_queue
-
 from gobcore.message_broker.config import CONNECTION_PARAMS
-from gobcore.message_broker.config import LOG_QUEUE
+from gobcore.message_broker.config import LOG_EXCHANGE
 
 
 class LogPublisher():
@@ -22,10 +20,10 @@ class LogPublisher():
     _auto_disconnect_thread = None
     _auto_disconnect_timeout = 0
 
-    def __init__(self, connection_params=CONNECTION_PARAMS, queue_name=LOG_QUEUE):
+    def __init__(self, connection_params=CONNECTION_PARAMS):
         # Register the connection params and log queue
         self._connection_params = connection_params
-        self._queue = get_queue(queue_name)
+        self._exchange = LOG_EXCHANGE
 
     def publish(self, level, msg):
         # Acquire a lock for the connection
@@ -33,7 +31,7 @@ class LogPublisher():
             # Connect to the message broker, auto disconnect after timeout seconds
             self._auto_connect(timeout=2)
             # Publish the message
-            self._connection.publish(self._queue, level, msg)
+            self._connection.publish(self._exchange, level, msg)
 
     def _auto_connect(self, timeout):
         self._auto_disconnect_timeout = timeout

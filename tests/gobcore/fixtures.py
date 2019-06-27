@@ -22,13 +22,10 @@ def random_string(length=12, source=None):
 def get_service_fixture(handler):
     return {
         random_string(): {
-            'exchange': random_string(),
             'queue': random_string(),
-            'key': random_string(),
             'handler': handler,
             'report': {
                 'exchange': random_string(),
-                'queue': random_string(),
                 'key': random_string()
             }
         }

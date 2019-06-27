@@ -16,7 +16,7 @@ import socket
 import os
 import typing
 
-from gobcore.message_broker.config import HEARTBEAT_QUEUE, get_queue
+from gobcore.message_broker.config import STATUS_EXCHANGE, HEARTBEAT_KEY, PROGRESS_KEY
 
 HEARTBEAT_INTERVAL = 60     # Send a heartbeat every 60 seconds
 
@@ -40,6 +40,9 @@ def _is_application_thread(t: threading.Thread) -> bool:
 
 
 class Heartbeat():
+    exchange = STATUS_EXCHANGE
+    heartbeat_key = HEARTBEAT_KEY
+    progress_key = PROGRESS_KEY
 
     @classmethod
     def progress(cls, connection, service, msg, status, info_msg=None):
@@ -58,7 +61,7 @@ class Heartbeat():
             jobid = msg["header"].get("jobid")
             stepid = msg["header"].get("stepid")
             if jobid and stepid:
-                connection.publish(get_queue(HEARTBEAT_QUEUE), "PROGRESS", {
+                connection.publish(cls.exchange, cls.progress_key, {
                     # Include header so that any logs get reported on the correct job
                     "header": msg["header"],
                     # Include the specific status fields
@@ -77,7 +80,8 @@ class Heartbeat():
         self._connection = connection
         self._name = name
 
-        self._queue = get_queue(HEARTBEAT_QUEUE)
+        self._exchange = Heartbeat.exchange
+        self._heartbeat_key = Heartbeat.heartbeat_key
 
         # Send an initial heartbeat
         self.send()
@@ -120,7 +124,7 @@ class Heartbeat():
             "timestamp": datetime.datetime.utcnow().isoformat()
         }
 
-        self._connection.publish(self._queue, self._queue["key"], status_msg)
+        self._connection.publish(self._exchange, self._heartbeat_key, status_msg)
 
         # Report visual progress
         print("OK" if is_alive else "ERROR", flush=True)

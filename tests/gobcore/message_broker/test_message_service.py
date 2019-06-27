@@ -25,18 +25,16 @@ class TestMessageDrivenService(unittest.TestCase):
     def test_get_service(self):
         services = {
             "a": {
-                "exchange": "e1",
                 "queue": "q1",
-                "key": "k1"
+                "handler": "h1",
             },
             "b": {
-                "exchange": "e2",
                 "queue": "q2",
-                "key": "#"
+                "handler": "h2",
             }
         }
-        self.assertTrue(messagedriven_service._get_service(services, "e1", "q1", "k1") == services["a"])
-        self.assertTrue(messagedriven_service._get_service(services, "e2", "q2", "xyz") == services["b"])
+        self.assertTrue(messagedriven_service._get_service(services, "q1") == services["a"])
+        self.assertTrue(messagedriven_service._get_service(services, "q2") == services["b"])
 
     def test_on_message(self):
 
@@ -48,8 +46,6 @@ class TestMessageDrivenService(unittest.TestCase):
         single_service = [v for v in service.values()][0]
 
         message = {}
-        queue = {'name': single_service['queue']}
-        key = {'name': single_service['key']}
         connection = AsyncConnection({})
 
         # setup expectations
@@ -68,7 +64,7 @@ class TestMessageDrivenService(unittest.TestCase):
             mocked_handler.assert_called_with(message)
 
             # The return message should be published on the return queue
-            mocked_publish.assert_called_with(return_queue, return_queue['key'], return_message)
+            mocked_publish.assert_called_with(return_queue['exchange'], return_queue['key'], return_message)
 
     @mock.patch("gobcore.status.heartbeat.Heartbeat.__init__", return_value=None)
     @mock.patch("gobcore.status.heartbeat.Heartbeat.send")
@@ -82,9 +78,7 @@ class TestMessageDrivenService(unittest.TestCase):
         service_definition = fixtures.get_service_fixture(handler)
         single_service = [v for v in service_definition.values()][0]
 
-        expected_key = single_service['key']
         expected_queue = single_service['queue']
-        expected_exchange = single_service['exchange']
 
         messagedriven_service.keep_running = False
         messagedriven_service.messagedriven_service(service_definition, "Any name")
@@ -92,9 +86,7 @@ class TestMessageDrivenService(unittest.TestCase):
         mocked_init.assert_called_with()
         mocked_connection.assert_called_with(CONNECTION_PARAMS, {})
         mocked_connection.return_value.__enter__.return_value.subscribe\
-            .assert_called_with([{'exchange': expected_exchange,
-                                  'name': expected_queue,
-                                  'key': expected_key}], mock.ANY)  # Inner function
+            .assert_called_with([expected_queue], mock.ANY)  # Inner function
 
         mocked_heartbeat.asssert_not_called()
         mocked_send.assert_not_called()

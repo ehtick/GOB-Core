@@ -116,31 +116,30 @@ class TestMessageDrivenService(unittest.TestCase):
     def test_messagedriven_service_startthreads(self, mock_init_broker):
         messagedriven_service = MessagedrivenService([], 'Some name', {'thread_per_service': True})
         queues = ['queue1', 'queue2']
-        messagedriven_service._start_thread = MagicMock(side_effect=['thread1', 'thread2'])
+        messagedriven_service._start_thread = MagicMock()
         messagedriven_service._start_threads(queues)
 
         messagedriven_service._start_thread.assert_has_calls([
-            call('queue1'),
-            call('queue2'),
+            call(['queue1']),
+            call(['queue2']),
         ])
-
-        self.assertEqual([{
-            'queue': 'queue1',
-            'thread': 'thread1',
-        }, {
-            'queue': 'queue2',
-            'thread': 'thread2',
-        }], messagedriven_service.threads)
-
 
     @mock.patch("gobcore.message_broker.messagedriven_service.initialize_message_broker")
     @mock.patch("gobcore.message_broker.messagedriven_service.threading.Thread")
     def test_messagedriven_service_startthread(self, mock_thread, mock_init_broker):
         messagedriven_service = MessagedrivenService([], 'Some name', {'thread_per_service': True})
-        result = messagedriven_service._start_thread('some queue')
-        mock_thread.assert_called_with(target=messagedriven_service._listen, args=(['some queue'],))
+        queues_arg = ['some queue', 'some other queue']
+        mock_thread.return_value = MagicMock()
+        result = messagedriven_service._start_thread(queues_arg)
+        mock_thread.assert_called_with(target=messagedriven_service._listen,
+                                       args=(queues_arg,))
         mock_thread.return_value.start.assert_called_once()
         self.assertEqual(mock_thread.return_value, result)
+
+        self.assertEqual([{
+            'queues': queues_arg,
+            'thread': mock_thread.return_value,
+        }], messagedriven_service.threads)
 
     @mock.patch("gobcore.message_broker.messagedriven_service.MessagedrivenService")
     def test_messagedriven_service_wrapper(self, mock_service_class):

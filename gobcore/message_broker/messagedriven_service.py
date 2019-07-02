@@ -102,16 +102,17 @@ class MessagedrivenService:
 
     def _start_threads(self, queues: list):
         for queue in queues:
-            thread = self._start_thread(queue)
+            self._start_thread([queue])
 
-            self.threads.append({
-                'thread': thread,
-                'queue': queue,
-            })
-
-    def _start_thread(self, queue):
-        thread = threading.Thread(target=self._listen, args=([queue],))
+    def _start_thread(self, queues):
+        thread = threading.Thread(target=self._listen, args=(queues,))
         thread.start()
+
+        self.threads.append({
+            'thread': thread,
+            'queues': queues,
+        })
+
         return thread
 
     def _on_message(self, connection, exchange, queue, key, msg):
@@ -144,12 +145,12 @@ class MessagedrivenService:
             print("Queue connection for servicedefinition has stopped")
 
     def start(self):
-        queues = [service['queue'] for _, service in self.services.items()]
+        queues = [service['queue'] for service in self.services.values()]
 
         if self.thread_per_service:
             self._start_threads(queues)
         else:
-            self._listen(queues)
+            self._start_thread(queues)
 
         self._heartbeat_loop()
 
@@ -165,7 +166,7 @@ class MessagedrivenService:
                 for thread in self.threads:
                     if not thread['thread'].is_alive():
                         # Create new thread
-                        thread['thread'] = self._start_thread(thread['queue'])
+                        thread['thread'] = self._start_thread(thread['queues'])
 
                 n += CHECK_CONNECTION
 

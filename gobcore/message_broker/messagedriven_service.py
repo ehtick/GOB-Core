@@ -1,28 +1,17 @@
 import sys
 import time
 import traceback
+import threading
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, STATUS_START, STATUS_FAIL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
 
-keep_running = True
-
 CHECK_CONNECTION = 5    # Check connection every n seconds
 
 # Assure that heartbeats are sent at every HEARTBEAT_INTERVAL
 assert(HEARTBEAT_INTERVAL % CHECK_CONNECTION == 0)
-
-
-def _get_service(services, queue):
-    """Gets the service for the specified queue
-
-    :param services:
-    :param queue:
-    :return:
-    """
-    return next(s for s in services.values() if s["queue"] == queue)
 
 
 def _on_message(connection, service, msg):
@@ -55,24 +44,7 @@ def _on_message(connection, service, msg):
     return True
 
 
-def _init():
-    """Initializes the message broker
-
-    This method is idempotent. If the message broker has already been initialised it will be noticed and
-    the initialisation becomes a noop
-
-    :return:
-    """
-    try:
-        initialize_message_broker()
-    except Exception as e:
-        print(f"Error: Failed to initialize message broker, {str(e)}")
-        sys.exit(1)
-
-    print("Succesfully initialized message broker")
-
-
-def messagedriven_service(services, name, params={}):
+class MessagedrivenService:
     """Start a connection with a the message broker and the given definition
 
     servicedefenition is a dict of dicts:
@@ -97,14 +69,52 @@ def messagedriven_service(services, name, params={}):
     start the service with:
 
     ```
-    from gobcore.message_broker.messagedriven_service import messagedriven_service
+    from gobcore.message_broker.messagedriven_service import MessagedrivenService
 
-    messagedriven_services(SERVICEDEFINITION)
+    MessagedrivenService(SERVICEDEFINITION).start()
 
     """
-    heartbeat = None
+    def __init__(self, services, name, params={}):
+        self.services = services
+        self.name = name
+        self.params = params
+        self.thread_per_service = self.params.get('thread_per_service', False)
+        self.threads = []
+        self.keep_running = True
 
-    def on_message(connection, exchange, queue, key, msg):
+        self._init()
+
+    def _init(self):
+        """Initializes the message broker
+
+        This method is idempotent. If the message broker has already been initialised it will be noticed and
+        the initialisation becomes a noop
+
+        :return:
+        """
+        try:
+            initialize_message_broker()
+        except Exception as e:
+            print(f"Error: Failed to initialize message broker, {str(e)}")
+            sys.exit(1)
+
+        print("Succesfully initialized message broker")
+
+    def _start_threads(self, queues: list):
+        for queue in queues:
+            thread = self._start_thread(queue)
+
+            self.threads.append({
+                'thread': thread,
+                'queue': queue,
+            })
+
+    def _start_thread(self, queue):
+        thread = threading.Thread(target=self._listen, args=([queue],))
+        thread.start()
+        return thread
+
+    def _on_message(self, connection, exchange, queue, key, msg):
         """Called on every message receipt
 
         :param connection: the connection with the message broker
@@ -116,31 +126,62 @@ def messagedriven_service(services, name, params={}):
         :return:
         """
         print(f"{key} accepted from {queue}, start handling")
-        service = _get_service(services, queue)
+        service = self._get_service(queue)
 
-        result = _on_message(connection, service, msg)
+        return _on_message(connection, service, msg)
 
-        return result
+    def _listen(self, queues: list):
+        with AsyncConnection(CONNECTION_PARAMS, self.params) as connection:
+            # Subscribe to the queues, handle messages in the on_message function (runs in another thread)
+            connection.subscribe(queues, self._on_message)
 
-    # Start by initializing the message broker (idempotent)
-    _init()
+            # Repeat forever
+            print("Queue connection for servicedefinition started")
 
-    with AsyncConnection(CONNECTION_PARAMS, params) as connection:
-        # Subscribe to the queues, handle messages in the on_message function (runs in another thread)
-        queues = [service['queue'] for _, service in services.items()]
+            while self.keep_running and connection.is_alive():
+                time.sleep(CHECK_CONNECTION)
 
-        heartbeat = Heartbeat(connection, name)
+            print("Queue connection for servicedefinition has stopped")
 
-        connection.subscribe(queues, on_message)
+    def start(self):
+        queues = [service['queue'] for _, service in self.services.items()]
 
-        # Repeat forever
-        print("Queue connection for servicedefinition started")
-        n = 0
-        while keep_running and connection.is_alive():
-            time.sleep(CHECK_CONNECTION)
-            n += CHECK_CONNECTION
-            if n >= HEARTBEAT_INTERVAL:
-                heartbeat.send()
-                n = 0
+        if self.thread_per_service:
+            self._start_threads(queues)
+        else:
+            self._listen(queues)
 
-        print("Queue connection for servicedefinition has stopped")
+        self._heartbeat_loop()
+
+    def _heartbeat_loop(self):
+        with AsyncConnection(CONNECTION_PARAMS, self.params) as connection:
+            heartbeat = Heartbeat(connection, self.name)
+
+            n = 0
+
+            while self.keep_running and connection.is_alive():
+                time.sleep(CHECK_CONNECTION)
+
+                for thread in self.threads:
+                    if not thread['thread'].is_alive():
+                        # Create new thread
+                        thread['thread'] = self._start_thread(thread['queue'])
+
+                n += CHECK_CONNECTION
+
+                if n >= HEARTBEAT_INTERVAL:
+                    heartbeat.send()
+                    n = 0
+
+    def _get_service(self, queue):
+        """Gets the service for the specified queue
+
+        :param queue:
+        :return:
+        """
+        return next(s for s in self.services.values() if s["queue"] == queue)
+
+
+def messagedriven_service(services, name, params={}):
+    # For backwards compatibility
+    MessagedrivenService(services, name, params).start()

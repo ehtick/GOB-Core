@@ -141,6 +141,7 @@ class Task(Base):
     stepid = Column(ForeignKey(JobStep.id), index=True)
     lock = Column(Integer)
     key_prefix = Column(String)
+    extra_header = Column(JSON)
     extra_msg = Column(JSON)
     summary = Column(JSON)
     process_id = Column(String)

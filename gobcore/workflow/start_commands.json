@@ -1,0 +1,83 @@
+{
+  "import": {
+    "description": "Start an import job for a collection",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      },
+      {
+        "name": "collection",
+        "required": true,
+        "description": "The name of the data collection (example: \"metingen\")"
+      },
+      {
+        "name": "application",
+        "description": "The name of the application to import from"
+      }
+    ],
+    "workflow": "import"
+  },
+  "prepare": {
+    "description": "Start a prepare job for a catalogue",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalog (example: \"brk\")"
+      }
+    ],
+    "workflow": "import",
+    "start_step": "prepare"
+  },
+  "export": {
+    "description": "Start an export job for a collection",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      },
+      {
+        "name": "collection",
+        "required": false,
+        "description": "The name of the data collection (example: \"metingen\")"
+      },
+      {
+        "name": "destination",
+        "default": "Objectstore",
+        "choices": ["Objectstore", "File"],
+        "description": "Destination, default is Objectstore"
+      }
+    ],
+    "workflow": "export"
+  },
+  "relate": {
+    "description": "Build relations for a catalogue",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      },
+      {
+        "name": "collection",
+        "description": "The name of the data collection (example: \"metingen\")"
+      }
+    ],
+    "workflow": "relate"
+  },
+  "export_test": {
+    "description": "Test of exports for a catalogue",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": "true",
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      }
+    ],
+    "workflow": "export",
+    "start_step": "test"
+  }
+}

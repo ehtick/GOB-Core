@@ -4,7 +4,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from gobcore.logging.log_publisher import LogPublisher
-from gobcore.logging.logger import Logger, RequestsHandler
+from gobcore.logging.logger import Logger, RequestsHandler, LoggerManager
 
 
 class TestLogger(TestCase):
@@ -128,6 +128,7 @@ class TestLogger(TestCase):
         level, args = RequestsHandler.LOG_PUBLISHER.publish.call_args[0]
         self.assertEqual(args["name"], logger._name)
 
+
 class TestRequestHandler(TestCase):
 
     def setUp(self):
@@ -154,3 +155,38 @@ class TestRequestHandler(TestCase):
         request_handler.LOG_PUBLISHER.publish = MagicMock()
         request_handler.emit(record)
         request_handler.LOG_PUBLISHER.publish.assert_called()
+
+
+class TestLoggerManager(TestCase):
+    class MockThread():
+        def __init__(self, id):
+            self.ident = id
+
+    @patch("gobcore.logging.logger.Logger")
+    @patch("gobcore.logging.logger.threading.current_thread")
+    def test_get_logger(self, mock_current_thread, mock_logger):
+        logger_manager = LoggerManager()
+
+        mock_current_thread.side_effect = [self.MockThread(1), self.MockThread(2), self.MockThread(1)]
+
+        res = logger_manager.get_logger()
+        self.assertEqual({1: mock_logger.return_value}, logger_manager.loggers)
+        self.assertEqual(mock_logger.return_value, res)
+
+        res = logger_manager.get_logger()
+        self.assertEqual([1, 2], list(logger_manager.loggers.keys()))
+        self.assertEqual(mock_logger.return_value, res)
+
+        # Assert we still have two loggers
+        res = logger_manager.get_logger()
+        self.assertEqual([1, 2], list(logger_manager.loggers.keys()))
+
+    def test_proxy_method(self):
+        logger_manager = LoggerManager()
+        logger_manager.get_logger = MagicMock()
+
+        logger_manager.abc()
+        logger_manager.get_logger.return_value.abc.assert_called_once()
+
+        logger_manager.ghi(1, 2, 3, kw=4, kw2=5)
+        logger_manager.get_logger.return_value.ghi.assert_called_with(1, 2, 3, kw=4, kw2=5)

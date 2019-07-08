@@ -10,6 +10,7 @@ Each log message will so be populated with the message details
 """
 import logging
 import datetime
+import threading
 
 from gobcore.logging.log_publisher import LogPublisher
 
@@ -167,6 +168,35 @@ class Logger:
         Logger._logger[name] = logger
 
 
-# Export a Logger instance
-# This instance needs to be configured with a message and a name
-logger = Logger()
+class LoggerManager:
+    """LoggerManager
+
+    Manages loggers per thread. Each thread has its own 'global' logger. LoggerManager proxies all calls to the logger
+    to the appropriate Logger instance for that thread.
+    """
+    loggers = {}
+
+    def get_logger(self):
+        """Returns existing Logger for thread, or creates a new instance.
+
+        :return:
+        """
+        id = threading.current_thread().ident
+
+        if id not in LoggerManager.loggers:
+            LoggerManager.loggers[id] = Logger()
+
+        return LoggerManager.loggers[id]
+
+    def __getattr__(self, name):
+        """Proxy method.
+
+        :param name:
+        :return:
+        """
+        def method(*args, **kwargs):
+            return getattr(self.get_logger(), name)(*args, **kwargs)
+        return method
+
+
+logger = LoggerManager()

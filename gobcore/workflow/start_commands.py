@@ -9,6 +9,10 @@ class NoSuchCommandException(GOBException):
     pass
 
 
+class InvalidArgumentsException(GOBException):
+    pass
+
+
 class StartCommandArgument:
     name: str = ''
     description: str = ''
@@ -44,6 +48,16 @@ class StartCommand:
 
         for arg in command_config.get('args', []):
             self.args.append(StartCommandArgument(arg))
+
+    def validate_arguments(self, arguments: dict):
+        for arg in self.args:
+            input_value = arguments[arg.name] if arg.name in arguments else None
+
+            if arg.required and not input_value:
+                raise InvalidArgumentsException(f"Argument {arg.name} is required")
+
+            if arg.choices and input_value not in arg.choices:
+                raise InvalidArgumentsException(f"Argument {arg.name} must be one of {','.join(arg.choices)}")
 
 
 class StartCommands:

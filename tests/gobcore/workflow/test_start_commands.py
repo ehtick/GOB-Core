@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock, call
 
-from gobcore.workflow.start_commands import StartCommand, StartCommandArgument, StartCommands, NoSuchCommandException
+from gobcore.workflow.start_commands import StartCommand, StartCommandArgument, StartCommands, NoSuchCommandException, InvalidArgumentsException
 
 
 class TestStartCommandArgument(TestCase):
@@ -39,9 +39,9 @@ class TestStartCommandArgument(TestCase):
             StartCommandArgument({})
 
 
-@patch("gobcore.workflow.start_commands.StartCommandArgument")
 class TestStartCommand(TestCase):
 
+    @patch("gobcore.workflow.start_commands.StartCommandArgument")
     def test_init(self, mock_argument):
         init_args = {
             'description': 'some description',
@@ -55,7 +55,7 @@ class TestStartCommand(TestCase):
         for k, v in init_args.items():
             self.assertEqual(v, getattr(start_command, k))
 
-    def test_init_minimal(self, mock_argument):
+    def test_init_minimal(self):
         expected_args = {
             'name': 'some name',
             'description': '',
@@ -69,10 +69,11 @@ class TestStartCommand(TestCase):
         for k, v in expected_args.items():
             self.assertEqual(v, getattr(start_command, k))
 
-    def test_init_missing_workflow(self, mock_argument):
+    def test_init_missing_workflow(self):
         with self.assertRaises(AssertionError):
             StartCommand('some name', {})
 
+    @patch("gobcore.workflow.start_commands.StartCommandArgument")
     def test_init_args(self, mock_argument):
         init_args = {
             'workflow': 'some workflow',
@@ -85,6 +86,65 @@ class TestStartCommand(TestCase):
             call('arg1'),
             call('arg2'),
         ])
+
+    def test_validate_arguments(self):
+        init_args = {
+            'args': [
+                {
+                    'name': 'arg1',
+                }, {
+                    'name': 'arg2',
+                }
+            ],
+            'workflow': 'some workflow'
+
+        }
+
+        args_to_validate = {
+            'arg1': 'something',
+        }
+
+        start_command = StartCommand('some name', init_args)
+
+        # Default case.
+        start_command.validate_arguments(args_to_validate)
+
+        start_command.args = [StartCommandArgument({
+            'name': 'arg1',
+            'required': True,
+        }), StartCommandArgument({
+            'name': 'arg2',
+            'required': True,
+        })]
+
+        # Missing required argument
+        with self.assertRaisesRegex(InvalidArgumentsException, 'Argument arg2 is required'):
+            start_command.validate_arguments(args_to_validate)
+
+        args_to_validate = {
+            'arg1': 'something',
+            'arg2': ''
+        }
+
+        # Present but empty required argument
+        with self.assertRaisesRegex(InvalidArgumentsException, 'Argument arg2 is required'):
+            start_command.validate_arguments(args_to_validate)
+
+        start_command.args = [StartCommandArgument({
+            'name': 'arg1',
+            'choices': ['c1', 'c2']
+        })]
+
+        # Invalid choice
+        with self.assertRaisesRegex(InvalidArgumentsException, 'Argument arg1 must be one of'):
+            start_command.validate_arguments(args_to_validate)
+
+        args_to_validate = {
+            'arg1': 'c1'
+        }
+
+        # Valid choice
+        start_command.validate_arguments(args_to_validate)
 
 
 @patch("gobcore.workflow.start_commands.StartCommand")

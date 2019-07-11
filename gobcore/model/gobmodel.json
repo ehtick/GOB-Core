@@ -2187,7 +2187,7 @@
           },
           "heeft_brondocumenten": {
             "type": "GOB.ManyReference",
-            "ref": "bag:brondocumenten",
+            "ref": "wkpb:brondocumenten",
             "description": "De bron­d­o­cu­ment(en) behorende bij het dossier."
           }
         }

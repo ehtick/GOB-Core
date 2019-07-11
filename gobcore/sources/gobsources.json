@@ -281,10 +281,30 @@
           "destination_attribute": "dossier"
         }
       }
+    },
+    "wkpb": {
+      "beperkingen": {
+        "heeft_dossier": {
+          "method": "equals",
+          "destination_attribute": "dossier"
+        },
+        "heeft_voorgaande_beperking": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      }
     }
   },
   "Decos": {
     "bag": {
+      "dossiers": {
+        "heeft_brondocumenten": {
+          "method": "equals",
+          "destination_attribute": "documentnummer"
+        }
+      }
+    },
+    "wkpb": {
       "dossiers": {
         "heeft_brondocumenten": {
           "method": "equals",

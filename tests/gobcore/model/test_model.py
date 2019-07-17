@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from gobcore.exceptions import GOBException
 from gobcore.model import GOBModel
+from tests.gobcore.fixtures import random_string
 
 
 class TestModel(unittest.TestCase):
@@ -142,3 +143,38 @@ class TestModel(unittest.TestCase):
         for testcase in testcases:
             with self.assertRaisesRegexp(GOBException, "Invalid table name"):
                 model._split_table_name(testcase)
+
+    def test_get_collection_by_name(self):
+        model = GOBModel()
+        model._data = {
+            'cat_a': {
+                'collections': {
+                    'coll_a': 'collection a',
+                    'coll_b': 'collection b'
+                }
+            },
+            'cat_b': {
+                'collections': {
+                    'coll_a': 'second collection a'
+                }
+            }
+        }
+
+        # Success
+        res = model.get_collection_by_name('coll_b')
+        self.assertEqual(('cat_a', 'collection b'), res)
+
+        # Not found
+        self.assertIsNone(model.get_collection_by_name('nonexistent'))
+
+        # Multiple found
+        with self.assertRaises(GOBException):
+            model.get_collection_by_name('coll_a')
+
+    def test_catalog_collection_names_from_ref(self):
+        model = GOBModel()
+        model.split_ref = MagicMock()
+        ref = random_string()
+        result = model.get_catalog_collection_names_from_ref(ref)
+        model.split_ref.assert_called_with(ref)
+        self.assertEqual(model.split_ref.return_value, result)

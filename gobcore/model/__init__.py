@@ -134,6 +134,28 @@ class GOBModel():
         collections = self.get_collections(catalog_name)
         return collections[collection_name] if collections and collection_name in collections else None
 
+    def get_collection_by_name(self, collection_name):
+        """Finds collection only by name. Raises GOBException when multiple collections with name are found. Returns
+        (catalog, collection) tuple when success.
+
+        :param collection_name:
+        :return:
+        """
+        collections = []
+        catalog = None
+
+        for catalog_name in self._data.keys():
+            collection = self.get_collection(catalog_name, collection_name)
+
+            if collection:
+                collections.append(collection)
+                catalog = catalog_name
+
+        if len(collections) > 1:
+            raise GOBException(f"Multiple collections found with name {collection_name}")
+
+        return (catalog, collections[0]) if collections else None
+
     def get_functional_key_fields(self, catalog_name, collection_name):
         """
         Return the list of fieldnames that functionally identifies an entity
@@ -202,7 +224,7 @@ class GOBModel():
         return table_names
 
     def get_table_name(self, catalog_name, collection_name):
-        return f'{catalog_name}_{collection_name}'
+        return f'{catalog_name}_{collection_name}'.lower()
 
     def get_table_name_from_ref(self, ref):
         """Returns the table name from a reference
@@ -224,6 +246,9 @@ class GOBModel():
         if len(split_res) != 2 or not all([len(item) > 0 for item in split_res]):
             raise GOBException(f"Invalid reference {ref}")
         return split_res
+
+    def get_catalog_collection_names_from_ref(self, ref):
+        return self.split_ref(ref)
 
     def get_collection_from_ref(self, ref) -> dict:
         """Returns collection ref is referring to

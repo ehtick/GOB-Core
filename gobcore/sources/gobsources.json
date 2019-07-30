@@ -291,6 +291,10 @@
         "heeft_voorgaande_beperking": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "belast_kadastrale_objecten": {
+          "method": "equals",
+          "destination_attribute": "kadastrale_aanduiding"
         }
       }
     }

@@ -17,32 +17,19 @@ DERIVATION = {
 _startup = True  # Show relation warnings only on startup (first execution)
 
 
-def _get_relation(name, src_begin_geldigheid, dst_begin_geldigheid):
+def _get_relation(name):
     """
     Get the relation specification
 
     :param name: The name of the relation
-    :param src_begin_geldigheid: Source validity
-    :param dst_begin_geldigheid: Destination validity
     :return: The relation specification
     """
-
-    # Determine date type for validity, default to Date, if any is DateTime then use DateTime
-    date_type = "GOB.Date"
-    if src_begin_geldigheid:
-        date_type = src_begin_geldigheid['type']
-    if dst_begin_geldigheid and date_type != "GOB.DateTime":
-        date_type = dst_begin_geldigheid['type']
 
     return {
         "version": "0.1",
         "abbreviation": name,
         "entity_id": "id",
         "attributes": {
-            "source": {
-                "type": "GOB.String",
-                "description": DESCRIPTION[FIELD.SOURCE]
-            },
             "id": {
                 "type": "GOB.String",
                 "description": DESCRIPTION[FIELD.ID]
@@ -59,17 +46,13 @@ def _get_relation(name, src_begin_geldigheid, dst_begin_geldigheid):
                 "type": "GOB.String",
                 "description": DESCRIPTION[FIELD.SEQNR]
             },
+            f"{FIELD.SOURCE_VALUE}": {
+                "type": "GOB.String",
+                "description": DESCRIPTION[FIELD.SOURCE_VALUE]
+            },
             "derivation": {
                 "type": "GOB.String",
                 "description": "Describes the derivation logic for the relation (e.g. geometric, key compare, ..)"
-            },
-            FIELD.START_VALIDITY: {
-                "type": date_type,
-                "description": "Begin relation"
-            },
-            FIELD.END_VALIDITY: {
-                "type": date_type,
-                "description": "End relation"
             },
             f"dst{FIELD.SOURCE}": {
                 "type": "GOB.String",
@@ -210,9 +193,7 @@ def get_relations(model):
                         print(f"Skip {src_catalog_name}.{src_collection_name}.{reference_name} => " +
                               f"{dst_catalog_name}.{dst_collection_name}")
                     continue
-                src_begin_geldigheid = src['collection']['attributes'].get('begin_geldigheid')
-                dst_begin_geldigheid = dst['collection']['attributes'].get('begin_geldigheid')
-                relations["collections"][name] = _get_relation(name, src_begin_geldigheid, dst_begin_geldigheid)
+                relations["collections"][name] = _get_relation(name)
     _startup = False
     return relations
 

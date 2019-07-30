@@ -62,6 +62,7 @@ class GOBModel():
         for catalog_name, catalog in self._data.items():
             for entity_name, model in catalog['collections'].items():
                 model['references'] = self._extract_references(model['attributes'])
+                model['very_many_references'] = self._extract_very_many_references(model['attributes'])
 
                 self._set_api(catalog_name, entity_name, model)
 
@@ -106,7 +107,11 @@ class GOBModel():
 
     def _extract_references(self, attributes):
         return {field_name: spec for field_name, spec in attributes.items()
-                if spec['type'] in ['GOB.Reference', 'GOB.ManyReference']}
+                if spec['type'] in ['GOB.Reference', 'GOB.ManyReference', 'GOB.VeryManyReference']}
+
+    def _extract_very_many_references(self, attributes):
+        return {field_name: spec for field_name, spec in attributes.items()
+                if spec['type'] in ['GOB.VeryManyReference']}
 
     def get_inverse_relations(self):
         if not self.inverse_relations:

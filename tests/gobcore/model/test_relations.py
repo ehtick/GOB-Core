@@ -14,34 +14,20 @@ class TestRelations(unittest.TestCase):
         pass
 
     def test_relation(self):
-        global_attributes = ['source', 'id', 'derivation', 'begin_geldigheid', 'eind_geldigheid']
+        global_attributes = ['id', 'derivation', 'bronwaarde']
         src_attributes = ['src_id', 'src_source', 'src_volgnummer']
         dst_attributes = ['dst_id', 'dst_source', 'dst_volgnummer']
         attributes = global_attributes + src_attributes + dst_attributes
 
-        result = _get_relation("name", {'type': 'GOB.DateTime'}, {'type': 'GOB.Date'})
+        result = _get_relation("name")
         self.assertEqual(result['abbreviation'], "name")
         self.assertEqual(result['entity_id'], "id")
-        for validity in ['begin_geldigheid', 'eind_geldigheid']:
-            self.assertEqual(result['attributes'][validity]['type'], 'GOB.DateTime')
         self.assertEqual(len(result['attributes'].keys()), len(attributes))
+
         for attr in attributes:
             self.assertTrue(attr in result['attributes'])
             for prop in ['type', 'description']:
                 self.assertTrue(prop in result['attributes'][attr])
-
-        result = _get_relation("name", None, None)
-        for validity in ['begin_geldigheid', 'eind_geldigheid']:
-            self.assertEqual(result['attributes'][validity]['type'], 'GOB.Date')
-        self.assertEqual(len(result['attributes'].keys()), len(attributes))
-
-        result = _get_relation("name", {'type': 'GOB.Date'}, None)
-        for validity in ['begin_geldigheid', 'eind_geldigheid']:
-            self.assertEqual(result['attributes'][validity]['type'], 'GOB.Date')
-
-        result = _get_relation("name", None, {'type': 'GOB.Date'})
-        for validity in ['begin_geldigheid', 'eind_geldigheid']:
-            self.assertEqual(result['attributes'][validity]['type'], 'GOB.Date')
 
     def test_relation_name(self):
         model = mock.MagicMock()

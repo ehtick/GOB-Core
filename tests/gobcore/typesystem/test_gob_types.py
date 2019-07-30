@@ -308,8 +308,9 @@ class TestGobTypes(unittest.TestCase):
     def test_is_gob_json_type(self):
         json_types = [
             "GOB.JSON",
-            "GOB.ManyReference",
             "GOB.Reference",
+            "GOB.ManyReference",
+            "GOB.VeryManyReference",
         ]
         non_json_types = [t for t in _gob_types.keys() if t not in json_types]
 

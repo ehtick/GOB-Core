@@ -1481,6 +1481,10 @@
             "type": "GOB.String",
             "description": "De unieke aanduiding van een Kadastraal object."
           },
+          "kadastrale_aanduiding": {
+            "type": "GOB.String",
+            "description": "De unieke aanduiding van een Kadastraal Object samengesteld uit gemeentecode, kadastrale sectie, perceelnummer, indexletter en indexnummer."
+          },
           "aangeduid_door_gemeente": {
             "type": "GOB.Reference",
             "ref": "brk:gemeentes",
@@ -2109,11 +2113,14 @@
         "version": "0.1",
         "abbreviation": "BPG",
         "entity_id": "identificatie",
-        "has_states": true,
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
             "description": "Uniek num­mer waar­mee de be­per­king is ge­num­merd. (in Neu­ron ap­pli­ca­tie be­kend als inschrijfnummer)"
+          },
+          "volgnummer": {
+            "type": "GOB.String",
+            "description": "Volgnummer van de beperking."
           },
           "beperking": {
             "type": "GOB.JSON",
@@ -2128,7 +2135,7 @@
             "description": "Da­tum dat de be­per­king beëin­digd is."
           },
           "belast_kadastrale_objecten": {
-            "type": "GOB.ManyReference",
+            "type": "GOB.VeryManyReference",
             "ref": "brk:kadastraleobjecten",
             "description": "Het ka­das­traal ob­ject dat door een be­per­king wordt be­last."
           },

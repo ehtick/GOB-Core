@@ -21,6 +21,7 @@ class FIELD:
     DATE_DELETED = "_date_deleted"
     SOURCE = "_source"
     ID = "_id"
+    REFERENCE_ID = "id"
     APPLICATION = "_application"
     SOURCE_ID = "_source_id"
     LAST_EVENT = "_last_event"
@@ -29,6 +30,7 @@ class FIELD:
     REGISTRATION_DATE = "registratiedatum"
     HASH = "_hash"
     EXPIRATION_DATE = "_expiration_date"
+    SOURCE_VALUE = "bronwaarde"
 
 
 """Description of all fields that are automatically added to each entity"""
@@ -40,6 +42,7 @@ DESCRIPTION = {
     FIELD.DATE_DELETED: "Timestamp telling when the entity has last been deleted in GOB.",
     FIELD.SOURCE: "Functional source for the specific entity, eg the name of a department.",
     FIELD.ID: "Functional source id, a generic (independent from Stelselpedia) id field for every entity.",
+    FIELD.REFERENCE_ID: "Embedded id in reference fields. Links to the ID/Entity ID.",
     FIELD.APPLICATION: "Technical source for the specific entity, eg the name of a database.",
     FIELD.SOURCE_ID: "Technical source id, id of the entity in the above mentioned source application.",
     FIELD.LAST_EVENT: "Id of the last event that has been applied to this entity.",
@@ -48,6 +51,7 @@ DESCRIPTION = {
     FIELD.REGISTRATION_DATE: "De datum waarop de toestand is geregistreerd.",
     FIELD.HASH: "A hash of the values of all public fields for comparison",
     FIELD.EXPIRATION_DATE: "Timestamp telling when the entity will be or is expired.",
+    FIELD.SOURCE_VALUE: "The original source value, used to resolve references.",
 }
 
 """Meta data that is registered for every entity"""

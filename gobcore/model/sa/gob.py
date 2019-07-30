@@ -112,6 +112,7 @@ def _default_indexes_for_columns(input_columns: list) -> dict:
         (f"src_{FIELD.SEQNR}",),
         (f"dst{FIELD.ID}",),
         (f"dst_{FIELD.SEQNR}",),
+        (FIELD.SOURCE_VALUE,),
     ]
     result = {}
     for columns in default_indexes:

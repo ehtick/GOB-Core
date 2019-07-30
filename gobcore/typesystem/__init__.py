@@ -29,6 +29,7 @@ GOB_TYPES = [
     GOB.JSON,
     GOB.Reference,
     GOB.ManyReference,
+    GOB.VeryManyReference
 ]
 
 GOB_SECURE_TYPES = [

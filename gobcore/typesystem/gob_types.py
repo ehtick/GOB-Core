@@ -495,3 +495,7 @@ class ManyReference(Reference):
 
     def _filter_references(self, value):
         return [self._filter_reference(item) for item in json.loads(str(value))]
+
+
+class VeryManyReference(ManyReference):
+    name = "VeryManyReference"

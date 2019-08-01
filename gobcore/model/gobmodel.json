@@ -797,7 +797,7 @@
           "ligt_in_gemeente": {
             "type": "GOB.Reference",
             "description": "De gemeente waar het stadsdeel in ligt.",
-            "ref": "kadaster:gemeenten"
+            "ref": "brk:gemeentes"
           },
           "geometrie": {
             "type": "GOB.Geo.Polygon",
@@ -868,7 +868,7 @@
           },
           "ligt_in_gemeente": {
             "type": "GOB.Reference",
-            "ref": "kadaster:gemeenten",
+            "ref": "brk:gemeentes",
             "description": "De gemeente waarin de woonplaats ligt."
           },
           "heeft_dossier": {
@@ -2100,6 +2100,33 @@
             "type": "GOB.String",
             "description": "De AKR Code van dit aard zakelijk recht"
           }
+        }
+      },
+      "gemeentes": {
+        "version": "0.1",
+        "abbreviation": "GME",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "De unieke aanduiding van een ge­meen­te."
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "De of­fi­ciële vast­ge­stel­de gemeentenaam."
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De da­tum waar­op de ge­meen­te is ont­staan."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De da­tum waar­op de ge­meen­te is op­ge­he­ven."
+          },
+          "geometrie": {
+            "type": "GOB.Geo.Polygon",
+            "description": "Vorm en lig­ging van de ge­meen­te­grens in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
+          },
         }
       }
     }

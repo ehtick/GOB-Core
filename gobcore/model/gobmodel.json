@@ -2124,9 +2124,9 @@
             "description": "De da­tum waar­op de ge­meen­te is op­ge­he­ven."
           },
           "geometrie": {
-            "type": "GOB.Geo.Polygon",
+            "type": "GOB.Geo.Geometry",
             "description": "Vorm en lig­ging van de ge­meen­te­grens in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
-          },
+          }
         }
       }
     }

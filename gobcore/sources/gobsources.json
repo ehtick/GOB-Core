@@ -124,6 +124,12 @@
           "source_attribute": "geometrie",
           "destination_attribute": "geometrie"
         }
+      },
+      "stadsdelen": {
+        "ligt_in_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   },
@@ -162,6 +168,12 @@
           "source_attribute": "geometrie",
           "destination_attribute": "geometrie"
         }
+      },
+      "stadsdelen": {
+        "ligt_in_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   },
@@ -171,6 +183,10 @@
         "heeft_dossier": {
           "method": "equals",
           "destination_attribute": "dossier"
+        },
+        "ligt_in_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "standplaatsen": {
@@ -329,6 +345,10 @@
           "destination_attribute": "identificatie"
         },
         "is_ontstaan_uit_kadastraalobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "aangeduid_door_gemeente": {
           "method": "equals",
           "destination_attribute": "identificatie"
         }

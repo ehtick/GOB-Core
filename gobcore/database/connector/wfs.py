@@ -6,6 +6,7 @@ The following connectors are implemented in this module:
 """
 import requests
 
+
 def connect_to_wfs(url):
     """Connect to the datasource
 

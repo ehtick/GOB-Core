@@ -31,6 +31,7 @@ class FIELD:
     HASH = "_hash"
     EXPIRATION_DATE = "_expiration_date"
     SOURCE_VALUE = "bronwaarde"
+    SOURCE_INFO = "broninfo"
 
 
 """Description of all fields that are automatically added to each entity"""

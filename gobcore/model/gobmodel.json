@@ -1935,10 +1935,6 @@
             "ref": "brk:stukdelen",
             "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
           },
-          "aard_zakelijk_recht": {
-            "type": "GOB.JSON",
-            "description": "Aard zakelijk recht"
-          },
           "einddatum": {
             "type": "GOB.DateTime",
             "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."

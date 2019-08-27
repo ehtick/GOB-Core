@@ -373,6 +373,14 @@
         "betrokken_bij_zakelijkerechten": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "ontstaan_uit_appartementsrechtsplitsing_vve": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "betrokken_bij_appartementsrechtsplitsing_vve": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "tenaamstellingen": {

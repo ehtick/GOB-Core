@@ -8,7 +8,7 @@ The code in this module is based upon the example code in the pika docs.
 The code is modified to allow for asynchronous send and receive in parallel
 
 """
-
+import os
 import decimal
 import json
 import threading
@@ -309,8 +309,15 @@ class AsyncConnection(object):
                         result = message_handler(self, basic_deliver.exchange, queue, basic_deliver.routing_key, msg)
                     except Exception as e:
                         # Print error message, the message that caused the error and a short stacktrace
-                        stacktrace = traceback.format_exc(limit=-5)
+                        stacktrace = traceback.format_exc(limit=-10)
                         print(f"Message handling has failed: {str(e)}, message: {str(body)}", stacktrace)
+                        if basic_deliver.redelivered:
+                            # When a message is redelivered then remove the message from the queue
+                            print("Message handling has failed on second try, removing message")
+                        else:
+                            # Fatal fail program on first try
+                            print("Message handling has failed on first try, terminating program")
+                            os._exit(os.EX_TEMPFAIL)
 
                     if msg is not None:
                         # run fail-safe method to end the message

@@ -1,6 +1,5 @@
 import sys
 import time
-import traceback
 import threading
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
@@ -31,9 +30,8 @@ def _on_message(connection, service, msg):
         Heartbeat.progress(connection, service, msg, STATUS_OK)
     except Exception as err:
         Heartbeat.progress(connection, service, msg, STATUS_FAIL, str(err))
-        # Print error message, the message that caused the error and a short stacktrace
-        stacktrace = traceback.format_exc(limit=-5)
-        print("FATAL ERROR: Message processing has failed, further processing stopped", str(err), stacktrace)
+        # re-raise the exception, further handling is done in the message broker
+        raise err
 
     # If a report_queue is defined, report the result message (if any)
     if 'report' in service and result_msg is not None:

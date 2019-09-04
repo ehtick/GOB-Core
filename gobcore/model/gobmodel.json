@@ -2126,6 +2126,21 @@
             "description": "Vorm en lig­ging van de ge­meen­te­grens in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
           }
         }
+      },
+      "meta": {
+        "version": "0.1",
+        "abbreviation": "META",
+        "entity_id": "id",
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": ""
+          },
+          "kennisgevingsdatum": {
+            "type": "GOB.DateTime",
+            "description": "Toestandsdatum, d.i. de laatste aanmaakdatum van de BRK-berichten in de naar DIVA gerepliceerde BRK-levering."
+          }
+        }
       }
     }
   },

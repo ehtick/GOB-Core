@@ -978,7 +978,7 @@
           "      nag.documentnummer,",
           "      nag.status,",
           "      json_build_object(",
-          "        'identificatie', adresseert_verblijfsobject.identificatie",
+          "        'identificatie', adresseert_verblijfsobject.identificatie,",
           "        'volgnummer', adresseert_verblijfsobject.volgnummer",
           "      ) AS _ref_adresseert_verblijfsobject_bag_vot,",
           "      json_build_object(",

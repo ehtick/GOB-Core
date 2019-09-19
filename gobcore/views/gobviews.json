@@ -1280,7 +1280,7 @@
           "    SELECT ",
           "      bpg.identificatie,",
           "      kot.identificatie AS kadastraal_object,",
-          "      kot.aangeduid_door_kadastralegemeentecode->>'bronwaarde' AS aangeduid_door_kadastralegemeentecode,",
+          "      kot.aangeduid_door_kadastralegemeentecode->'broninfo'->>'omschrijving' AS aangeduid_door_kadastralegemeentecode,",
           "      kot.aangeduid_door_kadastralesectie->>'bronwaarde' AS aangeduid_door_kadastralesectie,",
           "      kot.perceelnummer,",
           "      kot.indexletter,",

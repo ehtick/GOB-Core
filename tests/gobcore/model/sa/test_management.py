@@ -1,6 +1,6 @@
 import unittest
 
-from gobcore.model.sa.management import Log, Service, ServiceTask, Job, JobStep, Task
+from gobcore.model.sa.management import Log, Service, ServiceTask, Job, JobStep, Task, AuditLog
 
 
 class TestManagement(unittest.TestCase):
@@ -11,6 +11,10 @@ class TestManagement(unittest.TestCase):
     def test_log(self):
         log = Log(msg="message contents")
         self.assertEqual(str(log), "<Msg message contents>")
+
+    def test_audit_log(self):
+        log = AuditLog(logid=2)
+        self.assertEqual(str(log), "<AuditLog 2>")
 
     def test_services(self):
         srv = Service(name="service name")

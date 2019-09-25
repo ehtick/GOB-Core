@@ -82,6 +82,20 @@ class Log(Base):
 Index("ix_logs_logid_desc", Log.logid.desc())
 
 
+class AuditLog(Base):
+    __tablename__ = 'audit_logs'
+
+    logid = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime)
+    type = Column(String)
+    source = Column(String)
+    destination = Column(String)
+    data = Column(JSON)
+
+    def __repr__(self):
+        return f'<AuditLog {self.logid}>'
+
+
 class Service(Base):
     """Service
 

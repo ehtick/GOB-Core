@@ -10,7 +10,7 @@ import time
 
 from gobcore.message_broker.message_broker import Connection
 from gobcore.message_broker.config import CONNECTION_PARAMS
-from gobcore.message_broker.config import LOG_EXCHANGE
+from gobcore.message_broker.config import LOG_EXCHANGE, AUDIT_LOG_EXCHANGE
 
 
 class LogPublisher():
@@ -20,18 +20,18 @@ class LogPublisher():
     _auto_disconnect_thread = None
     _auto_disconnect_timeout = 0
 
-    def __init__(self, connection_params=CONNECTION_PARAMS):
+    def __init__(self, connection_params=CONNECTION_PARAMS, exchange=LOG_EXCHANGE):
         # Register the connection params and log queue
         self._connection_params = connection_params
-        self._exchange = LOG_EXCHANGE
+        self._exchange = exchange
 
-    def publish(self, level, msg):
+    def publish(self, key, msg):
         # Acquire a lock for the connection
         with self._connection_lock:
             # Connect to the message broker, auto disconnect after timeout seconds
             self._auto_connect(timeout=2)
             # Publish the message
-            self._connection.publish(self._exchange, level, msg)
+            self._connection.publish(self._exchange, key, msg)
 
     def _auto_connect(self, timeout):
         self._auto_disconnect_timeout = timeout
@@ -60,3 +60,13 @@ class LogPublisher():
                 else:
                     self._disconnect()
                     break
+
+
+class AuditLogPublisher(LogPublisher):
+    REQUEST_KEY = 'request'
+
+    def __init__(self, connection_params=CONNECTION_PARAMS):
+        super().__init__(connection_params, AUDIT_LOG_EXCHANGE)
+
+    def publish_request(self, msg):
+        self.publish(self.REQUEST_KEY, msg)

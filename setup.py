@@ -9,7 +9,7 @@ setup(
     author_email='',
     license='MPL-2.0',
     install_requires=[
-        'pika',
+        'pika==0.12.0',
         'sqlalchemy==1.3.3',
         'geoalchemy2',
         'geomet',

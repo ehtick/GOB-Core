@@ -64,9 +64,13 @@ class LogPublisher():
 
 class AuditLogPublisher(LogPublisher):
     REQUEST_KEY = 'request'
+    RESPONSE_KEY = 'response'
 
     def __init__(self, connection_params=CONNECTION_PARAMS):
         super().__init__(connection_params, AUDIT_LOG_EXCHANGE)
 
     def publish_request(self, msg):
         self.publish(self.REQUEST_KEY, msg)
+
+    def publish_response(self, msg):
+        self.publish(self.RESPONSE_KEY, msg)

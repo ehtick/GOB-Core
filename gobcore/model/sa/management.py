@@ -91,6 +91,7 @@ class AuditLog(Base):
     source = Column(String)
     destination = Column(String)
     data = Column(JSON)
+    request_uuid = Column(String)
 
     def __repr__(self):
         return f'<AuditLog {self.logid}>'

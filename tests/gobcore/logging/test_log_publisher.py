@@ -81,3 +81,11 @@ class TestAuditLogPublisher(TestCase):
         msg = {'bogus': 'msg'}
         publisher.publish_request(msg)
         publisher.publish.assert_called_with('request', msg)
+
+    def test_publish_response(self):
+        publisher = AuditLogPublisher()
+        publisher.publish = MagicMock()
+
+        msg = {'bogus': 'msg'}
+        publisher.publish_response(msg)
+        publisher.publish.assert_called_with('response', msg)

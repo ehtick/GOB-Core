@@ -1890,6 +1890,10 @@
             "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
             "description": "Het Stuk­deel waar deze te­naam­stel­ling op ge­ba­seerd is."
+          },
+          "toestandsdatum": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
           }
         }
       },

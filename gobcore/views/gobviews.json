@@ -975,6 +975,7 @@
           "    SELECT",
           "      nag.identificatie,",
           "      nag.volgnummer,",
+          "      nag.registratiedatum,",
           "      nag.aanduiding_in_onderzoek,",
           "      nag.geconstateerd,",
           "      nag.huisnummer,",

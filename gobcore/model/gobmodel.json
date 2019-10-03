@@ -1471,14 +1471,11 @@
         "version": "0.1",
         "abbreviation": "ONW",
         "entity_id": "identificatie",
+        "has_states": true,
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
             "description": "Uniek iden­ti­fi­ce­rend ken­merk voor het ob­ject dat on­ver­an­der­lijk is zo­lang het ob­ject be­staat."
-          },
-          "volgnummer": {
-            "type": "GOB.Integer",
-            "description": "Volgnummer van het ob­ject."
           },
           "begin_geldigheid": {
             "type": "GOB.Date",
@@ -1487,10 +1484,6 @@
           "eind_geldigheid": {
             "type": "GOB.Date",
             "description": "Datum waarop het object bij de bronhouder niet meer geldig is."
-          },
-          "registratiedatum": {
-            "type": "GOB.DateTime",
-            "description": "Da­tum waar­op het object in de bron ge­re­gi­streerd is."
           },
           "relatieve_hoogteligging": {
             "type": "GOB.Integer",

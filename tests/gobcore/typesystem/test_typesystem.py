@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from gobcore.typesystem import get_modifications, get_value
+from gobcore.typesystem import get_modifications, get_value, is_gob_reference_type, GOB, _gob_types_dict
 
 
 class TestTypesystem(TestCase):
@@ -74,3 +74,10 @@ class TestTypesystem(TestCase):
             'k2': 'k2value',
             'k3': 'k3value',
         }, get_value(entity))
+
+    def test_is_reference_type(self):
+        for type_name in _gob_types_dict.keys():
+            is_reference_type = type_name in [GOB.Reference, GOB.ManyReference, GOB.VeryManyReference]
+            self.assertEqual(is_gob_reference_type(type_name), is_reference_type)
+        self.assertFalse(is_gob_reference_type("Any other string"))
+

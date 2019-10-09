@@ -85,6 +85,16 @@ def get_gob_type(name):
     return _gob_types_dict[name]
 
 
+def is_gob_reference_type(type_name):
+    """
+    Tels if type_name is the name of a GOB Reference type
+
+    :param type_name:
+    :return:
+    """
+    return type_name in [GOB.Reference, GOB.ManyReference, GOB.ManyReference]
+
+
 def is_gob_geo_type(name):
     """Returns a boolean value
 

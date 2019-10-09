@@ -76,8 +76,10 @@ class TestTypesystem(TestCase):
         }, get_value(entity))
 
     def test_is_reference_type(self):
-        for type_name in _gob_types_dict.keys():
-            is_reference_type = type_name in [GOB.Reference, GOB.ManyReference, GOB.VeryManyReference]
-            self.assertEqual(is_gob_reference_type(type_name), is_reference_type)
+        self.assertTrue(is_gob_reference_type("GOB.Reference"))
         self.assertFalse(is_gob_reference_type("Any other string"))
+        for type_name in _gob_types_dict.keys():
+            print(type_name)
+            is_reference_type = type_name in ['GOB.Reference', 'GOB.ManyReference', 'GOB.VeryManyReference']
+            self.assertEqual(is_gob_reference_type(type_name), is_reference_type)
 

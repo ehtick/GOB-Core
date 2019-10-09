@@ -92,7 +92,7 @@ def is_gob_reference_type(type_name):
     :param type_name:
     :return:
     """
-    return type_name in [GOB.Reference, GOB.ManyReference, GOB.ManyReference]
+    return type_name in [f"GOB.{t.name}" for t in [GOB.Reference, GOB.ManyReference, GOB.VeryManyReference]]
 
 
 def is_gob_geo_type(name):

@@ -41,6 +41,7 @@ DESCRIPTION = {
     FIELD.DATE_CONFIRMED: "Timestamp telling when the entity has last been confirmed in GOB.",
     FIELD.DATE_MODIFIED: "Timestamp telling when the entity has last been modified in GOB.",
     FIELD.DATE_DELETED: "Timestamp telling when the entity has last been deleted in GOB.",
+    FIELD.VERSION: "Version of the entity",
     FIELD.SOURCE: "Functional source for the specific entity, eg the name of a department.",
     FIELD.ID: "Functional source id, a generic (independent from Stelselpedia) id field for every entity.",
     FIELD.REFERENCE_ID: "Embedded id in reference fields. Links to the ID/Entity ID.",

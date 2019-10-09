@@ -1999,6 +1999,10 @@
           "einddatum": {
             "type": "GOB.DateTime",
             "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
+          },
+          "toestandsdatum": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
           }
         }
       },
@@ -2050,6 +2054,10 @@
           "einddatum": {
             "type": "GOB.DateTime",
             "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
+          },
+          "toestandsdatum": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
           }
         }
       },
@@ -2125,6 +2133,10 @@
           "deel_soort_stuk": {
             "type": "GOB.String",
             "description": "Iden­ti­fi­ca­tie van het stuk bin­nen zijn soort."
+          },
+          "toestandsdatum": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
           }
         }
       },

@@ -44,8 +44,7 @@
         "description": "The name of the data catalog (example: \"brk\")"
       }
     ],
-    "workflow": "import",
-    "start_step": "prepare"
+    "workflow": "prepare"
   },
   "export": {
     "description": "Start an export job for a collection",

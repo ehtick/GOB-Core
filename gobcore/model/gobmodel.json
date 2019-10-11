@@ -144,7 +144,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "Status van de meetbout (1=actueel, 2=niet te meten, 3=vervallen)"
+            "description": "Status van de meetbout (1=actueel, 2=niet te meten, 3=vervallen)",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "vervaldatum": {
             "type": "GOB.Date",
@@ -152,7 +160,15 @@
           },
           "merk": {
             "type": "GOB.JSON",
-            "description": "Merk"
+            "description": "Merk",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "x_coordinaat_muurvlak": {
             "type": "GOB.Decimal",
@@ -225,7 +241,15 @@
           },
           "wijze_van_inwinnen": {
             "type": "GOB.JSON",
-            "description": "Wijze waarop de meting is ingewonnen"
+            "description": "Wijze waarop de meting is ingewonnen",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "hoogte_tov_nap": {
             "type": "GOB.Decimal",
@@ -303,7 +327,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)"
+            "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "vervaldatum": {
             "type": "GOB.Date",
@@ -311,7 +343,15 @@
           },
           "merk": {
             "type": "GOB.JSON",
-            "description": "Merk van het referentiepunt"
+            "description": "Merk van het referentiepunt",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "x_coordinaat_muurvlak": {
             "type": "GOB.Decimal",
@@ -410,7 +450,15 @@
           },
           "merk": {
             "type": "GOB.JSON",
-            "description": "Merk van het referentiepunt"
+            "description": "Merk van het referentiepunt",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "omschrijving": {
             "type": "GOB.String",
@@ -439,7 +487,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)"
+            "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "vervaldatum": {
             "type": "GOB.Date",
@@ -864,7 +920,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "Levenscyclus van de woonplaats, Woonplaats aangewezen, Woonplaats ingetrokken."
+            "description": "Levenscyclus van de woonplaats, Woonplaats aangewezen, Woonplaats ingetrokken.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "ligt_in_gemeente": {
             "type": "GOB.Reference",
@@ -874,11 +938,19 @@
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -898,7 +970,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van de levenscyclus van een standplaats, waarin de betreffende standplaats zich bevindt, Plaats aangewezen, plaats ingetrokken."
+            "description": "De fase van de levenscyclus van een standplaats, waarin de betreffende standplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "heeft_hoofdadres": {
             "type": "GOB.Reference",
@@ -936,7 +1016,8 @@
           },
           "feitelijk_gebruik": {
             "type": "GOB.JSON",
-            "description": "Feitelijk gebruik van een standplaats."
+            "description": "Feitelijk gebruik van een standplaats.",
+            "attributes": {}
           },
           "ligt_in_buurt": {
             "type": "GOB.Reference",
@@ -946,11 +1027,19 @@
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -970,7 +1059,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van de levenscyclus van een ligplaats, waarin de betreffende ligplaats zich bevindt, Plaats aangewezen, plaats ingetrokken."
+            "description": "De fase van de levenscyclus van een ligplaats, waarin de betreffende ligplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "heeft_hoofdadres": {
             "type": "GOB.Reference",
@@ -1008,7 +1105,8 @@
           },
           "feitelijk_gebruik": {
             "type": "GOB.JSON",
-            "description": "Feitelijk gebruik van een ligplaats."
+            "description": "Feitelijk gebruik van een ligplaats.",
+            "attributes": {}
           },
           "ligt_in_buurt": {
             "type": "GOB.Reference",
@@ -1018,11 +1116,19 @@
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -1038,7 +1144,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De status van de levenscyclus van een openbare ruimte (Naamgeving uitgegeven, Naamgeving ingetrokken)."
+            "description": "De status van de levenscyclus van een openbare ruimte (Naamgeving uitgegeven, Naamgeving ingetrokken).",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
@@ -1058,7 +1172,15 @@
           },
           "type": {
             "type": "GOB.JSON",
-            "description": "De aard van de zodanig benoemde openbare ruimte (01 Weg, 02 Water, 03 Spoorbaan, 04 Terrein, 05 Kunstwerk, 06 Landschappelijk gebied, 07 Administratief gebied)"
+            "description": "De aard van de zodanig benoemde openbare ruimte (01 Weg, 02 Water, 03 Spoorbaan, 04 Terrein, 05 Kunstwerk, 06 Landschappelijk gebied, 07 Administratief gebied)",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1088,11 +1210,19 @@
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
@@ -1112,7 +1242,7 @@
           },
           "huisnummer": {
             "type": "GOB.Integer",
-            "description": "Een door het be­voeg­de ge­meen­te­lij­ke or­gaan ten aan­zien van een adres­seer­baar ob­ject toe­ge­ken­de num­me­ring."
+            "description": "Een door het bevoegde gemeentelijke orgaan ten aanzien van een adresseerbaar object toegekende nummering."
           },
           "geconstateerd": {
             "type": "GOB.Boolean",
@@ -1154,7 +1284,15 @@
           },
           "type_adresseerbaar_object": {
             "type": "GOB.JSON",
-            "description": "Het type adres­seer­baar ob­ject waar­aan een num­mer­aan­dui­ding is toe­ge­kend."
+            "description": "Het type adresseerbaar object waaraan een nummeraanduiding is toegekend.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1166,7 +1304,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van de le­vens­cy­clus van een num­mer­aan­dui­ding,waar­in de be­tref­fen­de num­mer­aan­dui­ding zich be­vindt. (Naamgeving uitgegeven, Naamgeving ingetrokken)."
+            "description": "De fase van de levenscyclus van een nummeraanduiding,waarin de betreffende nummeraanduiding zich bevindt. (Naamgeving uitgegeven, Naamgeving ingetrokken).",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "type_adres": {
             "type": "GOB.String",
@@ -1175,26 +1321,34 @@
           "adresseert_verblijfsobject": {
             "type": "GOB.Reference",
             "ref": "bag:verblijfsobjecten",
-            "description": "Het ver­blijfs­ob­ject (lan­de­lij­ke iden­ti­fi­ca­tie) dat door de num­mer­aan­dui­ding wordt aan­ge­duid."
+            "description": "Het verblijfsobject (landelijke identificatie) dat door de nummeraanduiding wordt aangeduid."
           },
           "adresseert_ligplaats": {
             "type": "GOB.Reference",
             "ref": "bag:ligplaatsen",
-            "description": "De lig­plaats (lan­de­lij­ke iden­ti­fi­ca­tie) die door de num­mer­aan­dui­ding wordt aan­ge­duid."
+            "description": "De ligplaats (landelijke identificatie) die door de nummeraanduiding wordt aangeduid."
           },
           "adresseert_standplaats": {
             "type": "GOB.Reference",
             "ref": "bag:standplaatsen",
-            "description": "De stand­plaats (lan­de­lij­ke iden­ti­fi­ca­tie) die door de num­mer­aan­dui­ding wordt aan­ge­duid."
+            "description": "De standplaats (landelijke identificatie) die door de nummeraanduiding wordt aangeduid."
           },
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -1228,7 +1382,8 @@
           },
           "gebruiksdoel": {
             "type": "GOB.JSON",
-            "description": "Een categorisering van de gebruiksdoelen van het betreffende verblijfsobject, zoals dit door de overheid als zodanig is toegestaan."
+            "description": "Een categorisering van de gebruiksdoelen van het betreffende verblijfsobject, zoals dit door de overheid als zodanig is toegestaan.",
+            "attributes": {}
           },
           "oppervlakte": {
             "type": "GOB.Integer",
@@ -1236,12 +1391,20 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van de levenscyclus van een verblijfsobject, waarin het betreffende VERBLIJFSOBJECT zich bevindt."
+            "description": "De fase van de levenscyclus van een verblijfsobject, waarin het betreffende VERBLIJFSOBJECT zich bevindt.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "ligt_in_panden": {
             "type": "GOB.ManyReference",
             "ref": "bag:panden",
-            "description": "De unie­ke lan­de­lij­ke aan­dui­din­gen van de pan­den waar­van het ver­blijfs­ob­ject on­der­deel uit­maakt."
+            "description": "De unieke landelijke aanduidingen van de panden waarvan het verblijfsobject onderdeel uitmaakt."
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
@@ -1249,7 +1412,7 @@
           },
           "eind_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De eind­da­tum van de gel­dig­heid van een be­paal­de com­bi­na­tie van ge­ge­vens over een VER­BLIJFS­OB­JECT."
+            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een VERBLIJFSOBJECT."
           },
           "aanduiding_in_onderzoek": {
             "type": "GOB.Boolean",
@@ -1265,15 +1428,17 @@
           },
           "gebruiksdoel_woonfunctie": {
             "type": "GOB.JSON",
-            "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject."
+            "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject.",
+            "attributes": {}
           },
           "gebruiksdoel_gezondheidszorgfunctie": {
             "type": "GOB.JSON",
-            "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject."
+            "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject.",
+            "attributes": {}
           },
           "aantal_eenheden_complex": {
             "type": "GOB.Integer",
-            "description": "Aantal eenheden complex per ver­blijfs­ob­ject (al­léén bij een spe­ci­a­le  woon­func­tie of ge­zond­heids­zorg­func­tie; zie ge­bruiks­doel-plus)."
+            "description": "Aantal eenheden complex per verblijfsobject (alléén bij een speciale  woonfunctie of gezondheidszorgfunctie; zie gebruiksdoel-plus)."
           },
           "verdieping_toegang": {
             "type": "GOB.Integer",
@@ -1285,49 +1450,90 @@
           },
           "hoogste_bouwlaag": {
             "type": "GOB.Integer",
-            "description": "Hoog­ste bouw­laag van een ver­blijfs­ob­ject."
+            "description": "Hoogste bouwlaag van een verblijfsobject."
           },
           "laagste_bouwlaag": {
             "type": "GOB.Integer",
-            "description": "Laagste bouw­laag van een ver­blijfs­ob­ject."
+            "description": "Laagste bouwlaag van een verblijfsobject."
           },
           "aantal_kamers": {
             "type": "GOB.Integer",
-            "description": "Geeft het aantal kamers aan bin­nen het ver­blijfs­ob­ject."
+            "description": "Geeft het aantal kamers aan binnen het verblijfsobject."
           },
           "eigendomsverhouding": {
             "type": "GOB.JSON",
-            "description": "Geeft de eigendomsverhouding aan (huur of eigendom)."
+            "description": "Geeft de eigendomsverhouding aan (huur of eigendom).",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "feitelijk_gebruik": {
             "type": "GOB.JSON",
-            "description": "Feitelijk gebruik van een verblijfsobject."
+            "description": "Feitelijk gebruik van een verblijfsobject.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "toegang": {
             "type": "GOB.JSON",
-            "description": "Plaats waar zich de toegang tot het verblijfsobject bevindt."
+            "description": "Plaats waar zich de toegang tot het verblijfsobject bevindt.",
+            "attributes": {}
           },
           "redenopvoer": {
             "type": "GOB.JSON",
-            "description": "Reden van de opvoer van het verblijfsobject."
+            "description": "Reden van de opvoer van het verblijfsobject.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "redenafvoer": {
             "type": "GOB.JSON",
-            "description": "Reden van de afvoer van het verblijfsobject."
+            "description": "Reden van de afvoer van het verblijfsobject.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "ligt_in_buurt": {
             "type": "GOB.Reference",
             "ref": "gebieden:buurten",
-            "description": "Buurt waar­in het ver­blijfs­ob­ject ligt."
+            "description": "Buurt waarin het verblijfsobject ligt."
           },
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -1355,7 +1561,15 @@
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van de levenscyclus van een pand, waarin het betreffende pand zich bevindt."
+            "description": "De fase van de levenscyclus van een pand, waarin het betreffende pand zich bevindt.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
@@ -1363,7 +1577,7 @@
           },
           "eind_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De eind­da­tum van de gel­dig­heid van een be­paal­de com­bi­na­tie van ge­ge­vens over een PAND."
+            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een PAND."
           },
           "aanduiding_in_onderzoek": {
             "type": "GOB.Boolean",
@@ -1379,11 +1593,19 @@
           },
           "naam": {
             "type": "GOB.String",
-            "description": "Naamgeving van een pand (bv. naam van me­tro­sta­ti­on of bij­zon­der ge­bouw)."
+            "description": "Naamgeving van een pand (bv. naam van metrostation of bijzonder gebouw)."
           },
           "ligging": {
             "type": "GOB.JSON",
-            "description": "Situering pand met verblijfsobject (vrijstaand, tussenwoning, etc.)."
+            "description": "Situering pand met verblijfsobject (vrijstaand, tussenwoning, etc.).",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "type_woonobject": {
             "type": "GOB.String",
@@ -1392,7 +1614,7 @@
           "ligt_in_bouwblok": {
             "type": "GOB.Reference",
             "ref": "gebieden:bouwblokken",
-            "description": "Het bouw­blok waar­in het pand ligt."
+            "description": "Het bouwblok waarin het pand ligt."
           },
           "aantal_bouwlagen": {
             "type": "GOB.Integer",
@@ -1400,20 +1622,28 @@
           },
           "hoogste_bouwlaag": {
             "type": "GOB.Integer",
-            "description": "Hoog­ste bouw­laag van een pand."
+            "description": "Hoogste bouwlaag van een pand."
           },
           "laagste_bouwlaag": {
             "type": "GOB.Integer",
-            "description": "Laagste bouw­laag van een pand."
+            "description": "Laagste bouwlaag van een pand."
           },
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "bag:dossiers",
-            "description": "Het dossier op ba­sis waar­van het ob­ject is toe­ge­voegd aan de re­gi­stra­tie."
+            "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
           },
           "bagproces": {
             "type": "GOB.JSON",
-            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis."
+            "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -1429,7 +1659,7 @@
           "heeft_brondocumenten": {
             "type": "GOB.ManyReference",
             "ref": "bag:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) behorende bij het dossier."
+            "description": "De brondocument(en) behorende bij het dossier."
           }
         }
       },
@@ -1440,23 +1670,47 @@
         "attributes": {
           "documentnummer": {
             "type": "GOB.String",
-            "description": "Iden­ti­fi­ce­ren­de num­mer van het do­cu­ment."
+            "description": "Identificerende nummer van het document."
           },
           "bronleverancier": {
             "type": "GOB.JSON",
-            "description": "Ver­strek­ker van bron­d­o­cu­men­ten en/​of ge­ge­vens voort­ko­mend uit het uit­oe­fe­nen of voor­be­rei­den van een ge­meen­te­lij­ke be­voegd­heid, die no­dig zijn voor een re­gi­stra­tie aan de bronhouder, con­form vast­ge­stel­de aan­le­ver­spe­ci­fi­ca­ties."
+            "description": "Verstrekker van brondocumenten en/​of gegevens voortkomend uit het uitoefenen of voorbereiden van een gemeentelijke bevoegdheid, die nodig zijn voor een registratie aan de bronhouder, conform vastgestelde aanleverspecificaties.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "type_dossier": {
             "type": "GOB.JSON",
-            "description": "Het type dossier."
+            "description": "Het type dossier.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "type_brondocument": {
             "type": "GOB.JSON",
-            "description": "Het type brondocument."
+            "description": "Het type brondocument.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "registratiedatum": {
             "type": "GOB.DateTime",
-            "description": "De datum waar­op het bron­d­o­cu­ment is op­ge­sla­gen in het re­gis­ter."
+            "description": "De datum waarop het brondocument is opgeslagen in het register."
           }
         }
       }
@@ -1475,11 +1729,11 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "Uniek iden­ti­fi­ce­rend ken­merk voor het ob­ject dat on­ver­an­der­lijk is zo­lang het ob­ject be­staat."
+            "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
           },
           "begin_geldigheid": {
             "type": "GOB.Date",
-            "description": "Da­tum waar op het ob­ject bij de bron­hou­der is ont­staan."
+            "description": "Datum waar op het object bij de bronhouder is ontstaan."
           },
           "eind_geldigheid": {
             "type": "GOB.Date",
@@ -1487,11 +1741,11 @@
           },
           "relatieve_hoogteligging": {
             "type": "GOB.Integer",
-            "description": "-2, -1, 0, 1, 2, 3 Aan­dui­ding voor de re­la­tie­ve hoog­te van het ob­ject ten op­zich­te van het maai­veld."
+            "description": "-2, -1, 0, 1, 2, 3 Aanduiding voor de relatieve hoogte van het object ten opzichte van het maaiveld."
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Mul­ti­vlak­ge­o­me­trie."
+            "description": "Multivlakgeometrie."
           }
         }
       },
@@ -1503,11 +1757,11 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "Uniek iden­ti­fi­ce­rend ken­merk voor het ob­ject dat on­ver­an­der­lijk is zo­lang het ob­ject be­staat."
+            "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
           },
           "begin_geldigheid": {
             "type": "GOB.Date",
-            "description": "Da­tum waar op het ob­ject bij de bron­hou­der is ont­staan."
+            "description": "Datum waar op het object bij de bronhouder is ontstaan."
           },
           "eind_geldigheid": {
             "type": "GOB.Date",
@@ -1515,11 +1769,11 @@
           },
           "relatieve_hoogteligging": {
             "type": "GOB.Integer",
-            "description": "-2, -1, 0, 1, 2, 3 Aan­dui­ding voor de re­la­tie­ve hoog­te van het ob­ject ten op­zich­te van het maai­veld."
+            "description": "-2, -1, 0, 1, 2, 3 Aanduiding voor de relatieve hoogte van het object ten opzichte van het maaiveld."
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Mul­ti­vlak­ge­o­me­trie."
+            "description": "Multivlakgeometrie."
           }
         }
       }
@@ -1556,7 +1810,7 @@
           "aangeduid_door_kadastralegemeente": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralegemeentes",
-            "description": "De ka­das­tra­le ge­meen­te, het eer­ste ge­deel­te van de aan­dui­ding van een ka­das­traal ob­ject."
+            "description": "De kadastrale gemeente, het eerste gedeelte van de aanduiding van een kadastraal object."
           },
           "aangeduid_door_kadastralegemeentecode": {
             "type": "GOB.Reference",
@@ -1566,15 +1820,15 @@
           "aangeduid_door_kadastralesectie": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralesecties",
-            "description": "De ka­das­tra­le sec­tie, het twee­de ge­deel­te van de aan­dui­ding van een ka­das­traal ob­ject."
+            "description": "De kadastrale sectie, het tweede gedeelte van de aanduiding van een kadastraal object."
           },
           "perceelnummer": {
             "type": "GOB.Integer",
-            "description": "Een nu­me­rie­ke aan­dui­ding van het ka­das­tra­le per­ceel per sec­tie, deel van de ka­das­tra­le aan­dui­ding van de on­roe­ren­de zaak."
+            "description": "Een numerieke aanduiding van het kadastrale perceel per sectie, deel van de kadastrale aanduiding van de onroerende zaak."
           },
           "indexletter": {
             "type": "GOB.Character",
-            "description": "Let­ter Ka­das­traal ob­ject, dit geeft een in­di­ca­tie voor het type ob­ject. G Grond perceel. A Appartementsrecht"
+            "description": "Letter Kadastraal object, dit geeft een indicatie voor het type object. G Grond perceel. A Appartementsrecht"
           },
           "indexnummer": {
             "type": "GOB.Integer",
@@ -1586,19 +1840,36 @@
           },
           "soort_grootte": {
             "type": "GOB.JSON",
-            "description": "Aanduiding van soort grootte"
+            "description": "Aanduiding van soort grootte",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "grootte": {
             "type": "GOB.Decimal",
-            "description": "De groot­te van een ka­das­traal ob­ject is de op­per­vlak­te van het ka­das­tra­le per­ceel. Dit kan bij een deel­per­ceel een ge­schat­te groot­te zijn."
+            "description": "De grootte van een kadastraal object is de oppervlakte van het kadastrale perceel. Dit kan bij een deelperceel een geschatte grootte zijn."
           },
           "soort_cultuur_bebouwd": {
             "type": "GOB.JSON",
-            "description": "De soort cultuur bebouwd is een aanduiding voor de aard van de soort cultuur van een bebouwd kadastraal object, weergegeven als ‘omschrijving kadastraal object’ in Mijn.kadaster.nl (Kadaster-on-line; KOL). Dit kenmerk is afgeleid van de notariële akte (artikel 87, eerste lid, onder a, van de Kadasterregeling 1994). Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR."
+            "description": "De soort cultuur bebouwd is een aanduiding voor de aard van de soort cultuur van een bebouwd kadastraal object, weergegeven als ‘omschrijving kadastraal object’ in Mijn.kadaster.nl (Kadaster-on-line; KOL). Dit kenmerk is afgeleid van de notariële akte (artikel 87, eerste lid, onder a, van de Kadasterregeling 1994). Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR.",
+            "attributes": {}
           },
           "soort_cultuur_onbebouwd": {
             "type": "GOB.JSON",
-            "description": "De soort cultuur onbebouwd is een aan­dui­ding voor de aard van de meest sig­ni­fi­can­te cul­tuur van het on­be­bouw­de deel van het ka­das­traal ob­ject, weer­ge­ge­ven als ‘om­schrij­ving ka­das­traal ob­jec­t’ in Mijn.ka­das­ter.nl Dit ken­merk is in be­gin­sel af­ge­leid van de no­ta­riële akte, maar kan wor­den bij­ge­steld op grond van een ver­zoek van de ei­ge­naar (of een schrif­te­lijk ge­vol­mach­tig­de na­mens de ei­ge­naar)per brief, fax of e-mail­be­richt. Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR."
+            "description": "De soort cultuur onbebouwd is een aanduiding voor de aard van de meest significante cultuur van het onbebouwde deel van het kadastraal object, weergegeven als ‘omschrijving kadastraal object’ in Mijn.kadaster.nl Dit kenmerk is in beginsel afgeleid van de notariële akte, maar kan worden bijgesteld op grond van een verzoek van de eigenaar (of een schriftelijk gevolmachtigde namens de eigenaar)per brief, fax of e-mailbericht. Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "status": {
             "type": "GOB.Character",
@@ -1606,23 +1877,31 @@
           },
           "geometrie": {
             "type": "GOB.Geo.Polygon",
-            "description": "Vorm en lig­ging van de ka­das­tra­le sec­tie in het stel­sel van de Rijks­drie­hoeks­me­ting (RD)"
+            "description": "Vorm en ligging van de kadastrale sectie in het stelsel van de Rijksdriehoeksmeting (RD)"
           },
           "plaatscoordinaten": {
             "type": "GOB.Geo.Geometry",
-            "description": "De aan­dui­ding van een kaart­punt voor de weer­ga­ve van de iden­ti­fi­ca­tie van een per­ceel (cen­tro­ï­de)"
+            "description": "De aanduiding van een kaartpunt voor de weergave van de identificatie van een perceel (centroïde)"
           },
           "perceelnummer_rotatie": {
             "type": "GOB.Decimal",
-            "description": "Ro­ta­tie van het per­ceel­num­mer ten be­hoe­ve van af­beel­ding op de kaart. Per­ceel­num­mers wor­den bij­voor­beeld ge­kan­teld om in een smal per­ceel te pas­sen"
+            "description": "Rotatie van het perceelnummer ten behoeve van afbeelding op de kaart. Perceelnummers worden bijvoorbeeld gekanteld om in een smal perceel te passen"
           },
           "perceelnummer_verschuiving": {
             "type": "GOB.JSON",
-            "description": "Co­ör­di­na­ten voor het ver­schui­ven van het per­ceel­num­mer op de kaart naar een lo­ca­tie waar meer ruim­te is om het num­mer af te beel­den"
+            "description": "Coördinaten voor het verschuiven van het perceelnummer op de kaart naar een locatie waar meer ruimte is om het nummer af te beelden",
+            "attributes": {
+              "x": {
+                "type": "GOB.Decimal"
+              },
+              "y": {
+                "type": "GOB.Decimal"
+              }
+            }
           },
           "bijpijling_geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Vorm en lig­ging van de bij­p­ijling (de puur gra­fi­sche lijn tus­sen het per­ceel en het per­ceel­num­mer)  in het stel­sel van de Rijks­drie­hoeks­me­ting (RD)"
+            "description": "Vorm en ligging van de bijpijling (de puur grafische lijn tussen het perceel en het perceelnummer)  in het stelsel van de Rijksdriehoeksmeting (RD)"
           },
           "indicatie_voorlopige_geometrie": {
             "type": "GOB.Character",
@@ -1630,11 +1909,11 @@
           },
           "koopsom": {
             "type": "GOB.Integer",
-            "description": "Het in een ter in­schrij­ving aan­ge­bo­den stuk ver­mel­de be­drag, waar­voor 1 of meer on­roe­ren­de za­ken zijn ver­kre­gen."
+            "description": "Het in een ter inschrijving aangeboden stuk vermelde bedrag, waarvoor 1 of meer onroerende zaken zijn verkregen."
           },
           "koopsom_valutacode": {
             "type": "GOB.String",
-            "description": "Aan­dui­ding van de va­lu­ta­soort ge­bruikt bij de koop"
+            "description": "Aanduiding van de valutasoort gebruikt bij de koop"
           },
           "koopjaar": {
             "type": "GOB.String",
@@ -1642,7 +1921,7 @@
           },
           "indicatie_meer_objecten": {
             "type": "GOB.Character",
-            "description": "In­di­ca­tie dat de koop­som be­trek­king heeft op meer dan 1 ka­das­traal ob­ject"
+            "description": "Indicatie dat de koopsom betrekking heeft op meer dan 1 kadastraal object"
           },
           "toestandsdatum": {
             "type": "GOB.DateTime",
@@ -1658,11 +1937,11 @@
           },
           "in_onderzoek": {
             "type": "GOB.String",
-            "description": "Als dit veld is ge­vuld geeft dit de omschrijving waarom dit gegeven in onderzoek staat (art. 7n en 7r Kadasterwet)."
+            "description": "Als dit veld is gevuld geeft dit de omschrijving waarom dit gegeven in onderzoek staat (art. 7n en 7r Kadasterwet)."
           },
           "is_ontstaan_uit_g_perceel": {
             "type": "GOB.ManyReference",
-            "description": "Dit veld is al­léén ge­vuld wan­neer het be­schre­ven ka­das­tra­le ob­ject een A-per­ceel be­treft.",
+            "description": "Dit veld is alléén gevuld wanneer het beschreven kadastrale object een A-perceel betreft.",
             "ref": "brk:kadastraleobjecten"
           },
           "heeft_een_relatie_met_verblijfsobject": {
@@ -1689,7 +1968,7 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "De Ka­das­ter iden­ti­fi­ca­tie is een door het Ka­das­ter toe­ge­ken­de lan­de­lijk uniek num­mer aan dit za­ke­lijk recht bin­nen de ka­das­tra­le re­gi­stra­tie."
+            "description": "De Kadaster identificatie is een door het Kadaster toegekende landelijk uniek nummer aan dit zakelijk recht binnen de kadastrale registratie."
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
@@ -1702,17 +1981,17 @@
           "belast_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
-            "description": "Dit za­ke­lijk recht be­last de vol­gen­de Aard­za­ke­lijk­rech­ten"
+            "description": "Dit zakelijk recht belast de volgende Aardzakelijkrechten"
           },
           "belast_met_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
-            "description": "Dit za­ke­lijk recht is be­last met de vol­gen­de Aard­za­ke­lijk­rech­ten"
+            "description": "Dit zakelijk recht is belast met de volgende Aardzakelijkrechten"
           },
           "ontstaan_uit_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
-            "description": "Als deze waar­de is ge­vuld, dan is dit recht ont­staan uit een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
+            "description": "Als deze waarde is gevuld, dan is dit recht ontstaan uit een appartementssplitsing, die hier met zijn identificerende kenmerk aangegeven wordt (VVE)"
           },
           "ontstaan_uit_appartementsrechtsplitsing_vve": {
             "type": "GOB.Reference",
@@ -1722,7 +2001,7 @@
           "betrokken_bij_zakelijkerechten": {
             "type": "GOB.ManyReference",
             "ref": "brk:zakelijkerechten",
-            "description": "Als deze waar­de is ge­vuld, dan is dit recht be­trok­ken bij een ap­par­te­ments­split­sing, die hier met zijn iden­ti­fi­ce­ren­de ken­merk aan­ge­ge­ven wordt (VVE)"
+            "description": "Als deze waarde is gevuld, dan is dit recht betrokken bij een appartementssplitsing, die hier met zijn identificerende kenmerk aangegeven wordt (VVE)"
           },
           "betrokken_bij_appartementsrechtsplitsing_vve": {
             "type": "GOB.Reference",
@@ -1731,7 +2010,7 @@
           },
           "is_beperkt_tot": {
             "type": "GOB.Integer",
-            "description": "Is be­perkt tot te­naam­stel­ling, dat wil zeg­gen is be­perkt tot een sub­ject"
+            "description": "Is beperkt tot tenaamstelling, dat wil zeggen is beperkt tot een subject"
           },
           "rust_op_kadastraalobject": {
             "type": "GOB.Reference",
@@ -1744,19 +2023,35 @@
           },
           "appartementsrechtsplitsingtype": {
             "type": "GOB.JSON",
-            "description": "Het type appartementsrechtsplitsing. De mogelijke waarden zijn: hoofdsplitsing of ondersplitsing of splitsing afkoop erfpacht."
+            "description": "Het type appartementsrechtsplitsing. De mogelijke waarden zijn: hoofdsplitsing of ondersplitsing of splitsing afkoop erfpacht.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "einddatum_appartementsrechtsplitsing": {
             "type": "GOB.String",
-            "description": "Eind­da­tum van de appartementsrechtsplitsing"
+            "description": "Einddatum van de appartementsrechtsplitsing"
           },
           "indicatie_actueel_appartementsrechtsplitsing": {
             "type": "GOB.String",
-            "description": "In­di­ca­tie van de ac­tu­a­li­teit van de appartementsrechtsplitsing"
+            "description": "Indicatie van de actualiteit van de appartementsrechtsplitsing"
           },
           "aard_zakelijk_recht": {
             "type": "GOB.JSON",
-            "description": "De aard van het zakelijk recht"
+            "description": "De aard van het zakelijk recht",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "akr_aard_zakelijk_recht": {
             "type": "GOB.String",
@@ -1779,20 +2074,28 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "Het aan dit sub­ject toe­ge­ken­de lan­de­lijk unie­ke num­mer"
+            "description": "Het aan dit subject toegekende landelijk unieke nummer"
           },
           "type_subject": {
             "type": "GOB.String",
-            "description": "Af­ge­leid ge­ge­ven. Is het sub­ject een na­tuur­lijk per­soon of een niet-na­tuur­lijk per­soon"
+            "description": "Afgeleid gegeven. Is het subject een natuurlijk persoon of een niet-natuurlijk persoon"
           },
           "beschikkingsbevoegdheid": {
             "type": "GOB.JSON",
-            "description": "Aanduiding van de beschikkingsbevoegdheid van een persoon."
+            "description": "Aanduiding van de beschikkingsbevoegdheid van een persoon.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "heeft_bsn_voor": {
             "type": "GOB.Reference",
             "ref": "brp:personen",
-            "description": "Het bur­ger­ser­vi­ce­num­mer, be­doeld in ar­ti­kel 1.1 van de Wet al­ge­me­ne be­pa­lin­gen bur­ger­ser­vi­ce­num­mer."
+            "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer."
           },
           "voornamen": {
             "type": "GOB.String",
@@ -1808,89 +2111,226 @@
           },
           "geslacht": {
             "type": "GOB.JSON",
-            "description": "Geslacht van het geregistreerd persoon. Dit kenmerk kent een domein voor als de persoon in de BRP voorkomt en een domein voor als de persoon niet in de BRP voorkomt."
+            "description": "Geslacht van het geregistreerd persoon. Dit kenmerk kent een domein voor als de persoon in de BRP voorkomt en een domein voor als de persoon niet in de BRP voorkomt.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "naam_gebruik": {
             "type": "GOB.JSON",
-            "description": "Aanduiding naam gebruik"
+            "description": "Aanduiding naam gebruik",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "geboortedatum": {
             "type": "GOB.String",
-            "description": "De da­tum waar­op een na­tuur­lijk per­soon is ge­bo­ren. Deze da­tum kan on­vol­le­dig zijn (al­leen jaar, of al­leen jaar en maand be­kend)."
+            "description": "De datum waarop een natuurlijk persoon is geboren. Deze datum kan onvolledig zijn (alleen jaar, of alleen jaar en maand bekend)."
           },
           "geboorteplaats": {
             "type": "GOB.String",
-            "description": "De ge­boor­te­plaats is een plaats­aan­dui­ding, die aan­geeft waar de na­tuur­lij­ke per­soon ge­bo­ren is."
+            "description": "De geboorteplaats is een plaatsaanduiding, die aangeeft waar de natuurlijke persoon geboren is."
           },
           "geboorteland": {
             "type": "GOB.JSON",
-            "description": "Geboorteland is een aanduiding van het land waar de natuurlijke persoon geboren is."
+            "description": "Geboorteland is een aanduiding van het land waar de natuurlijke persoon geboren is.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "datum_overlijden": {
             "type": "GOB.String",
-            "description": "De over­lij­dens­da­tum is de da­tum waar­op een na­tuur­lijk per­soon is over­le­den."
+            "description": "De overlijdensdatum is de datum waarop een natuurlijk persoon is overleden."
           },
           "indicatie_overleden": {
             "type": "GOB.String",
-            "description": "In­di­ca­tie of de per­soon al dan niet over­le­den is. De da­tum van over­lij­den is soms niet be­kend, maar wel dat ie­mand over­le­den is. Dat is uit dit at­tri­buut af te lei­den."
+            "description": "Indicatie of de persoon al dan niet overleden is. De datum van overlijden is soms niet bekend, maar wel dat iemand overleden is. Dat is uit dit attribuut af te leiden."
           },
           "voornamen_partner": {
             "type": "GOB.String",
-            "description": "Voor­na(a)m(en) van de ge­rig­streer­de part­ner"
+            "description": "Voorna(a)m(en) van de gerigstreerde partner"
           },
           "voorvoegsels_partner": {
             "type": "GOB.String",
-            "description": "Voor­voeg­sel van de ge­re­gi­streer­de part­ner"
+            "description": "Voorvoegsel van de geregistreerde partner"
           },
           "geslachtsnaam_partner": {
             "type": "GOB.String",
-            "description": "Ge­slachts­na(a)m(en) van de ge­re­gi­streer­de part­ner"
+            "description": "Geslachtsna(a)m(en) van de geregistreerde partner"
           },
           "heeft_rsin_voor": {
             "type": "GOB.Reference",
             "ref": "hr:nietnatuurlijkepersonen",
-            "description": "Het Rechts­per­so­nen Sa­men­wer­king Iden­ti­fi­ca­tie Num­mer uit het Han­dels­re­gis­ter."
+            "description": "Het Rechtspersonen Samenwerking Identificatie Nummer uit het Handelsregister."
           },
           "heeft_kvknummer_voor": {
             "type": "GOB.Reference",
             "ref": "hr:maatschappelijkeactiviteiten",
-            "description": "Het KvK-num­mer uit het Han­dels­re­gis­ter."
+            "description": "Het KvK-nummer uit het Handelsregister."
           },
           "rechtsvorm": {
             "type": "GOB.JSON",
-            "description": "De juridische vorm van een niet-natuurlijk persoon."
+            "description": "De juridische vorm van een niet-natuurlijk persoon.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "statutaire_naam": {
             "type": "GOB.String",
-            "description": "De naam van de rechts­per­soon. Het be­treft de naam die is op­ge­no­men in de op­rich­tings­ak­te."
+            "description": "De naam van de rechtspersoon. Het betreft de naam die is opgenomen in de oprichtingsakte."
           },
           "statutaire_zetel": {
             "type": "GOB.String",
-            "description": "De sta­tu­tai­re plaats van ves­ti­ging."
+            "description": "De statutaire plaats van vestiging."
           },
           "woonadres": {
             "type": "GOB.JSON",
-            "description": "BAG: Verblijfsobject / Standplaats / Ligplaats"
+            "description": "BAG: Verblijfsobject / Standplaats / Ligplaats",
+            "attributes": {
+              "adresseerbaar_object": {
+                "type": "GOB.String"
+              },
+              "openbare_ruimte": {
+                "type": "GOB.String"
+              },
+              "huisnummer": {
+                "type": "GOB.Integer"
+              },
+              "huisletter": {
+                "type": "GOB.String"
+              },
+              "huisnummer_toevoeging": {
+                "type": "GOB.String"
+              },
+              "postcode": {
+                "type": "GOB.String"
+              },
+              "woonplaats": {
+                "type": "GOB.String"
+              }
+            }
           },
           "land_waarnaar_vertrokken": {
             "type": "GOB.JSON",
-            "description": "Land waar naar ver­trok­ken"
+            "description": "Land waar naar vertrokken",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "woonadres_buitenland": {
             "type": "GOB.JSON",
-            "description": "Buitenlands adres"
+            "description": "Buitenlands adres",
+            "attributes": {
+              "adres": {
+                "type": "GOB.String"
+              },
+              "woonplaats": {
+                "type": "GOB.String"
+              },
+              "regio": {
+                "type": "GOB.String"
+              },
+              "naam": {
+                "type": "GOB.String"
+              },
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "postadres": {
             "type": "GOB.JSON",
-            "description": ""
+            "description": "",
+            "attributes": {
+              "adresseerbaar_object": {
+                "type": "GOB.String"
+              },
+              "openbare_ruimte": {
+                "type": "GOB.String"
+              },
+              "huisnummer": {
+                "type": "GOB.Integer"
+              },
+              "huisletter": {
+                "type": "GOB.String"
+              },
+              "huisnummer_toevoeging": {
+                "type": "GOB.String"
+              },
+              "postcode": {
+                "type": "GOB.String"
+              },
+              "woonplaats": {
+                "type": "GOB.String"
+              }
+            }
           },
           "postadres_buitenland": {
             "type": "GOB.JSON",
-            "description": ""
+            "description": "",
+            "attributes": {
+              "adres": {
+                "type": "GOB.String"
+              },
+              "woonplaats": {
+                "type": "GOB.String"
+              },
+              "regio": {
+                "type": "GOB.String"
+              },
+              "naam": {
+                "type": "GOB.String"
+              },
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "postadres_postbus": {
             "type": "GOB.JSON",
-            "description": ""
+            "description": "",
+            "attributes": {
+              "nummer": {
+                "type": "GOB.String"
+              },
+              "postcode": {
+                "type": "GOB.String"
+              },
+              "woonplaatsnaam": {
+                "type": "GOB.String"
+              }
+            }
           }
         }
       },
@@ -1905,7 +2345,7 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "De iden­ti­fi­ca­tie is een uniek num­mer aan deze te­naam­stel­ling bin­nen de ka­das­tra­le re­gi­stra­tie."
+            "description": "De identificatie is een uniek nummer aan deze tenaamstelling binnen de kadastrale registratie."
           },
           "volgnummer": {
             "type": "GOB.Integer",
@@ -1914,7 +2354,7 @@
           "van_kadastraalsubject": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralesubjecten",
-            "description": "Het Sub­ject waar­voor deze te­naam­stel­ling geldt."
+            "description": "Het Subject waarvoor deze tenaamstelling geldt."
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
@@ -1926,19 +2366,51 @@
           },
           "aandeel": {
             "type": "GOB.JSON",
-            "description": "Aan­deel in Recht is het aan­deel waar­voor een per­soon deel­neemt in het Recht"
+            "description": "Aandeel in Recht is het aandeel waarvoor een persoon deelneemt in het Recht",
+            "attributes": {
+              "teller": {
+                "type": "GOB.Integer"
+              },
+              "noemer": {
+                "type": "GOB.Integer"
+              }
+            }
           },
           "geldt_voor": {
             "type": "GOB.JSON",
-            "description": "Twee of meer personen kunnen gezamenlijk een aandeel hebben in een recht, waarbij het afzonderlijke aandeel in het gezamenlijk aandeel niet bekend is (als gezamenlijkAandeel bekend is dan is het individuele aandeel niet bekend en omgekeerd)."
+            "description": "Twee of meer personen kunnen gezamenlijk een aandeel hebben in een recht, waarbij het afzonderlijke aandeel in het gezamenlijk aandeel niet bekend is (als gezamenlijkAandeel bekend is dan is het individuele aandeel niet bekend en omgekeerd).",
+            "attributes": {
+              "teller": {
+                "type": "GOB.Integer"
+              },
+              "noemer": {
+                "type": "GOB.Integer"
+              }
+            }
           },
           "burgerlijke_staat_ten_tijde_van_verkrijging": {
             "type": "GOB.JSON",
-            "description": "De bur­ger­lij­ke staat is een aan­dui­ding voor de leef­vorm van een per­soon, zo­als deze vol­gens het bron­d­o­cu­ment ten tij­de van de ver­krij­ging van het recht be­stond. Leef­vorm van een per­soon heeft be­trek­king op hu­we­lijk c.q. ge­re­gi­streerd part­ner­schap."
+            "description": "De burgerlijke staat is een aanduiding voor de leefvorm van een persoon, zoals deze volgens het brondocument ten tijde van de verkrijging van het recht bestond. Leefvorm van een persoon heeft betrekking op huwelijk c.q. geregistreerd partnerschap.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "verkregen_namens_samenwerkingsverband": {
             "type": "GOB.JSON",
-            "description": "De aard van het sa­men­wer­kings­ver­band (zo­als Maat­schap, VOF of CV) na­mens wel­ke een na­tuur­lijk per­soon deze te­naam­stel­ling heeft ver­kre­gen."
+            "description": "De aard van het samenwerkingsverband (zoals Maatschap, VOF of CV) namens welke een natuurlijk persoon deze tenaamstelling heeft verkregen.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "in_onderzoek": {
             "type": "GOB.String",
@@ -1947,12 +2419,12 @@
           "van_zakelijkrecht": {
             "type": "GOB.Reference",
             "ref": "brk:zakelijkerechten",
-            "description": "Het Za­ke­lijk recht waar­over deze te­naam­stel­ling gaat."
+            "description": "Het Zakelijk recht waarover deze tenaamstelling gaat."
           },
           "is_gebaseerd_op_stukdeel": {
             "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
-            "description": "Het Stuk­deel waar deze te­naam­stel­ling op ge­ba­seerd is."
+            "description": "Het Stukdeel waar deze tenaamstelling op gebaseerd is."
           },
           "toestandsdatum": {
             "type": "GOB.DateTime",
@@ -1971,34 +2443,42 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "Het aan deze aan­te­ke­ning toe­ge­ken­de lan­de­lijk unie­ke num­mer."
+            "description": "Het aan deze aantekening toegekende landelijk unieke nummer."
           },
           "aard": {
             "type": "GOB.JSON",
-            "description": "De aard van de aantekening."
+            "description": "De aard van de aantekening.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "omschrijving": {
             "type": "GOB.String",
-            "description": "Om­schrij­ving bij de aan­te­ke­ning"
+            "description": "Omschrijving bij de aantekening"
           },
           "betrokken_tenaamstelling": {
             "type": "GOB.ManyReference",
             "ref": "brk:tenaamstellingen",
-            "description": "Iden­ti­fi­ca­tie van de be­trok­ken te­naam­stel­ling"
+            "description": "Identificatie van de betrokken tenaamstelling"
           },
           "heeft_betrokken_persoon": {
             "type": "GOB.ManyReference",
             "ref": "brk:kadastralesubjecten",
-            "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
+            "description": "Identificatie van het betrokken subject"
           },
           "is_gebaseerd_op_stukdeel": {
             "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
-            "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
+            "description": "Identificatie van het betrokken stukdeel"
           },
           "einddatum": {
             "type": "GOB.DateTime",
-            "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
+            "description": "Einddatum geeft aan wanneer een bepaalde aantekening volgens het ingeschreven stuk niet langer meer rechtsgeldig is."
           },
           "toestandsdatum": {
             "type": "GOB.DateTime",
@@ -2026,34 +2506,42 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan deze aan­te­ke­ning."
+            "description": "Het door het Kadaster toegekende landelijk unieke nummer aan deze aantekening."
           },
           "aard": {
             "type": "GOB.JSON",
-            "description": "De aard van de aantekening"
+            "description": "De aard van de aantekening",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "omschrijving": {
             "type": "GOB.String",
-            "description": "Om­schrij­ving bij de aan­te­ke­ning"
+            "description": "Omschrijving bij de aantekening"
           },
           "heeft_betrokken_persoon": {
             "type": "GOB.ManyReference",
             "ref": "brk:kadastralesubjecten",
-            "description": "Iden­ti­fi­ca­tie van het be­trok­ken sub­ject"
+            "description": "Identificatie van het betrokken subject"
           },
           "heeft_betrekking_op_kadastraal_object": {
             "type": "GOB.Reference",
             "ref": "brk:kadastraleobjecten",
-            "description": "Iden­ti­fi­ca­tie van het ka­das­tra­le ob­ject (on­roe­ren­de zaak)"
+            "description": "Identificatie van het kadastrale object (onroerende zaak)"
           },
           "is_gebaseerd_op_stukdeel": {
             "type": "GOB.ManyReference",
             "ref": "brk:stukdelen",
-            "description": "Iden­ti­fi­ca­tie van het be­trok­ken stuk­deel"
+            "description": "Identificatie van het betrokken stukdeel"
           },
           "einddatum": {
             "type": "GOB.DateTime",
-            "description": "Eind­da­tum geeft aan wan­neer een be­paal­de aan­te­ke­ning vol­gens het in­ge­schre­ven stuk niet lan­ger meer rechts­gel­dig is."
+            "description": "Einddatum geeft aan wanneer een bepaalde aantekening volgens het ingeschreven stuk niet langer meer rechtsgeldig is."
           },
           "toestandsdatum": {
             "type": "GOB.DateTime",
@@ -2072,30 +2560,46 @@
           },
           "identificatie": {
             "type": "GOB.String",
-            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan het stuk­deel."
+            "description": "Het door het Kadaster toegekende landelijk unieke nummer aan het stukdeel."
           },
           "aard": {
             "type": "GOB.JSON",
-            "description": "Aanduiding voor de aard van een deel van het ter inschrijving aangeboden stuk (rechtsfeit)."
+            "description": "Aanduiding voor de aard van een deel van het ter inschrijving aangeboden stuk (rechtsfeit).",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "bedrag_transactie": {
             "type": "GOB.JSON",
-            "description": "Het in een ter in­schrij­ving aan­ge­bo­den stuk ver­mel­de be­drag, waar­voor 1 of meer on­roe­ren­de za­ken zijn ver­kre­gen."
+            "description": "Het in een ter inschrijving aangeboden stuk vermelde bedrag, waarvoor 1 of meer onroerende zaken zijn verkregen.",
+            "attributes": {
+              "bedrag": {
+                "type": "GOB.Decimal"
+              },
+              "valuta": {
+                "type": "GOB.String"
+              }
+            }
           },
           "is_bron_voor_tenaamstelling": {
             "type": "GOB.ManyReference",
             "ref": "brk:tenaamstellingen",
-            "description": "Geeft weer wel­ke te­naam­stel­ling is ont­staan op ba­sis van dit stuk­deel"
+            "description": "Geeft weer welke tenaamstelling is ontstaan op basis van dit stukdeel"
           },
           "is_bron_voor_aantekening_kadastraal_object": {
             "type": "GOB.ManyReference",
             "ref": "brk:aantekeningenkadastraleobjecten",
-            "description": "Geeft weer wel­ke aan­te­ke­ning kadastraal object is ont­staan op ba­sis van dit stuk­deel"
+            "description": "Geeft weer welke aantekening kadastraal object is ontstaan op basis van dit stukdeel"
           },
           "is_bron_voor_aantekening_recht": {
             "type": "GOB.ManyReference",
             "ref": "brk:aantekeningenrechten",
-            "description": "Geeft weer wel­ke aan­te­ke­ning recht is ont­staan op ba­sis van dit stuk­deel"
+            "description": "Geeft weer welke aantekening recht is ontstaan op basis van dit stukdeel"
           },
           "is_bron_voor_zakelijk_recht": {
             "type": "GOB.ManyReference",
@@ -2104,19 +2608,19 @@
           },
           "stukidentificatie": {
             "type": "GOB.String",
-            "description": "Het door het Ka­das­ter toe­ge­ken­de lan­de­lijk unie­ke num­mer aan het stuk."
+            "description": "Het door het Kadaster toegekende landelijk unieke nummer aan het stuk."
           },
           "portefeuillenummer_akr": {
             "type": "GOB.String",
-            "description": "Por­te­feuil­le­num­mer toe­ge­kend aan het stuk in het AKR-sys­teem."
+            "description": "Portefeuillenummer toegekend aan het stuk in het AKR-systeem."
           },
           "tijdstip_aanbieding_stuk": {
             "type": "GOB.String",
-            "description": "Het tijd­stip waar­op een ter in­schrij­ving aan­ge­bo­den stuk is ont­van­gen met in­acht­ne­ming van de ope­nings­tij­den en -da­gen van het Ka­das­ter. Als tijd­stip van in­schrij­ving geldt het tijd­stip van aan­bie­ding van de voor de in­schrij­ving ver­eis­te stuk­ken."
+            "description": "Het tijdstip waarop een ter inschrijving aangeboden stuk is ontvangen met inachtneming van de openingstijden en -dagen van het Kadaster. Als tijdstip van inschrijving geldt het tijdstip van aanbieding van de voor de inschrijving vereiste stukken."
           },
           "reeks": {
             "type": "GOB.String",
-            "description": "Ver­wij­zing naar de oorspronkelijke (mogelijk tussentijds vervallen) Kadastervestiging waar het stuk oor­spron­ke­lijk is in­ge­schre­ven."
+            "description": "Verwijzing naar de oorspronkelijke (mogelijk tussentijds vervallen) Kadastervestiging waar het stuk oorspronkelijk is ingeschreven."
           },
           "volgnummer_stuk": {
             "type": "GOB.Integer",
@@ -2124,15 +2628,31 @@
           },
           "registercode_stuk": {
             "type": "GOB.JSON",
-            "description": "Het soort register, aan­ge­duid met een code."
+            "description": "Het soort register, aangeduid met een code.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "soort_register_stuk": {
             "type": "GOB.JSON",
-            "description": "Het register waar­van een ter in­schrij­ving aan­ge­bo­den stuk deel uit­maakt."
+            "description": "Het register waarvan een ter inschrijving aangeboden stuk deel uitmaakt.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "deel_soort_stuk": {
             "type": "GOB.String",
-            "description": "Iden­ti­fi­ca­tie van het stuk bin­nen zijn soort."
+            "description": "Identificatie van het stuk binnen zijn soort."
           },
           "toestandsdatum": {
             "type": "GOB.DateTime",
@@ -2178,23 +2698,23 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "De unieke aanduiding van een ge­meen­te."
+            "description": "De unieke aanduiding van een gemeente."
           },
           "naam": {
             "type": "GOB.String",
-            "description": "De of­fi­ciële vast­ge­stel­de gemeentenaam."
+            "description": "De officiële vastgestelde gemeentenaam."
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De da­tum waar­op de ge­meen­te is ont­staan."
+            "description": "De datum waarop de gemeente is ontstaan."
           },
           "eind_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De da­tum waar­op de ge­meen­te is op­ge­he­ven."
+            "description": "De datum waarop de gemeente is opgeheven."
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Vorm en lig­ging van de ge­meen­te­grens in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
+            "description": "Vorm en ligging van de gemeentegrens in het stelsel van de Rijksdriehoekmeting (RD)."
           }
         }
       },
@@ -2251,7 +2771,7 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "Uniek num­mer waar­mee de be­per­king is ge­num­merd. (in Neu­ron ap­pli­ca­tie be­kend als inschrijfnummer)"
+            "description": "Uniek nummer waarmee de beperking is genummerd. (in Neuron applicatie bekend als inschrijfnummer)"
           },
           "volgnummer": {
             "type": "GOB.String",
@@ -2259,20 +2779,28 @@
           },
           "beperking": {
             "type": "GOB.JSON",
-            "description": "De omschrijving van de beperking."
+            "description": "De omschrijving van de beperking.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "Da­tum waar­op de be­per­king in wer­king treedt."
+            "description": "Datum waarop de beperking in werking treedt."
           },
           "eind_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "Da­tum dat de be­per­king beëin­digd is."
+            "description": "Datum dat de beperking beëindigd is."
           },
           "belast_kadastrale_objecten": {
             "type": "GOB.VeryManyReference",
             "ref": "brk:kadastraleobjecten",
-            "description": "Het ka­das­traal ob­ject dat door een be­per­king wordt be­last."
+            "description": "Het kadastraal object dat door een beperking wordt belast."
           },
           "documentnummer": {
             "type": "GOB.String",
@@ -2281,7 +2809,7 @@
           "heeft_dossier": {
             "type": "GOB.Reference",
             "ref": "wkpb:dossiers",
-            "description": "Het dossier dat aan de sta­dia van de be­per­king ten grond­slag ligt."
+            "description": "Het dossier dat aan de stadia van de beperking ten grondslag ligt."
           },
           "datum_bekendmaking": {
             "type": "GOB.Date",
@@ -2289,32 +2817,56 @@
           },
           "aard": {
             "type": "GOB.JSON",
-            "description": "De aard van de handeling die op de beperking heeft plaatsgevonden."
+            "description": "De aard van de handeling die op de beperking heeft plaatsgevonden.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "orgaan": {
             "type": "GOB.JSON",
-            "description": "Het orgaan dat de beperking heeft opgelegd."
+            "description": "Het orgaan dat de beperking heeft opgelegd.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "persoonsgegevens_afschermen": {
             "type": "GOB.Boolean",
-            "description": "Aan­dui­ding dat de per­soons­ge­ge­vens moe­ten wor­den af­ge­schermd."
+            "description": "Aanduiding dat de persoonsgegevens moeten worden afgeschermd."
           },
           "heeft_voorgaande_beperking": {
             "type": "GOB.Reference",
             "ref": "wkpb:beperkingen",
-            "description": "Bij het wij­zi­gen, ver­len­gen en beëin­di­gen van een be­per­king staat hier de iden­ti­fi­ca­tie van de voor­gaan­de be­per­king."
+            "description": "Bij het wijzigen, verlengen en beëindigen van een beperking staat hier de identificatie van de voorgaande beperking."
           },
           "registratiedatum": {
             "type": "GOB.DateTime",
-            "description": "Da­tum waar­op het ge­ge­ven in de bron ge­re­gi­streerd is."
+            "description": "Datum waarop het gegeven in de bron geregistreerd is."
           },
           "status": {
             "type": "GOB.JSON",
-            "description": "De fase van het pro­ces waar­in de be­per­king zich be­vindt."
+            "description": "De fase van het proces waarin de beperking zich bevindt.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Twee­di­men­si­o­na­le lig­ging, groot­te en vorm waar­op de be­per­king vol­gens het be­sluit rust."
+            "description": "Tweedimensionale ligging, grootte en vorm waarop de beperking volgens het besluit rust."
           }
         }
       },
@@ -2330,7 +2882,7 @@
           "heeft_brondocumenten": {
             "type": "GOB.ManyReference",
             "ref": "wkpb:brondocumenten",
-            "description": "De bron­d­o­cu­ment(en) behorende bij het dossier."
+            "description": "De brondocument(en) behorende bij het dossier."
           }
         }
       },
@@ -2341,11 +2893,11 @@
         "attributes": {
           "documentnummer": {
             "type": "GOB.String",
-            "description": "Nummer van het bron­d­o­cu­ment."
+            "description": "Nummer van het brondocument."
           },
           "registratiedatum": {
             "type": "GOB.DateTime",
-            "description": "De datum waar­op het bron­d­o­cu­ment is op­ge­sla­gen in het re­gis­ter."
+            "description": "De datum waarop het brondocument is opgeslagen in het register."
           }
         }
       }

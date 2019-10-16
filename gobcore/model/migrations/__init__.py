@@ -52,7 +52,35 @@ class GOBMigrations():
         except KeyError:
             return None
 
-    def _apply_migration(self, data, migration):
+    def _rename_column(self, event, data, old_key, new_key):
+        """
+        Rename a column in event data. Based on the event.action the data should be converted.
+
+        :param event:
+        :param data:
+        :param old_key:
+        :param new_key:
+        :return:
+        """
+        if event.action == 'ADD':
+            # Rename the column
+            data['entity'][new_key] = data['entity'].pop(old_key)
+        elif event.action == 'MODIFY':
+            # Rename the column in modifications
+            for modification in data.get('modifications'):
+                if modification.get('key') == old_key:
+                    modification['key'] = new_key
+
+    def _apply_migration(self, event, data, migration):
+        """
+        Apply a migration on an event by converting the data based on all conversion in the migration
+
+        :param event:
+        :param data:
+        :param old_key:
+        :param new_key:
+        :return:
+        """
         for conversion in migration['conversions']:
             if conversion.get('action') == 'rename':
                 old_key = conversion.get('old_column')
@@ -60,36 +88,35 @@ class GOBMigrations():
 
                 assert all([old_key, new_key]), "Invalid conversion definition"
 
-                # Rename the column
-                data['entity'][new_key] = data['entity'].pop(old_key)
+                self._rename_column(event, data, old_key, new_key)
             else:
                 raise NotImplementedError(f"Conversion {conversion['action']} not implemented")
 
-        # Update the entity version to the new version
-        data['entity'][FIELD.VERSION] = migration['target_version']
+        # update the event version
+        event.version = migration['target_version']
 
         return data
 
-    def migrate_event_data(self, data, catalog_name, collection_name, target_version):
+    def migrate_event_data(self, event, data, catalog_name, collection_name, target_version):
         """
         Migrate data to the target version
 
+        :param event:
         :param data:
         :param catalog_name:
         :param collection_name:
         :param target_version:
         :return:
         """
-        while data['entity'][FIELD.VERSION] != target_version:
-            current_version = data['entity'][FIELD.VERSION]
-            migration = self._get_migration(catalog_name, collection_name, current_version)
+        while event.version != target_version:
+            migration = self._get_migration(catalog_name, collection_name, event.version)
 
             if not migration:
-                logger.error(f"No migration found for {catalog_name}, {collection_name} {current_version}")
+                logger.error(f"No migration found for {catalog_name}, {collection_name} {event.version}")
                 raise GOBException(
                     f"Not able to migrate event for {catalog_name}, {collection_name} to version {target_version}"
                 )
             # Apply all conversions on the data
-            data = self._apply_migration(data, migration)
+            self._apply_migration(event, data, migration)
 
         return data

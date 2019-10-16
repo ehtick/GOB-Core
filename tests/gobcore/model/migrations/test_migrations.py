@@ -5,10 +5,18 @@ from gobcore.exceptions import GOBException
 from gobcore.model.migrations import GOBMigrations
 
 
+class MockEvent():
+
+    def __init__(self, action, version):
+        self.action = action
+        self.version = version
+
+
 class TestMigrations(unittest.TestCase):
 
     def setUp(self):
         self.migrations = GOBMigrations()
+        self.add_event = MockEvent('ADD', '0.1')
         self.mock_migration = {
             'target_version': '0.2',
             'conversions': [
@@ -34,25 +42,63 @@ class TestMigrations(unittest.TestCase):
         # Assert an empty list is returned if no migration is found
         self.assertEqual(self.migrations._get_migration('catalog', 'collection', '0.1'), None)
 
-    def test_apply_migration(self):
-        # Assert an empty list is returned if no migration is found
+    def test_apply_migration_add(self):
+        # Test if a column has been renamed in event data
         data = {
             'entity': {
-                'old': 'value',
-                '_version': '0.1'
+                'old': 'value'
             }
         }
 
         expected_data = {
             'entity': {
-                'new': 'value',
-                '_version': '0.2'
+                'new': 'value'
             }
         }
 
-        result = self.migrations._apply_migration(data, self.mock_migration)
+        result = self.migrations._apply_migration(self.add_event, data, self.mock_migration)
 
         self.assertEqual(result, expected_data)
+        self.assertEqual(self.add_event.version, '0.2')
+
+    def test_apply_migration_modify(self):
+        # Test if a column has been renamed in event data
+        modify_event = MockEvent('MODIFY', '0.1')
+
+        data = {
+            'modifications': [
+                {
+                    'key': 'old',
+                    'old_value': 'test',
+                    'new_value': 'modify'
+                },
+                {
+                    'key': 'other_key',
+                    'old_value': 'test',
+                    'new_value': 'modify'
+                },
+            ]
+        }
+
+        expected_data = {
+            'modifications': [
+                {
+                    'key': 'new',
+                    'old_value': 'test',
+                    'new_value': 'modify'
+                },
+                {
+                    'key': 'other_key',
+                    'old_value': 'test',
+                    'new_value': 'modify'
+                },
+            ]
+        }
+
+        result = self.migrations._apply_migration(modify_event, data, self.mock_migration)
+
+        self.assertEqual(result, expected_data)
+        self.assertEqual(modify_event.version, '0.2')
 
     def test_apply_migration_not_implemented(self):
         # Assert migration fails for notimplemented action
@@ -68,7 +114,7 @@ class TestMigrations(unittest.TestCase):
         data = {}
 
         with self.assertRaises(NotImplementedError):
-            result = self.migrations._apply_migration(data, not_implemented_mock_migration)
+            result = self.migrations._apply_migration(self.add_event, data, not_implemented_mock_migration)
 
     @patch('gobcore.model.migrations.logger', MagicMock())
     @patch('gobcore.model.migrations.GOBMigrations._get_migration')
@@ -78,20 +124,18 @@ class TestMigrations(unittest.TestCase):
         data = {
             'entity': {
                 'old': 'value',
-                '_version': '0.1'
             }
         }
 
         expected_data = {
             'entity': {
                 'new': 'value',
-                '_version': '0.2'
             }
         }
 
-        self.migrations.migrate_event_data(data, 'catalog', 'collection', '0.2')
+        result = self.migrations.migrate_event_data(self.add_event, data, 'catalog', 'collection', '0.2')
 
-        self.assertEqual(data, expected_data)
+        self.assertEqual(result, expected_data)
 
 
     @patch('gobcore.model.migrations.logger', MagicMock())
@@ -113,20 +157,18 @@ class TestMigrations(unittest.TestCase):
         data = {
             'entity': {
                 'old': 'value',
-                '_version': '0.1'
             }
         }
 
         expected_data = {
             'entity': {
                 'extra_new': 'value',
-                '_version': '0.3'
             }
         }
 
-        self.migrations.migrate_event_data(data, 'catalog', 'collection', '0.3')
+        result = self.migrations.migrate_event_data(self.add_event, data, 'catalog', 'collection', '0.3')
 
-        self.assertEqual(data, expected_data)
+        self.assertEqual(result, expected_data)
 
     @patch('gobcore.model.migrations.logger')
     @patch('gobcore.model.migrations.GOBMigrations._get_migration')
@@ -136,10 +178,9 @@ class TestMigrations(unittest.TestCase):
         data = {
             'entity': {
                 'old': 'value',
-                '_version': '0.1'
             }
         }
 
         with self.assertRaises(GOBException):
-            self.migrations.migrate_event_data(data, 'catalog', 'collection', '0.3')
+            self.migrations.migrate_event_data(self.add_event, data, 'catalog', 'collection', '0.3')
             mock_logger.assert_called()

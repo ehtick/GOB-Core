@@ -111,6 +111,10 @@ def _default_indexes_for_columns(input_columns: list) -> dict:
         (f"dst{FIELD.ID}",),
         (f"dst_{FIELD.SEQNR}",),
         (FIELD.SOURCE_VALUE,),
+        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.DATE_DELETED),
+        (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}", FIELD.DATE_DELETED),
+        (FIELD.ID, FIELD.SEQNR, FIELD.EXPIRATION_DATE),
+        (FIELD.GOBID, FIELD.EXPIRATION_DATE),
     ]
     result = {}
     for columns in default_indexes:

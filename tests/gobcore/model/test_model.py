@@ -85,6 +85,29 @@ class TestModel(unittest.TestCase):
         self.assertEqual("idvalue.1", self.model.get_source_id(entity, spec))
         self.model.has_states.assert_called_with('meetbouten', 'meetbouten')
 
+    def test_source_id_states_other_seqnr_field(self):
+        self.model.has_states = MagicMock(return_value=True)
+
+        entity = {
+            'idfield': 'idvalue',
+            'nummervolg': '1'
+        }
+        spec = {
+            'catalogue': 'meetbouten',
+            'entity': 'meetbouten',
+            'source': {
+                'entity_id': 'idfield'
+            },
+            'gob_mapping': {
+                'volgnummer': {
+                    'source_mapping': 'nummervolg'
+                }
+            }
+        }
+
+        self.assertEqual("idvalue.1", self.model.get_source_id(entity, spec))
+        self.model.has_states.assert_called_with('meetbouten', 'meetbouten')
+
     def test_set_api(self):
         model = {}
         self.model._set_api('meetbouten', 'meetbouten', model)
@@ -280,4 +303,3 @@ class TestModel(unittest.TestCase):
         self.assertEqual(expected, model._data)
         mock_print.assert_called_once()
         self.assertTrue(mock_print.call_args[0][0].startswith('ERROR: failed to load schema'))
-

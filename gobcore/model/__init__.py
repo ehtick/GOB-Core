@@ -230,8 +230,14 @@ class GOBModel():
         source_id_field = input_spec['source']['entity_id']
         source_id = str(entity[source_id_field])
         if self.has_states(input_spec['catalogue'], input_spec['entity']):
+            # Volgnummer could be a different field in the source entity than FIELD.SEQNR
+            try:
+                seqnr_field = input_spec['gob_mapping'][FIELD.SEQNR]['source_mapping']
+            except KeyError:
+                seqnr_field = FIELD.SEQNR
+
             # Source id + volgnummer is source id
-            source_id = f"{source_id}.{entity[FIELD.SEQNR]}"
+            source_id = f"{source_id}.{entity[seqnr_field]}"
         return source_id
 
     def get_reference_by_abbreviations(self, catalog_abbreviation, collection_abbreviation):

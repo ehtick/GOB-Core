@@ -25,6 +25,8 @@ HEARTBEAT_INTERVAL = 60     # Send a heartbeat every 60 seconds
 STATUS_START = "started"
 STATUS_OK = "ended"
 STATUS_FAIL = "failed"
+STATUS_SCHEDULED = "scheduled"
+STATUS_END = STATUS_OK
 
 
 def _is_heartbeat_thread(t: threading.Thread) -> bool:

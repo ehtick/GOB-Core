@@ -96,25 +96,21 @@ def _default_indexes_for_columns(input_columns: list) -> dict:
     :return:
     """
     default_indexes = [
-        (FIELD.SOURCE, FIELD.SOURCE_ID,),
-        (FIELD.SEQNR,),
-        (FIELD.APPLICATION,),
         (FIELD.ID,),
         (FIELD.GOBID,),
-        (FIELD.SOURCE_ID,),
-        (FIELD.START_VALIDITY,),
-        (FIELD.END_VALIDITY,),
         (FIELD.DATE_DELETED,),
         (FIELD.EXPIRATION_DATE,),
         (f"src{FIELD.ID}",),
         (f"src_{FIELD.SEQNR}",),
         (f"dst{FIELD.ID}",),
         (f"dst_{FIELD.SEQNR}",),
-        (FIELD.SOURCE_VALUE,),
         (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.DATE_DELETED),
         (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}", FIELD.DATE_DELETED),
         (FIELD.ID, FIELD.SEQNR, FIELD.EXPIRATION_DATE),
         (FIELD.GOBID, FIELD.EXPIRATION_DATE),
+        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.SOURCE, FIELD.SOURCE_VALUE, FIELD.DATE_DELETED,
+         FIELD.APPLICATION),
+        (FIELD.APPLICATION, FIELD.START_VALIDITY, FIELD.END_VALIDITY),
     ]
     result = {}
     for columns in default_indexes:

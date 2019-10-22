@@ -30,7 +30,13 @@
       },
       {
         "name": "application",
-        "description": "The name of the application to import from"
+        "description": "The name of the application to import from",
+        "default": ""
+      },
+      {
+        "name": "mode",
+        "description": "The import mode: full (default) or random, last5days, ....",
+        "default": "full"
       }
     ],
     "workflow": "import"

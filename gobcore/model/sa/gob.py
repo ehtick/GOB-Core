@@ -190,10 +190,6 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection, 
                             FIELD.DATE_DELETED],
             }
 
-            indexes[name]["type"] = _get_special_column_type(
-                dst_collection['all_fields'][relation['destination_attribute']]['type']
-            )
-
     return indexes
 
 

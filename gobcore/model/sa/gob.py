@@ -3,6 +3,8 @@
 SQLAlchemy GOB Models
 
 """
+import hashlib
+
 import re
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,6 +20,9 @@ Base = declarative_base()
 
 model = GOBModel()
 sources = GOBSources()
+
+TABLE_TYPE_RELATION = 'relation_table'
+TABLE_TYPE_ENTITY = 'entity_table'
 
 
 def get_column(column_name, column_specification):
@@ -89,7 +94,7 @@ def _remove_leading_underscore(s: str):
     return re.sub(r'^_', '', s)
 
 
-def _default_indexes_for_columns(input_columns: list) -> dict:
+def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
     """Returns applicable indexes for table with input_columns
 
     :param input_columns:
@@ -98,20 +103,31 @@ def _default_indexes_for_columns(input_columns: list) -> dict:
     default_indexes = [
         (FIELD.ID,),
         (FIELD.GOBID,),
-        (FIELD.DATE_DELETED,),
-        (FIELD.EXPIRATION_DATE,),
-        (f"src{FIELD.ID}",),
-        (f"src_{FIELD.SEQNR}",),
-        (f"dst{FIELD.ID}",),
-        (f"dst_{FIELD.SEQNR}",),
+        (FIELD.DATE_DELETED),
+        (FIELD.EXPIRATION_DATE, FIELD.DATE_DELETED),
+        (FIELD.ID, FIELD.SEQNR, FIELD.EXPIRATION_DATE),
+    ]
+
+    entity_table_indexes = [
+        (FIELD.ID, FIELD.SEQNR),
+    ]
+
+    relation_table_indexes = [
+        (FIELD.GOBID, FIELD.EXPIRATION_DATE),
+        (FIELD.ID, f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", f"src_{FIELD.SOURCE}", FIELD.SOURCE_VALUE,
+         FIELD.DATE_DELETED, FIELD.APPLICATION),
+        (FIELD.APPLICATION, FIELD.START_VALIDITY, FIELD.END_VALIDITY),
         (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.DATE_DELETED),
         (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}", FIELD.DATE_DELETED),
-        (FIELD.ID, FIELD.SEQNR, FIELD.EXPIRATION_DATE),
-        (FIELD.GOBID, FIELD.EXPIRATION_DATE),
-        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.SOURCE, FIELD.SOURCE_VALUE, FIELD.DATE_DELETED,
-         FIELD.APPLICATION),
-        (FIELD.APPLICATION, FIELD.START_VALIDITY, FIELD.END_VALIDITY),
     ]
+
+    create_indexes = default_indexes
+
+    if table_type == TABLE_TYPE_ENTITY:
+        create_indexes += entity_table_indexes
+    elif table_type == TABLE_TYPE_RELATION:
+        create_indexes += relation_table_indexes
+
     result = {}
     for columns in default_indexes:
         # Check if all columns defined in index are present
@@ -135,7 +151,11 @@ def _get_special_column_type(column_type: str):
         return None
 
 
-def _relation_indexes_for_collection(catalog_name, collection_name, collection):
+def _hashed_index_name(prefix, index_name):
+    return f"{prefix}_{hashlib.md5(index_name.encode()).hexdigest()}"
+
+
+def _relation_indexes_for_collection(catalog_name, collection_name, collection, idx_prefix):
     indexes = {}
     table_name = model.get_table_name(catalog_name, collection_name)
 
@@ -152,7 +172,7 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
             src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
 
             # Source column
-            name = f'{table_name}.idx.{_remove_leading_underscore(src_index_col)}'
+            name = _hashed_index_name(idx_prefix, _remove_leading_underscore(src_index_col))
             indexes[name] = {
                 "table_name": table_name,
                 "columns": [src_index_col],
@@ -161,10 +181,13 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection):
             indexes[name]["type"] = _get_special_column_type(collection['all_fields'][src_index_col]['type'])
 
             # Destination column
-            name = f"{dst_index_table}.idx.{_remove_leading_underscore(relation['destination_attribute'])}"
+            name = _hashed_index_name(
+                idx_prefix, _remove_leading_underscore(relation['destination_attribute'])
+            )
             indexes[name] = {
                 "table_name": dst_index_table,
-                "columns": [relation['destination_attribute']],
+                "columns": [relation['destination_attribute'], FIELD.START_VALIDITY, FIELD.END_VALIDITY,
+                            FIELD.DATE_DELETED],
             }
 
             indexes[name]["type"] = _get_special_column_type(
@@ -178,7 +201,7 @@ def _derive_indexes() -> dict:
     indexes = {}
 
     # Add indexes to events table
-    event_indexes = ['catalogue', 'entity', 'action', 'source', 'application']
+    event_indexes = ['catalogue', 'entity', 'action', 'source']
     for column in event_indexes:
         indexes[f'events.idx.{column}'] = {
             "columns": [column],
@@ -195,10 +218,19 @@ def _derive_indexes() -> dict:
         for collection_name, collection in model.get_collections(catalog_name).items():
             entity = collection['all_fields']
             table_name = model.get_table_name(catalog_name, collection_name)
+            is_relation_table = table_name.startswith('rel_')
+
+            if is_relation_table:
+                prefix = '_'.join(table_name.split('_')[:3])
+            else:
+                prefix = f"{catalog['abbreviation']}_{collection['abbreviation']}".lower()
 
             # Generate indexes on default columns
-            for idx_name, columns in _default_indexes_for_columns(list(entity.keys())).items():
-                indexes[f'{table_name}.idx.{idx_name}'] = {
+            for idx_name, columns in _default_indexes_for_columns(
+                    list(entity.keys()),
+                    TABLE_TYPE_RELATION if is_relation_table else TABLE_TYPE_ENTITY
+            ).items():
+                indexes[_hashed_index_name(prefix, idx_name)] = {
                     "columns": columns,
                     "table_name": table_name,
                 }
@@ -206,13 +238,14 @@ def _derive_indexes() -> dict:
             # Add source, last event index
             columns = [FIELD.SOURCE, FIELD.LAST_EVENT + ' DESC']
             idx_name = "_".join([_remove_leading_underscore(column) for column in columns])
-            indexes[f'{table_name}.idx.{idx_name}'] = {
+            indexes[_hashed_index_name(prefix, idx_name)] = {
                 "columns": columns,
                 "table_name": table_name,
             }
 
             # Generate indexes on referenced columns (GOB.Reference and GOB.ManyReference)
-            indexes.update(**_relation_indexes_for_collection(catalog_name, collection_name, collection))
+            indexes.update(**_relation_indexes_for_collection(catalog_name, collection_name, collection, prefix))
+
     return indexes
 
 

@@ -36,7 +36,6 @@ class FIELD:
 
 """Description of all fields that are automatically added to each entity"""
 DESCRIPTION = {
-    FIELD.VERSION: "",
     FIELD.DATE_CREATED: "Timestamp telling when the entity has last been created in GOB.",
     FIELD.DATE_CONFIRMED: "Timestamp telling when the entity has last been confirmed in GOB.",
     FIELD.DATE_MODIFIED: "Timestamp telling when the entity has last been modified in GOB.",

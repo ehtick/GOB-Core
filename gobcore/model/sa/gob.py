@@ -103,22 +103,24 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
     default_indexes = [
         (FIELD.ID,),
         (FIELD.GOBID,),
-        (FIELD.DATE_DELETED),
-        (FIELD.EXPIRATION_DATE, FIELD.DATE_DELETED),
-        (FIELD.ID, FIELD.SEQNR, FIELD.EXPIRATION_DATE),
+        (FIELD.DATE_DELETED,),
+        (FIELD.EXPIRATION_DATE,),
+        (FIELD.APPLICATION,),
     ]
 
     entity_table_indexes = [
         (FIELD.ID, FIELD.SEQNR),
+        (FIELD.SOURCE_ID,),
     ]
 
     relation_table_indexes = [
+        (FIELD.SOURCE_VALUE,),
         (FIELD.GOBID, FIELD.EXPIRATION_DATE),
-        (FIELD.ID, f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", f"src_{FIELD.SOURCE}", FIELD.SOURCE_VALUE,
-         FIELD.DATE_DELETED, FIELD.APPLICATION),
+        (FIELD.SOURCE,),
+        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", f"src{FIELD.SOURCE}", FIELD.SOURCE_VALUE, FIELD.APPLICATION),
         (FIELD.APPLICATION, FIELD.START_VALIDITY, FIELD.END_VALIDITY),
-        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", FIELD.DATE_DELETED),
-        (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}", FIELD.DATE_DELETED),
+        (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}"),
+        (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}"),
     ]
 
     create_indexes = default_indexes
@@ -166,9 +168,12 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection, 
     for col, ref in reference_columns.items():
         dst_index_table = model.get_table_name_from_ref(ref)
         dst_collection = model.get_collection_from_ref(ref)
+        dst_catalog_name, dst_collection_name = model.get_catalog_collection_names_from_ref(ref)
+        dst_catalog = model.get_catalog(dst_catalog_name)
         relations = sources.get_field_relations(catalog_name, collection_name, col)
 
         for relation in relations:
+            dst_idx_prefix = f"{dst_catalog['abbreviation']}_{dst_collection['abbreviation']}".lower()
             src_index_col = f"{relation['source_attribute'] if 'source_attribute' in relation else col}"
 
             # Source column
@@ -182,22 +187,15 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection, 
 
             # Destination column
             name = _hashed_index_name(
-                idx_prefix, _remove_leading_underscore(relation['destination_attribute'])
+                dst_idx_prefix, _remove_leading_underscore(relation['destination_attribute'])
             )
-
-            if dst_collection.get('has_states', False):
-                columns = [
-                    relation['destination_attribute'],
-                    FIELD.START_VALIDITY,
-                    FIELD.END_VALIDITY,
-                    FIELD.DATE_DELETED
-                ]
-            else:
-                columns = [relation['destination_attribute'], FIELD.DATE_DELETED]
 
             indexes[name] = {
                 "table_name": dst_index_table,
-                "columns": columns,
+                "columns": [relation['destination_attribute']],
+                "type": _get_special_column_type(
+                    dst_collection['all_fields'][relation['destination_attribute']]['type']
+                ),
             }
 
     return indexes

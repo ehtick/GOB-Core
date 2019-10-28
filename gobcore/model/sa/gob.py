@@ -154,7 +154,11 @@ def _get_special_column_type(column_type: str):
 
 
 def _hashed_index_name(prefix, index_name):
-    return f"{prefix}_{hashlib.md5(index_name.encode()).hexdigest()}"
+    return f"{prefix}_{_hash(index_name)}"
+
+
+def _hash(string):
+    return hashlib.md5(string.encode()).hexdigest()
 
 
 def _relation_indexes_for_collection(catalog_name, collection_name, collection, idx_prefix):
@@ -225,7 +229,8 @@ def _derive_indexes() -> dict:
             is_relation_table = table_name.startswith('rel_')
 
             if is_relation_table:
-                prefix = '_'.join(table_name.split('_')[:3])
+                split_table_name = table_name.split('_')
+                prefix = '_'.join(split_table_name[:5]) + '_' + _hash('_'.join(split_table_name[5:]))[:8]
             else:
                 prefix = f"{catalog['abbreviation']}_{collection['abbreviation']}".lower()
 

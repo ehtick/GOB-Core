@@ -316,3 +316,20 @@ class GOBModel():
         :return:
         """
         return "_".join(self._split_table_name(table_name)[1:])
+
+    def get_catalog_collection_from_abbr(self, catalog_abbr: str, collection_abbr: str):
+        """Returns catalog and collection
+
+        :param catalog_abbr:
+        :param collection_abbr:
+        :return:
+        """
+        catalog = [catalog for catalog in self._data.values()
+                   if catalog['abbreviation'].lower() == catalog_abbr][0]
+        assert catalog, f"Catalog with abbreviation {catalog_abbr} does not exist"
+
+        collection = [collection for collection in catalog['collections'].values()
+                      if collection['abbreviation'].lower() == collection_abbr][0]
+        assert collection, f"Collection with abbreviation {collection_abbr} does not exist"
+
+        return catalog, collection

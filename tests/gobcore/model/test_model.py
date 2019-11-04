@@ -303,3 +303,38 @@ class TestModel(unittest.TestCase):
         self.assertEqual(expected, model._data)
         mock_print.assert_called_once()
         self.assertTrue(mock_print.call_args[0][0].startswith('ERROR: failed to load schema'))
+
+    def test_catalog_collection_from_abbr(self):
+        model = GOBModel()
+        model._data = {
+            'cat_a': {
+                'abbreviation': 'ca',
+                'collections': {
+                    'col_a': {
+                        'abbreviation': 'coa',
+                        'some other': 'data',
+                    },
+                    'col_b': {
+                        'abbreviation': 'cob',
+                        'some other': 'data',
+                    }
+                }
+            }
+        }
+
+        self.assertEqual(({
+            'abbreviation': 'ca',
+            'collections': {
+                'col_a': {
+                    'abbreviation': 'coa',
+                    'some other': 'data',
+                },
+                'col_b': {
+                    'abbreviation': 'cob',
+                    'some other': 'data',
+                }
+            }
+        }, {
+            'abbreviation': 'cob',
+            'some other': 'data',
+        }), model.get_catalog_collection_from_abbr('ca', 'cob'))

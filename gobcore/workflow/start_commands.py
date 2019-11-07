@@ -26,6 +26,7 @@ class StartCommandArgument:
         self.name = config['name']
         self.description = config.get('description', '')
         self.required = config.get('required', False)
+        self.named = config.get('named', False)
         self.default = config.get('default')
         self.choices = config.get('choices')
 

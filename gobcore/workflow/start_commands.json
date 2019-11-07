@@ -70,6 +70,12 @@
         "default": "Objectstore",
         "choices": ["Objectstore", "File"],
         "description": "Destination, default is Objectstore"
+      },
+      {
+        "name": "product",
+        "required": false,
+        "description": "The name of the product to export, (example: \"csv_actueel\")",
+        "named": true
       }
     ],
     "workflow": "export"

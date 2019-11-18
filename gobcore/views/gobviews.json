@@ -1396,7 +1396,6 @@
           "FROM brk_kadastralesubjecten sjt",
           "JOIN mv_brk_zrt_brk_sjt_betrokken_bij_appartementsrechtsplitsing_vve rel ON rel.dst_id = sjt._id",
           "JOIN brk_zakelijkerechten zrt ON zrt._id = rel.src_id AND zrt.volgnummer = rel.src_volgnummer",
-          "WHERE (zrt._expiration_date IS NULL OR zrt._expiration_date > NOW())",
           "GROUP BY sjt.identificatie",
           "UNION",
           "SELECT sjt.identificatie",

@@ -1402,7 +1402,7 @@
             "type": "GOB.String",
             "description": "CBS-nummer."
           },
-          "woningvoorraad": {
+          "indicatie_woningvoorraad": {
             "type": "GOB.String",
             "description": "Geeft aan of een ver­blijfs­ob­ject bij de woningvoorraad hoort."
           },
@@ -1936,7 +1936,7 @@
             "description": "Status van het Kadastraal Object ('B' is bestaand)"
           },
           "geometrie": {
-            "type": "GOB.Geo.Polygon",
+            "type": "GOB.Geo.Geometry",
             "description": "Vorm en ligging van de kadastrale sectie in het stelsel van de Rijksdriehoeksmeting (RD)"
           },
           "plaatscoordinaten": {

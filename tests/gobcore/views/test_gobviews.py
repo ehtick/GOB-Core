@@ -12,7 +12,7 @@ class TestEvents(unittest.TestCase):
         # Assert internal data has been set
         self.assertIsNotNone(self.views._data)
 
-    def test_get_view(self):
+    def test_get_views(self):
         # Test catalog meetbouten exists and returns the correct value
         catalogs = self.views.get_catalogs()
         self.assertIn('meetbouten', catalogs)
@@ -31,3 +31,9 @@ class TestEvents(unittest.TestCase):
             for entity in self.views.get_entities(catalog):
                 for view_name, view in self.views.get_views(catalog, entity).items():
                     self.assertIn('query', view)
+
+    def test_get_view(self):
+        existing_view = self.views.get_view('meetbouten', 'meetbouten', 'enhanced')
+        self.assertEqual(existing_view['name'], 'meetbouten_meetbouten_enhanced')
+
+        self.assertIsNone(self.views.get_view('meetbouten', 'meetbouten', 'does not exist'))

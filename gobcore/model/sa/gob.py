@@ -210,12 +210,8 @@ def _derive_indexes() -> dict:
 
     # Add indexes to events table
     event_indexes = [
-        ('catalogue',),
         ('entity',),
-        ('action',),
-        ('source',),
         ('entity', 'catalogue', 'source',),
-        ('entity', 'timestamp DESC',),
     ]
     for index in event_indexes:
         name = ".".join([column.replace(' ', '_').lower() for column in index])

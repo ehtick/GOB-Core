@@ -97,6 +97,8 @@ class GOBType(metaclass=ABCMeta):
         if cls.is_secure:
             # Secure types require a confidence level
             kwargs["level"] = typeinfo["level"]
+        if isinstance(value, dict) and typeinfo.get("secure"):
+            kwargs["secure"] = typeinfo["secure"]
         return cls.from_value(value, **kwargs)
 
     @classmethod
@@ -150,7 +152,7 @@ class String(GOBType):
         super().__init__(value)
 
     @classmethod
-    def from_value(cls, value) -> GOBType:
+    def from_value(cls, value, **kwargs) -> GOBType:
         if isinstance(value, numbers.Number) and isnan(value):
             value = None
         return cls(str(value)) if value is not None else cls(value)
@@ -173,7 +175,7 @@ class Character(String):
     sql_type = sqlalchemy.CHAR
 
     @classmethod
-    def from_value(cls, value) -> GOBType:
+    def from_value(cls, value, **kwargs) -> GOBType:
         """
         Returns GOBType as a String containing a single character value if input has a string representation with
         len > 0, else a GOBType(None)
@@ -416,17 +418,27 @@ class JSON(GOBType):
     name = "JSON"
     sql_type = sqlalchemy.dialects.postgresql.JSONB
 
-    def __init__(self, value):
+    def __init__(self, value, spec=None):
         if value is not None:
             try:
                 # force sort keys to have order
                 value = json.dumps(json.loads(value), sort_keys=True)
+                self._spec = spec
             except ValueError:
                 raise GOBTypeException(f"value '{value}' cannot be interpreted as JSON")
         super().__init__(value)
 
+    def get_value(self, user=None):
+        value = json.loads(self._string)
+        if isinstance(value, dict):
+            for k, v in value.items():
+                if self._spec[k]:
+                    # Resolve secure attributes
+                    value[k] = self._spec[k]['gob_type'](v).get_value(user)
+        return value
+
     @classmethod
-    def from_value(cls, value):
+    def from_value(cls, value, **kwargs):
         """ Create a JSON GOB type as a string:
 
             if a dict of list is submitted, it gets dumped to json
@@ -435,8 +447,16 @@ class JSON(GOBType):
         if value is None:
             return cls(None)
 
+        if isinstance(value, dict) and kwargs.get('secure'):
+            secure = kwargs['secure']
+            for attr, attr_value in value.items():
+                if secure.get(attr):
+                    gob_type = secure[attr]['gob_type']
+                    type_kwargs = {k: v for k, v in secure[attr].items() if k not in ['type', 'gob_type', 'source_mapping', 'filters']}
+                    value[attr] = str(gob_type.from_value_secure(attr_value, secure[attr], **type_kwargs))
+
         if isinstance(value, dict) or isinstance(value, list):
-            return cls(json.dumps(value))
+            return cls(json.dumps(value), spec=kwargs.get('secure'))
 
         return cls(str(value))
 

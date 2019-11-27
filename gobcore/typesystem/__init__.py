@@ -72,6 +72,23 @@ _gob_postgres_sql_types_list = [
 ]
 
 
+def enhance_type_info(type_info):
+    """
+    Enhance type info with gob types
+
+    For every type attribute a corresponding gob_type attribute is set
+    that contains the GOB type class
+
+    :param type_info:
+    :return:
+    """
+    if type_info.get("type"):
+        type_info["gob_type"] = get_gob_type(type_info["type"])
+    if type_info.get("secure"):
+        for value in type_info["secure"].values():
+            enhance_type_info(value)
+
+
 def get_gob_type(name):
     """
     Get the type definition for a given type name

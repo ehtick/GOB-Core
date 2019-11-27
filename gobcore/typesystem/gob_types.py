@@ -432,7 +432,7 @@ class JSON(GOBType):
         value = json.loads(self._string)
         if isinstance(value, dict):
             for k, v in value.items():
-                if self._spec[k]:
+                if self._spec and self._spec.get(k):
                     # Resolve secure attributes
                     value[k] = self._spec[k]['gob_type'](v).get_value(user)
         return value

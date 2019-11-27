@@ -37,17 +37,18 @@ class Secure(String):
         :param kwargs:
         :return: an instance of a Secure datatype
         """
-        if "level" in kwargs:
-            level = kwargs["level"]
-            del kwargs["level"]
-            value = read_unprotect(value)
+        if is_encrypted(value):
+            return cls(value)
         else:
-            level = None
+            if "level" in kwargs:
+                level = kwargs["level"]
+                del kwargs["level"]
+                value = read_unprotect(value)
+            else:
+                level = None
 
-        if not is_encrypted(value):
             value = cls.BaseType.from_value(value, **kwargs)
-
-        return cls(value, level)
+            return cls(value, level)
 
     def get_value(self, user=None):
         """

@@ -103,6 +103,17 @@
             "level": 5,
             "description": "Secure date time."
           },
+          "secure_reference": {
+            "type": "GOB.Reference",
+            "description": "Secure reference.",
+            "ref": "test_catalogue:test_entity",
+            "secure": {
+              "bronwaarde": {
+                "type": "GOB.SecureString",
+                "level": 5
+              }
+            }
+          },
           "string": {
             "type": "GOB.String",
             "description": "string."

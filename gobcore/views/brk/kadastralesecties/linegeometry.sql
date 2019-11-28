@@ -13,7 +13,7 @@ FROM (
     ST_Intersection(k1.geometrie, k2.geometrie) AS geometrie
     FROM (
       SELECT
-        g.identificatie AS gemeente,
+        g.naam AS gemeente,
         kg.identificatie AS kadastrale_gemeente,
         kgc.identificatie AS kadastrale_gemeentecode,
         ks.code AS kadastrale_sectie_code,

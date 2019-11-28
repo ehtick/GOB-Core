@@ -11,7 +11,7 @@ FROM (
     ST_Intersection(k1.geometrie, k2.geometrie) AS geometrie
     FROM (
       SELECT
-        g.identificatie AS gemeente,
+        g.naam AS gemeente,
         kg.identificatie AS kadastrale_gemeente,
         kgc.identificatie AS kadastrale_gemeentecode,
         ST_MakeValid((ST_Dump(kgc.geometrie)).geom) AS geometrie

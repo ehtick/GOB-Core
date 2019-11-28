@@ -1,5 +1,6 @@
 import random
 import unittest
+from unittest import mock
 from datetime import datetime, date
 
 from gobcore.exceptions import GOBException, GOBTypeException
@@ -350,6 +351,12 @@ class TestGOBType(unittest.TestCase):
 
         self.assertEqual({'level': 20}, res.kwargs)
         self.assertEqual('value', res.value)
+
+        mock_from_value = mock.MagicMock()
+        self.MockChild.from_value = mock_from_value
+        self.MockChild.is_secure = False
+        res = self.MockChild.from_value_secure({'key': 'value'}, {'secure': 'any security info'})
+        mock_from_value.assert_called_with({'key': 'value'}, secure='any security info')
 
 
 class TestBoolean(unittest.TestCase):

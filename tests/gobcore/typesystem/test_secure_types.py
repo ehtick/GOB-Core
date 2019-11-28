@@ -2,6 +2,7 @@ import unittest
 import mock
 
 from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure
+from gobcore.typesystem.gob_types import JSON
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
 from gobcore.secure.config import ROLES
@@ -50,3 +51,52 @@ class TestSecureDateTime(unittest.TestCase):
         res = secure.get_typed_value('value')
         self.assertEqual(res, mock_datetime.from_value.return_value.to_value)
         mock_datetime.from_value.assert_called_with('value')
+
+class TestSecureJSON(unittest.TestCase):
+
+    def test_from_value(self):
+        mock_gob_type = mock.MagicMock()
+        mock_gob_type.return_value = mock_gob_type
+        mock_gob_type.from_value_secure.return_value = "secure value"
+        mock_gob_type.get_value.return_value = "public value"
+        value = {
+            'key': 'value',
+            'key1': 'value1',
+            'sub': {
+                'subkey': 'subvalue',
+                'subkey1': 'subvalue1'
+            }
+        }
+        secure = {
+            'key': {
+                'type': 'GOB.SecureString',
+                'gob_type': mock_gob_type,
+                'level': 5
+            },
+            'subkey': {
+                'type': 'GOB.SecureString',
+                'gob_type': mock_gob_type,
+                'level': 5
+            },
+        }
+        expect = {
+            "key": "secure value",
+            "key1": "value1",
+            "sub": {
+                "subkey": "secure value",
+                "subkey1": "subvalue1"
+            }
+        }
+        result = JSON.from_value(value, secure=secure)
+        self.assertEqual(result.to_value, expect)
+
+        expect = {
+            "key": "public value",
+            "key1": "value1",
+            "sub": {
+                "subkey": "public value",
+                "subkey1": "subvalue1"
+            }
+        }
+        result = result.get_value()
+        self.assertEqual(result, expect)

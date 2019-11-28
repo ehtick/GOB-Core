@@ -40,12 +40,10 @@ class Secure(String):
         if is_encrypted(value):
             return cls(value)
         else:
-            if "level" in kwargs:
-                level = kwargs["level"]
-                del kwargs["level"]
-                value = read_unprotect(value)
-            else:
-                level = None
+            assert "level" in kwargs, "Missing level to encrypt the given value"
+            level = kwargs["level"]
+            del kwargs["level"]
+            value = read_unprotect(value)
 
             value = cls.BaseType.from_value(value, **kwargs)
             return cls(value, level)

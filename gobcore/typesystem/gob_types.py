@@ -428,14 +428,30 @@ class JSON(GOBType):
                 raise GOBTypeException(f"value '{value}' cannot be interpreted as JSON")
         super().__init__(value)
 
+    def _process_get_value(self, value, user):
+        for attr, attr_value in value.items():
+            if isinstance(attr_value, dict):
+                self._process_get_value(attr_value, user)
+            elif self._spec and self._spec.get(attr):
+                # Resolve secure attributes
+                value[attr] = self._spec[attr]['gob_type'](attr_value).get_value(user)
+
     def get_value(self, user=None):
         value = json.loads(self._string)
-        if isinstance(value, dict):
-            for k, v in value.items():
-                if self._spec and self._spec.get(k):
-                    # Resolve secure attributes
-                    value[k] = self._spec[k]['gob_type'](v).get_value(user)
+        self._process_get_value(value, user)
         return value
+
+    @classmethod
+    def _process_from_value(cls, value, secure):
+        for attr, attr_value in value.items():
+            if isinstance(attr_value, dict):
+                cls._process_from_value(attr_value, secure)
+            elif secure.get(attr):
+                secure_attr = secure[attr]
+                gob_type = secure_attr['gob_type']
+                type_kwargs = {k: v for k, v in secure_attr.items()
+                               if k not in ['type', 'gob_type', 'source_mapping', 'filters']}
+                value[attr] = str(gob_type.from_value_secure(attr_value, secure_attr, **type_kwargs))
 
     @classmethod
     def from_value(cls, value, **kwargs):
@@ -448,12 +464,7 @@ class JSON(GOBType):
             return cls(None)
 
         if isinstance(value, dict) and kwargs.get('secure'):
-            secure = kwargs['secure']
-            for attr, attr_value in value.items():
-                if secure.get(attr):
-                    gob_type = secure[attr]['gob_type']
-                    type_kwargs = {k: v for k, v in secure[attr].items() if k not in ['type', 'gob_type', 'source_mapping', 'filters']}
-                    value[attr] = str(gob_type.from_value_secure(attr_value, secure[attr], **type_kwargs))
+            cls._process_from_value(value, kwargs['secure'])
 
         if isinstance(value, dict) or isinstance(value, list):
             return cls(json.dumps(value), spec=kwargs.get('secure'))

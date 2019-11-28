@@ -2,20 +2,25 @@ SELECT
   gemeente,
   kadastrale_gemeente,
   kadastrale_gemeentecode,
+  kadastrale_sectie_code,
   ST_CollectionExtract(ST_Collect(geometrie), 2) AS geometrie
 FROM (
   SELECT
     k1.gemeente,
     k1.kadastrale_gemeente,
     k1.kadastrale_gemeentecode,
+    k1.kadastrale_sectie_code,
     ST_Intersection(k1.geometrie, k2.geometrie) AS geometrie
     FROM (
       SELECT
         g.identificatie AS gemeente,
         kg.identificatie AS kadastrale_gemeente,
         kgc.identificatie AS kadastrale_gemeentecode,
+        ks.code AS kadastrale_sectie_code,
         ST_MakeValid((ST_Dump(kgc.geometrie)).geom) AS geometrie
-      FROM brk_kadastralegemeentecodes kgc
+      FROM brk_kadastralesecties ks
+      LEFT JOIN brk_kadastralegemeentecodes kgc
+      ON ks.is_onderdeel_van_kadastralegemeentecode->>'id' = kgc.identificatie
       LEFT JOIN brk_kadastralegemeentes kg
       ON kgc.is_onderdeel_van_kadastralegemeente->>'id' = kg.identificatie
       LEFT JOIN brk_gemeentes g
@@ -35,4 +40,4 @@ FROM (
 WHERE
   GeometryType(intersections.geometrie)
   IN ('MULTILINESTRING'::text, 'LINESTRING'::text)
-GROUP BY gemeente, kadastrale_gemeente, kadastrale_gemeentecode
+GROUP BY gemeente, kadastrale_gemeente, kadastrale_gemeentecode, kadastrale_sectie_code

@@ -1,13 +1,13 @@
 SELECT
-    lps_0.amsterdamse_sleutel,
-    lps_0.begin_geldigheid,
-    lps_0.eind_geldigheid,
+    sps_0.amsterdamse_sleutel,
+    sps_0.begin_geldigheid,
+    sps_0.eind_geldigheid,
     begin_geldigheid_object.begin_geldigheid as begin_geldigheid_object,
     eind_geldigheid_object.eind_geldigheid as eind_geldigheid_object,
-    lps_0.documentdatum,
-    lps_0.documentnummer,
-    lps_0.status,
-    ST_AsText(lps_0.geometrie) geometrie,
+    sps_0.documentdatum,
+    sps_0.documentnummer,
+    sps_0.status,
+    ST_AsText(sps_0.geometrie) geometrie,
     json_build_object(
         'amsterdamse_sleutel', nag_0.amsterdamse_sleutel,
         'postcode', nag_0.postcode,
@@ -20,7 +20,7 @@ SELECT
         'naam', ore_0.naam,
         'naam_nen', ore_0.naam_nen) ligt_aan_openbareruimte,
     json_build_object(
-        'amsterdamse_sleutel',wps_0.amsterdamse_sleutel,
+        'amsterdamse_sleutel', wps_0.amsterdamse_sleutel,
         'naam', wps_0.naam) ligt_in_woonplaats,
     json_build_object(
         'code', brt_0.code,
@@ -28,15 +28,14 @@ SELECT
     json_build_object(
         'code', sdl_0.code,
         'naam', sdl_0.naam) ligt_in_stadsdeel
-FROM (
-    SELECT *
-    FROM bag_ligplaatsen
-    WHERE (_expiration_date IS NULL OR _expiration_date > NOW()) AND _date_deleted IS NULL
-    ORDER BY _gobid
-    
-) lps_0
-LEFT JOIN mv_bag_lps_bag_nag_heeft_hoofdadres rel_0
-    ON rel_0.src_id = lps_0._id AND rel_0.src_volgnummer = lps_0.volgnummer
+    FROM (
+        SELECT *
+        FROM bag_standplaatsen
+        WHERE (_expiration_date IS NULL OR _expiration_date > NOW()) AND _date_deleted IS NULL
+        ORDER BY _gobid
+    ) sps_0
+LEFT JOIN mv_bag_sps_bag_nag_heeft_hoofdadres rel_0
+    ON rel_0.src_id = sps_0._id AND rel_0.src_volgnummer = sps_0.volgnummer
 LEFT JOIN bag_nummeraanduidingen nag_0
     ON rel_0.dst_id = nag_0._id AND rel_0.dst_volgnummer = nag_0.volgnummer
 LEFT JOIN mv_bag_nag_bag_ore_ligt_aan_openbareruimte rel_1
@@ -47,8 +46,8 @@ LEFT JOIN mv_bag_ore_bag_wps_ligt_in_woonplaats rel_2
     ON rel_2.src_id = ore_0._id AND rel_2.src_volgnummer = ore_0.volgnummer
 LEFT JOIN bag_woonplaatsen wps_0
     ON rel_2.dst_id = wps_0._id AND rel_2.dst_volgnummer = wps_0.volgnummer
-LEFT JOIN mv_bag_lps_gbd_brt_ligt_in_buurt rel_3
-    ON rel_3.src_id = lps_0._id AND rel_3.src_volgnummer = lps_0.volgnummer
+LEFT JOIN mv_bag_sps_gbd_brt_ligt_in_buurt rel_3
+    ON rel_3.src_id = sps_0._id AND rel_3.src_volgnummer = sps_0.volgnummer
 LEFT JOIN gebieden_buurten brt_0
     ON rel_3.dst_id = brt_0._id AND rel_3.dst_volgnummer = brt_0.volgnummer
 LEFT JOIN mv_gbd_brt_gbd_wijk_ligt_in_wijk rel_4
@@ -60,19 +59,19 @@ LEFT JOIN mv_gbd_wijk_gbd_sdl_ligt_in_stadsdeel rel_5
 LEFT JOIN gebieden_stadsdelen sdl_0
     ON rel_5.dst_id = sdl_0._id AND rel_5.dst_volgnummer = sdl_0.volgnummer
 JOIN LATERAL (
-	SELECT DISTINCT ON (amsterdamse_sleutel)
+    SELECT DISTINCT ON (amsterdamse_sleutel)
        amsterdamse_sleutel, begin_geldigheid
-	FROM bag_ligplaatsen
-	ORDER BY amsterdamse_sleutel, volgnummer::INTEGER
+    FROM bag_standplaatsen
+    ORDER BY amsterdamse_sleutel, volgnummer::INTEGER
 ) AS begin_geldigheid_object
-ON begin_geldigheid_object.amsterdamse_sleutel = lps_0.amsterdamse_sleutel
+ON begin_geldigheid_object.amsterdamse_sleutel = sps_0.amsterdamse_sleutel
 JOIN LATERAL (
-	SELECT DISTINCT ON (amsterdamse_sleutel)
+    SELECT DISTINCT ON (amsterdamse_sleutel)
        amsterdamse_sleutel, eind_geldigheid
-	FROM bag_ligplaatsen
-	ORDER BY amsterdamse_sleutel, volgnummer::INTEGER DESC
+    FROM bag_standplaatsen
+    ORDER BY amsterdamse_sleutel, volgnummer::INTEGER DESC
 ) AS eind_geldigheid_object
-ON eind_geldigheid_object.amsterdamse_sleutel = lps_0.amsterdamse_sleutel
+ON eind_geldigheid_object.amsterdamse_sleutel = sps_0.amsterdamse_sleutel
 WHERE (nag_0._expiration_date IS NULL OR nag_0._expiration_date > NOW())
     AND nag_0._date_deleted IS NULL
     AND (ore_0._expiration_date IS NULL OR ore_0._expiration_date > NOW())
@@ -84,6 +83,6 @@ WHERE (nag_0._expiration_date IS NULL OR nag_0._expiration_date > NOW())
     AND (wijk_0._expiration_date IS NULL OR wijk_0._expiration_date > NOW())
     AND wijk_0._date_deleted IS NULL
     AND (sdl_0._expiration_date IS NULL OR sdl_0._expiration_date > NOW())
-    AND sdl_0._date_deleted IS null
+    AND sdl_0._date_deleted IS NULL
 ORDER BY
-    lps_0._gobid;
+    sps_0._gobid

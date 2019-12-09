@@ -40,7 +40,21 @@
           },
           "json": {
             "type": "GOB.JSON",
-            "description": "JSON value."
+            "description": "JSON value.",
+            "attributes": {
+              "str": {
+                "type": "GOB.String"
+              },
+              "array": {
+                "type": "GOB.JSON"
+              },
+              "bool": {
+                "type": "GOB.Boolean"
+              },
+              "null": {
+                "type": "GOB.String"
+              }
+            }
           },
           "datetime": {
             "type": "GOB.DateTime",

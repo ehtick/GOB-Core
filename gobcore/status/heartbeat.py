@@ -26,6 +26,7 @@ STATUS_START = "started"
 STATUS_OK = "ended"
 STATUS_FAIL = "failed"
 STATUS_SCHEDULED = "scheduled"
+STATUS_REJECTED = "rejected"
 STATUS_END = STATUS_OK
 
 

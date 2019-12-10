@@ -181,11 +181,11 @@ def get_modifications(entity, data, model):     # noqa: C901
 
     for field_name, field in model.items():
         gob_type = get_gob_type(field['type'])
-        old_value = gob_type.from_value(getattr(entity, field_name))
+        old_value = gob_type.from_value(getattr(entity, field_name), level=field.get('level'))
 
         # Try to get the new value from the data, if missing, skip this field
         try:
-            new_value = gob_type.from_value(data[field_name])
+            new_value = gob_type.from_value(data[field_name], level=field.get('level'))
         except KeyError:
             continue
 

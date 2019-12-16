@@ -62,7 +62,7 @@ class Log(Base):
     logid = Column(Integer, primary_key=True, index=True)
     jobid = Column(ForeignKey(Job.id), index=True)
     stepid = Column(ForeignKey(JobStep.id), index=True)
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime, index=True)
     process_id = Column(String, index=True)
     source = Column(String, index=True)
     application = Column(String, index=True)

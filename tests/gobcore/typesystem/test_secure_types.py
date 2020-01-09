@@ -5,7 +5,7 @@ from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, Sec
 from gobcore.typesystem.gob_types import JSON
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
-from gobcore.secure.config import REQUEST_ROLES, GOB_ADMIN
+from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
 
 
 class MockBaseType:
@@ -22,7 +22,7 @@ class TestSecure(unittest.TestCase):
     def test_create(self):
         mock_request = mock.MagicMock()
         mock_request.headers = {
-            REQUEST_ROLES: GOB_ADMIN
+            REQUEST_ROLES: GOB_SECURE_ATTRS
         }
         user = User(mock_request)
 

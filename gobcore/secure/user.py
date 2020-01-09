@@ -1,4 +1,4 @@
-from gobcore.secure.config import REQUEST_ROLES, GOB_ADMIN
+from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
 
 
 class User:
@@ -20,5 +20,5 @@ class User:
         :return:
         """
 
-        # For now only gob_adm has access to secure values
-        return GOB_ADMIN in self._roles
+        # For now only one role that is needed to access any encrypted value
+        return GOB_SECURE_ATTRS in self._roles

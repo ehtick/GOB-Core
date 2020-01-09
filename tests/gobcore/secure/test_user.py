@@ -1,6 +1,6 @@
 from unittest import TestCase, mock
 
-from gobcore.secure.config import REQUEST_ROLES, GOB_ADMIN
+from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
 from gobcore.secure.user import User
 
 
@@ -12,7 +12,7 @@ class TestUser(TestCase):
     def test_create(self):
         mock_request = mock.MagicMock()
         mock_request.headers = {
-            REQUEST_ROLES: GOB_ADMIN
+            REQUEST_ROLES: GOB_SECURE_ATTRS
         }
         user = User(mock_request)
         self.assertIsNotNone(user._roles)
@@ -29,5 +29,5 @@ class TestUser(TestCase):
         user._roles = ["any user"]
         self.assertFalse(user.has_access_to(value))
 
-        user._roles = [GOB_ADMIN]
+        user._roles = [GOB_SECURE_ATTRS]
         self.assertTrue(user.has_access_to(value))

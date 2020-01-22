@@ -462,7 +462,7 @@ class JSON(GOBType):
                 gob_type = secure_attr['gob_type']
                 type_kwargs = {k: v for k, v in secure_attr.items()
                                if k not in ['type', 'gob_type', 'source_mapping', 'filters']}
-                value[attr] = str(gob_type.from_value_secure(attr_value, secure_attr, **type_kwargs))
+                value[attr] = gob_type.from_value_secure(attr_value, secure_attr, **type_kwargs).to_value
 
     @classmethod
     def from_value(cls, value, **kwargs):

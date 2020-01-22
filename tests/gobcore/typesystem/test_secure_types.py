@@ -2,7 +2,7 @@ import unittest
 import mock
 
 from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate
-from gobcore.typesystem.gob_types import JSON
+from gobcore.typesystem.gob_types import JSON, String
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
 from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
@@ -83,7 +83,7 @@ class TestSecureJSON(unittest.TestCase):
     def test_from_value(self):
         mock_gob_type = mock.MagicMock()
         mock_gob_type.return_value = mock_gob_type
-        mock_gob_type.from_value_secure.return_value = "secure value"
+        mock_gob_type.from_value_secure.return_value = String("secure value")
         mock_gob_type.get_value.return_value = "public value"
         value = {
             'key': 'value',

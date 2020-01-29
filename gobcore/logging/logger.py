@@ -140,7 +140,8 @@ class Logger:
             'stepid': header.get('stepid')
         })
         self._clear_logs()
-        self.info("Log started")
+        if header.get('user'):
+            self.info(f"Started by user {header['user']}")
 
     def _init_logger(self, name):
         """Sets and initializes a logger instance for the given name

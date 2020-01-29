@@ -36,7 +36,7 @@ class RequestsHandler(logging.Handler):
         }
 
         optional_attrs = ["process_id", "id", "source", "application", "destination", "catalogue", "entity", "data",
-                          "jobid", "stepid", "user"]
+                          "jobid", "stepid"]
         for optional_attr in optional_attrs:
             log_msg[optional_attr] = getattr(record, optional_attr, None)
 
@@ -140,8 +140,6 @@ class Logger:
             'stepid': header.get('stepid')
         })
         self._clear_logs()
-        if header.get('user'):
-            self.info(f"Started by user {header['user']}")
 
     def _init_logger(self, name):
         """Sets and initializes a logger instance for the given name

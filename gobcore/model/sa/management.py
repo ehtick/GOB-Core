@@ -27,6 +27,7 @@ class Job(Base):
     start = Column(DateTime, doc="Time when the job was started", index=True)
     end = Column(DateTime, doc="Time when the job has ended", index=True)
     status = Column(String, doc="started, paused, waiting, ended, ...", index=True)
+    user = Column(String, doc="user or process name that started the job")
 
     def __repr__(self):
         return f'<Job {self.name}>'

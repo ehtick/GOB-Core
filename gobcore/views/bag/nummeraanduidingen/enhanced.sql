@@ -45,23 +45,53 @@
       nag.ligt_in_woonplaats->>'id' = ligt_in_woonplaats._id AND
       nag.ligt_in_woonplaats->>'volgnummer' = ligt_in_woonplaats.volgnummer
     -- SELECT adresseert_verblijfsobject
-    LEFT JOIN
-      bag_verblijfsobjecten AS adresseert_verblijfsobject
-    ON
-      nag.adresseert_verblijfsobject->>'id' = adresseert_verblijfsobject._id AND
-      nag.adresseert_verblijfsobject->>'volgnummer' = adresseert_verblijfsobject.volgnummer
+    LEFT JOIN (
+          SELECT
+              dst_id,
+              dst_volgnummer,
+              src_id,
+              max(src_volgnummer) as src_volgnummer
+          FROM (
+                   SELECT *
+                   FROM mv_bag_vot_bag_nag_heeft_hoofdadres
+                   UNION
+                   SELECT *
+                   FROM mv_bag_vot_bag_nag_heeft_nevenadres
+               ) q GROUP BY dst_id, dst_volgnummer, src_id
+      ) vot_adressen ON vot_adressen.dst_id = nag._id AND vot_adressen.dst_volgnummer = nag.volgnummer
+    LEFT JOIN bag_verblijfsobjecten adresseert_verblijfsobject ON vot_adressen.src_id = adresseert_verblijfsobject._id and vot_adressen.src_volgnummer = adresseert_verblijfsobject.volgnummer
     -- SELECT adresseert_ligplaats
-    LEFT JOIN
-      bag_ligplaatsen AS adresseert_ligplaats
-    ON
-      nag.adresseert_ligplaats->>'id' = adresseert_ligplaats._id AND
-      nag.adresseert_ligplaats->>'volgnummer' = adresseert_ligplaats.volgnummer
+    LEFT JOIN (
+          SELECT
+              dst_id,
+              dst_volgnummer,
+              src_id,
+              max(src_volgnummer) as src_volgnummer
+          FROM (
+                   SELECT *
+                   FROM mv_bag_lps_bag_nag_heeft_hoofdadres
+                   UNION
+                   SELECT *
+                   FROM mv_bag_lps_bag_nag_heeft_nevenadres
+               ) q GROUP BY dst_id, dst_volgnummer, src_id
+      ) lps_adressen ON lps_adressen.dst_id = nag._id AND lps_adressen.dst_volgnummer = nag.volgnummer
+    LEFT JOIN bag_ligplaatsen adresseert_ligplaats ON lps_adressen.src_id = adresseert_ligplaats._id and lps_adressen.src_volgnummer = adresseert_ligplaats.volgnummer
     -- SELECT adresseert_standplaats
-    LEFT JOIN
-      bag_standplaatsen AS adresseert_standplaats
-    ON
-      nag.adresseert_standplaats->>'id' = adresseert_standplaats._id AND
-      nag.adresseert_standplaats->>'volgnummer' = adresseert_standplaats.volgnummer
+    LEFT JOIN (
+          SELECT
+              dst_id,
+              dst_volgnummer,
+              src_id,
+              max(src_volgnummer) as src_volgnummer
+          FROM (
+                   SELECT *
+                   FROM mv_bag_sps_bag_nag_heeft_hoofdadres
+                   UNION
+                   SELECT *
+                   FROM mv_bag_sps_bag_nag_heeft_nevenadres
+               ) q GROUP BY dst_id, dst_volgnummer, src_id
+      ) sps_adressen ON sps_adressen.dst_id = nag._id AND sps_adressen.dst_volgnummer = nag.volgnummer
+    LEFT JOIN bag_standplaatsen adresseert_standplaats ON sps_adressen.src_id = adresseert_standplaats._id and sps_adressen.src_volgnummer = adresseert_standplaats.volgnummer
     WHERE
       (nag._expiration_date > current_date OR nag._expiration_date IS NULL)
       AND nag._date_deleted IS NULL

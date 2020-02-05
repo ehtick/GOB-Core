@@ -109,6 +109,6 @@
       }
     ],
     "workflow": "export",
-    "start_step": "test"
+    "start_step": "export_test"
   }
 }

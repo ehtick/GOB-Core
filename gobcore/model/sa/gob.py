@@ -114,11 +114,11 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
         (FIELD.DATE_DELETED,),
         (FIELD.EXPIRATION_DATE,),
         (FIELD.APPLICATION,),
+        (FIELD.SOURCE_ID,),  # for application of events
     ]
 
     entity_table_indexes = [
         (FIELD.ID, FIELD.SEQNR),
-        (FIELD.SOURCE_ID,),
     ]
 
     relation_table_indexes = [

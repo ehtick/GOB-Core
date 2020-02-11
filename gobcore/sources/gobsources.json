@@ -98,6 +98,14 @@
     }
   },
   "Basisinformatie": {
+    "test_catalogue": {
+      "anydata" : {
+        "woont_in_stadsdeel": {
+          "method": "equals",
+          "destination_attribute": "code"
+        }
+      }
+    },
     "meetbouten": {
       "rollagen": {
         "is_gemeten_van_bouwblok": {

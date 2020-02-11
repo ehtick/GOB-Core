@@ -263,6 +263,39 @@
             "description": "date time."
           }
         }
+      },
+      "anydata": {
+        "version": "0.1",
+        "abbreviation": "ANY",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Identification."
+          },
+          "voornaam": {
+            "type": "GOB.String",
+            "description": "Voornaam van de persoon"
+          },
+          "achternaam": {
+            "type": "GOB.String",
+            "description": "Achternaam van de persoon"
+          },
+          "functie": {
+            "type": "GOB.String",
+            "description": "Functie van de persoon"
+          },
+          "auto": {
+            "type": "GOB.SecureString",
+            "level": 4,
+            "description": "Auto waarin de persoon rijdt"
+          },
+          "woont_in_stadsdeel": {
+            "type": "GOB.Reference",
+            "description": "Het stadsdeel waar de persoon in woont",
+            "ref": "gebieden:stadsdelen"
+          }
+        }
       }
     }
   },

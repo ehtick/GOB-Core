@@ -74,7 +74,15 @@ def _get_relation(name):
             FIELD.END_VALIDITY: {
                 "type": "GOB.DateTime",
                 "description": DESCRIPTION[FIELD.END_VALIDITY],
-            }
+            },
+            FIELD.LAST_SRC_EVENT: {
+                "type": "GOB.Integer",
+                "description": DESCRIPTION[FIELD.LAST_SRC_EVENT],
+            },
+            FIELD.LAST_DST_EVENT: {
+                "type": "GOB.Integer",
+                "description": DESCRIPTION[FIELD.LAST_DST_EVENT],
+            },
         }
     }
 

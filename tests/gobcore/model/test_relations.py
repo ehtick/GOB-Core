@@ -19,7 +19,8 @@ class TestRelations(unittest.TestCase):
         src_attributes = ['src_id', 'src_source', 'src_volgnummer']
         dst_attributes = ['dst_id', 'dst_source', 'dst_volgnummer']
         validity_attributes = ['begin_geldigheid', 'eind_geldigheid']
-        attributes = global_attributes + src_attributes + dst_attributes + validity_attributes
+        relate_attributes = ['_last_src_event', '_last_dst_event']
+        attributes = global_attributes + src_attributes + dst_attributes + validity_attributes + relate_attributes
 
         result = _get_relation("name")
         self.assertEqual(result['abbreviation'], "name")

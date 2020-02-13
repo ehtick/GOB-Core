@@ -128,6 +128,8 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
         (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}", f"src{FIELD.SOURCE}", FIELD.SOURCE_VALUE, FIELD.APPLICATION),
         (f"src{FIELD.ID}", f"src_{FIELD.SEQNR}"),
         (f"dst{FIELD.ID}", f"dst_{FIELD.SEQNR}"),
+        (FIELD.LAST_SRC_EVENT,),
+        (FIELD.LAST_DST_EVENT,),
     ]
 
     create_indexes = default_indexes

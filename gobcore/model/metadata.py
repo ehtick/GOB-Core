@@ -33,6 +33,10 @@ class FIELD:
     SOURCE_VALUE = "bronwaarde"
     SOURCE_INFO = "broninfo"
 
+    # Used in relation table
+    LAST_SRC_EVENT = "_last_src_event"
+    LAST_DST_EVENT = "_last_dst_event"
+
 
 """Description of all fields that are automatically added to each entity"""
 DESCRIPTION = {
@@ -55,6 +59,8 @@ DESCRIPTION = {
     FIELD.SOURCE_VALUE: "The original source value, used to resolve references.",
     FIELD.START_VALIDITY: "Timestamp indicating the start of the validity of this object",
     FIELD.END_VALIDITY: "Timestamp indicating the end of the validity of this object",
+    FIELD.LAST_SRC_EVENT: "Id of the last src event that has been appleid to this entity",
+    FIELD.LAST_DST_EVENT: "Id of the last dst event that has been appleid to this entity",
 }
 
 """Meta data that is registered for every entity"""

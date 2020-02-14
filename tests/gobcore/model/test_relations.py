@@ -31,7 +31,8 @@ class TestRelations(unittest.TestCase):
             for prop in ['type', 'description']:
                 self.assertTrue(prop in result['attributes'][attr])
 
-    def test_relation_name(self):
+    @mock.patch("gobcore.model.relations.NameCompressor")
+    def test_relation_name(self, mock_name_compressor):
         model = mock.MagicMock()
         src = {
             "catalog": {
@@ -60,10 +61,11 @@ class TestRelations(unittest.TestCase):
         }
 
         # Assert that NameCompressor is used
-        # self.assertTrue("reference" in NameCompressor._CONVERSIONS.keys())
+        mock_name_compressor.compress_name.side_effect = lambda s: s
         name = _get_relation_name(src, dst, "reference")
         expect = 'cat_col_dst_cat_dst_col_reference'
         self.assertEqual(name, expect)
+        mock_name_compressor.compress_name.assert_called_with(expect)
 
         model.get_catalog.return_value = src['catalog']
         model.get_collection.return_value = src['collection']

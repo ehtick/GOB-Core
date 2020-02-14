@@ -86,15 +86,12 @@ def _bind_queue(channel, exchange, queue, key):
 
 def _initialize_queues(channel, queue_configuration):
     for exchange, queues in queue_configuration.items():
-        print(f"Create exchange {exchange}")
         _create_exchange(channel=channel, exchange=exchange, durable=True)
 
         for queue, keys in queues.items():
-            print(f"Create queue {queue}")
             _create_queue(channel=channel, queue=queue, durable=True)
 
             for key in keys:
-                print(f"Binding key {key} to queue {queue}")
                 _bind_queue(channel=channel, exchange=exchange, queue=queue, key=key)
 
 
@@ -107,12 +104,10 @@ def initialize_message_broker():
     """
     print(f"Initialize message broker {MESSAGE_BROKER}")
 
-    print(f"Create virtual host {MESSAGE_BROKER_VHOST}")
     _create_vhost(MESSAGE_BROKER_VHOST)
 
     # Add exchanges and queues
     with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
 
-        print("Connect to message broker")
         channel = connection.channel()
         _initialize_queues(channel, QUEUE_CONFIGURATION)

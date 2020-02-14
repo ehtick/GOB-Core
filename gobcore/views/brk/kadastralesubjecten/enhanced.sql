@@ -38,13 +38,13 @@ FROM brk_kadastralesubjecten sjt
     UNION
     SELECT sjt.identificatie
     FROM brk_kadastralesubjecten sjt
-             JOIN mv_brk_zrt_brk_sjt_betrokken_bij_appartementsrechtsplitsing_vve rel ON rel.dst_id = sjt._id
+             JOIN mv_brk_zrt_brk_sjt__betr_apprechtsplit_vve_ rel ON rel.dst_id = sjt._id
              JOIN brk_zakelijkerechten zrt ON zrt._id = rel.src_id AND zrt.volgnummer = rel.src_volgnummer
     GROUP BY sjt.identificatie
     UNION
     SELECT sjt.identificatie
     FROM brk_kadastralesubjecten sjt
-             JOIN mv_brk_zrt_brk_sjt_ontstaan_uit_appartementsrechtsplitsing_vve rel ON rel.dst_id = sjt._id
+             JOIN mv_brk_zrt_brk_sjt__ontst_apprechtsplit_vve_ rel ON rel.dst_id = sjt._id
              JOIN brk_zakelijkerechten zrt ON zrt._id = rel.src_id AND zrt.volgnummer = rel.src_volgnummer
     GROUP BY sjt.identificatie
     UNION

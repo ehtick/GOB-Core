@@ -137,7 +137,6 @@ class MessagedrivenService:
             connection.subscribe(queues, self._on_message)
 
             id = ', '.join([queue for queue in queues])
-            print(f"Queue connection for {id} started")
 
             # Repeat forever
             while self.keep_running and connection.is_alive():

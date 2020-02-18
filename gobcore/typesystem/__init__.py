@@ -116,6 +116,10 @@ def get_gob_type(name):
     return _gob_types_dict[name]
 
 
+def fully_qualified_type_name(gob_type):
+    return f"GOB.{gob_type.name}"
+
+
 def is_gob_reference_type(type_name):
     """
     Tels if type_name is the name of a GOB Reference type
@@ -123,7 +127,7 @@ def is_gob_reference_type(type_name):
     :param type_name:
     :return:
     """
-    return type_name in [f"GOB.{t.name}" for t in [GOB.Reference, GOB.ManyReference, GOB.VeryManyReference]]
+    return type_name in [fully_qualified_type_name(t) for t in [GOB.Reference, GOB.ManyReference, GOB.VeryManyReference]]
 
 
 def is_gob_geo_type(name):

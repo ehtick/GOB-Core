@@ -267,6 +267,12 @@ def _derive_indexes() -> dict:
             # Generate indexes on referenced columns (GOB.Reference and GOB.ManyReference)
             indexes.update(**_relation_indexes_for_collection(catalog_name, collection_name, collection, prefix))
 
+            # Create special COALESCE(_expiration_date, '9999-12-31'::timestamp without time zone') index
+            indexes[_hashed_index_name(prefix, f"{FIELD.EXPIRATION_DATE}_coalesce")] = {
+                "columns": [f"COALESCE({FIELD.EXPIRATION_DATE}, '9999-12-31'::timestamp without time zone)"],
+                "table_name": table_name,
+            }
+
     return indexes
 
 

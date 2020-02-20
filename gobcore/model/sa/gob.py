@@ -8,22 +8,28 @@ import hashlib
 import re
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.schema import UniqueConstraint
+from sqlalchemy.schema import UniqueConstraint, ForeignKeyConstraint
 
 # Import data definitions
 from gobcore.model import GOBModel, EVENTS, EVENTS_DESCRIPTION
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import columns_to_fields
+from gobcore.model.relations import split_relation_table_name
+from gobcore.model.name_compressor import NameCompressor
 from gobcore.sources import GOBSources
 from gobcore.typesystem import get_gob_type, is_gob_geo_type, is_gob_json_type
 
-Base = declarative_base()
-
-model = GOBModel()
-sources = GOBSources()
-
 TABLE_TYPE_RELATION = 'relation_table'
 TABLE_TYPE_ENTITY = 'entity_table'
+
+Base = None
+
+
+def get_base():
+    global Base
+    if not Base:
+        Base = declarative_base()
+    return Base
 
 
 def get_column(column_name, column_specification):
@@ -40,6 +46,24 @@ def get_column(column_name, column_specification):
     return column
 
 
+def _create_model_type(table_name, columns, has_states, table_args):
+    """Creates model type based on given parameters. Extracted for testability
+
+    :param table_name:
+    :param columns:
+    :param has_states:
+    :param table_args:
+    :return:
+    """
+    return type(table_name, (get_base(),), {
+        '__tablename__': table_name,
+        **columns,
+        '__has_states__': has_states,
+        '__repr__': lambda self: table_name,
+        '__table_args__': table_args,
+    })
+
+
 def columns_to_model(catalog_name, table_name, columns, has_states=False, constraint_columns=None):
     """Create a model out of table_name and GOB column specification
 
@@ -48,11 +72,49 @@ def columns_to_model(catalog_name, table_name, columns, has_states=False, constr
     :param has_states:
     :return: Model class
     """
+    model = GOBModel()
     # Convert columns to SQLAlchemy Columns
     columns = {column_name: get_column(column_name, column_spec) for column_name, column_spec in columns.items()}
 
     if catalog_name == "rel":
-        table_args = ()
+        # Add FK constraints from relation table to src and dst tables
+        relation_info = split_relation_table_name(table_name)
+
+        src_catalog, src_collection = model.get_catalog_collection_from_abbr(relation_info['src_cat_abbr'],
+                                                                             relation_info['src_col_abbr'])
+        dst_catalog, dst_collection = model.get_catalog_collection_from_abbr(relation_info['dst_cat_abbr'],
+                                                                             relation_info['dst_col_abbr'])
+
+        def fk_constraint(to_catalog: dict, to_collection: dict, srcdst: str) -> ForeignKeyConstraint:
+            """Creates FK constraint to given catalog and collection from as src or dst
+
+            Example:
+            foreign key from (src_id, src_volgnummer) to (_id, volgnummer), or
+            foreign key from (dst_id) to (_id)
+
+            :param to_catalog:
+            :param to_collection:
+            :param srcdst: src or dst
+            :return:
+            """
+            tablename = model.get_table_name(to_catalog['name'], to_collection['name'])
+            has_states = to_collection.get('has_states', False)
+
+            return ForeignKeyConstraint(
+                # Source columns (src or dst)
+                [f"{srcdst}_{col}" for col in (
+                    [FIELD.REFERENCE_ID, FIELD.SEQNR] if has_states else [FIELD.REFERENCE_ID]
+                )],
+                # Destination columns, prefixed with destination table name
+                [f"{tablename}.{col}" for col in ([FIELD.ID, FIELD.SEQNR] if has_states else [FIELD.ID])],
+                name=f"{NameCompressor.compress_name(table_name)}_{srcdst[0]}fk"
+            )
+
+        table_args = (
+            fk_constraint(src_catalog, src_collection, 'src'),
+            fk_constraint(dst_catalog, dst_collection, 'dst'),
+        )
+
     else:
         if not constraint_columns:
             constraint_columns = [FIELD.ID, FIELD.SEQNR] if has_states else [FIELD.ID]
@@ -63,13 +125,7 @@ def columns_to_model(catalog_name, table_name, columns, has_states=False, constr
         table_args = (UniqueConstraint(*constraint_columns, name=constraint_name),)
 
     # Create model
-    return type(table_name, (Base,), {
-        "__tablename__": table_name,
-        **columns,
-        "__has_states__": has_states,
-        "__repr__": lambda self: f"{table_name}",
-        "__table_args__": table_args
-    })
+    return _create_model_type(table_name, columns, has_states, table_args)
 
 
 def _derive_models():
@@ -78,6 +134,7 @@ def _derive_models():
     :return: None
     """
 
+    model = GOBModel()
     models = {
         # e.g. "meetbouten_rollagen": <BASE>
     }
@@ -176,6 +233,9 @@ def _hash(string):
 
 
 def _relation_indexes_for_collection(catalog_name, collection_name, collection, idx_prefix):
+    model = GOBModel()
+    sources = GOBSources()
+
     indexes = {}
     table_name = model.get_table_name(catalog_name, collection_name)
 
@@ -220,6 +280,7 @@ def _relation_indexes_for_collection(catalog_name, collection_name, collection, 
 
 
 def _derive_indexes() -> dict:
+    model = GOBModel()
     indexes = {}
 
     # Add indexes to events table

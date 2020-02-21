@@ -283,18 +283,6 @@ def _derive_indexes() -> dict:
     model = GOBModel()
     indexes = {}
 
-    # Add indexes to events table
-    event_indexes = [
-        ('entity',),
-        ('entity', 'catalogue', 'source',),
-    ]
-    for index in event_indexes:
-        name = ".".join([column.replace(' ', '_').lower() for column in index])
-        indexes[f'events.idx.{name}'] = {
-            "columns": index,
-            "table_name": "events"
-        }
-
     for catalog_name, catalog in model.get_catalogs().items():
         for collection_name, collection in model.get_collections(catalog_name).items():
             entity = collection['all_fields']

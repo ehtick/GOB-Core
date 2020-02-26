@@ -44,13 +44,13 @@
       bag_openbareruimtes AS ligt_aan_openbareruimte
     ON
       nag.ligt_aan_openbareruimte->>'id' = ligt_aan_openbareruimte._id AND
-      nag.ligt_aan_openbareruimte->>'volgnummer' = ligt_aan_openbareruimte.volgnummer
+      (nag.ligt_aan_openbareruimte->>'volgnummer')::int = ligt_aan_openbareruimte.volgnummer
     -- SELECT ligt_in_woonplaats
     LEFT JOIN
       bag_woonplaatsen AS ligt_in_woonplaats
     ON
       nag.ligt_in_woonplaats->>'id' = ligt_in_woonplaats._id AND
-      nag.ligt_in_woonplaats->>'volgnummer' = ligt_in_woonplaats.volgnummer
+      (nag.ligt_in_woonplaats->>'volgnummer')::int = ligt_in_woonplaats.volgnummer
     -- SELECT adresseert_verblijfsobject
     LEFT JOIN (
         SELECT

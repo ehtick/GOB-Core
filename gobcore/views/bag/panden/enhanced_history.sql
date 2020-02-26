@@ -59,35 +59,35 @@
       gebieden_bouwblokken AS ligt_in_bouwblok
     ON
       pnd.ligt_in_bouwblok->>'id' = ligt_in_bouwblok.identificatie AND
-      pnd.ligt_in_bouwblok->>'volgnummer' = ligt_in_bouwblok.volgnummer
+      (pnd.ligt_in_bouwblok->>'volgnummer')::int = ligt_in_bouwblok.volgnummer
     -- SELECT ligt_in_buurt
     LEFT JOIN
       gebieden_buurten AS ligt_in_buurt
     ON
       ligt_in_bouwblok.ligt_in_buurt->>'id' = ligt_in_buurt.identificatie AND
-      ligt_in_bouwblok.ligt_in_buurt->>'volgnummer' = ligt_in_buurt.volgnummer
+      (ligt_in_bouwblok.ligt_in_buurt->>'volgnummer')::int = ligt_in_buurt.volgnummer
     -- SELECT ligt_in_wijk
     LEFT JOIN
       gebieden_wijken AS ligt_in_wijk
     ON
       ligt_in_buurt.ligt_in_wijk->>'id' = ligt_in_wijk.identificatie AND
-      ligt_in_buurt.ligt_in_wijk->>'volgnummer' = ligt_in_wijk.volgnummer
+      (ligt_in_buurt.ligt_in_wijk->>'volgnummer')::int = ligt_in_wijk.volgnummer
     -- SELECT ligt_in_stadsdeel
     LEFT JOIN
       gebieden_stadsdelen AS ligt_in_stadsdeel
     ON
       ligt_in_wijk.ligt_in_stadsdeel->>'id' = ligt_in_stadsdeel.identificatie AND
-      ligt_in_wijk.ligt_in_stadsdeel->>'volgnummer' = ligt_in_stadsdeel.volgnummer
+      (ligt_in_wijk.ligt_in_stadsdeel->>'volgnummer')::int = ligt_in_stadsdeel.volgnummer
     -- SELECT _ligt_in_ggwgebied
     LEFT JOIN
       gebieden_ggwgebieden AS ligt_in_ggwgebied
     ON
       ligt_in_buurt._ligt_in_ggwgebied->>'id' = ligt_in_ggwgebied.identificatie AND
-      ligt_in_buurt._ligt_in_ggwgebied->>'volgnummer' = ligt_in_ggwgebied.volgnummer
+      (ligt_in_buurt._ligt_in_ggwgebied->>'volgnummer')::int = ligt_in_ggwgebied.volgnummer
     -- SELECT _ligt_in_ggpgebied
     LEFT JOIN
       gebieden_ggpgebieden AS ligt_in_ggpgebied
     ON
       ligt_in_buurt._ligt_in_ggpgebied->>'id' = ligt_in_ggpgebied.identificatie AND
-      ligt_in_buurt._ligt_in_ggpgebied->>'volgnummer' = ligt_in_ggpgebied.volgnummer
+      (ligt_in_buurt._ligt_in_ggpgebied->>'volgnummer')::int = ligt_in_ggpgebied.volgnummer
     WHERE pnd._date_deleted IS NULL

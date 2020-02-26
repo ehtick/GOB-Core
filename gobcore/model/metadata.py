@@ -99,7 +99,7 @@ FIXED_COLUMNS = {
 
 """Columns that are part of entities that have states"""
 STATE_COLUMNS = {
-    FIELD.SEQNR: "GOB.String",
+    FIELD.SEQNR: "GOB.Integer",
     FIELD.REGISTRATION_DATE: "GOB.DateTime"
 }
 

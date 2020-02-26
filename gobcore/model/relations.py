@@ -44,7 +44,7 @@ def _get_relation(name):
                 "description": DESCRIPTION[FIELD.ID]
             },
             f"src_{FIELD.SEQNR}": {
-                "type": "GOB.String",
+                "type": "GOB.Integer",
                 "description": DESCRIPTION[FIELD.SEQNR]
             },
             f"{FIELD.SOURCE_VALUE}": {
@@ -64,7 +64,7 @@ def _get_relation(name):
                 "description": DESCRIPTION[FIELD.ID]
             },
             f"dst_{FIELD.SEQNR}": {
-                "type": "GOB.String",
+                "type": "GOB.Integer",
                 "description": DESCRIPTION[FIELD.SEQNR]
             },
             FIELD.START_VALIDITY: {

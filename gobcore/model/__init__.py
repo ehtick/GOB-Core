@@ -86,8 +86,6 @@ class GOBModel():
                 model['references'] = self._extract_references(model['attributes'])
                 model['very_many_references'] = self._extract_very_many_references(model['attributes'])
 
-                self._set_api(catalog_name, entity_name, model)
-
                 model_attributes = model['attributes']
                 state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
                 all_attributes = {
@@ -119,29 +117,6 @@ class GOBModel():
                         # Use a fallback scenario as long as the schemas are still in development
                         print(f"ERROR: failed to load schema {model['schema']} for {catalog_name}:{entity_name}")
                         model['attributes'] = model["_attributes"]
-
-    def _set_api(self, catalog_name, entity_name, model):
-        """
-        Sets the api attribute of an entity model
-
-        Entities with state are automatically populated with a end_validity filter
-
-        :param catalog_name: name of the catalog
-        :param entity_name:  name of the entity
-        :param model: the entity model
-        :return: None
-        """
-        api = model.get('api', {})
-        if not api.get('filters'):
-            api['filters'] = []
-        if self.has_states(catalog_name, entity_name):
-            # If no filter on end validity is set, add the default filter
-            if not [item for item in api['filters'] if item["field"] == FIELD.END_VALIDITY]:
-                api['filters'].append({
-                    "field": FIELD.END_VALIDITY,
-                    "op": "is_null"
-                })
-        model['api'] = api
 
     def _extract_references(self, attributes):
         return {field_name: spec for field_name, spec in attributes.items()

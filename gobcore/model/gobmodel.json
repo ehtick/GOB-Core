@@ -566,9 +566,6 @@
             "description": "Het bouwblok waarvan de rollaag is gemeten",
             "ref": "gebieden:bouwblokken"
           }
-        },
-        "api": {
-          "filters": []
         }
       }
     }
@@ -706,14 +703,6 @@
             "type": "GOB.Geo.Geometry",
             "description": "Geometrische beschrijving van een object."
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       },
       "buurten": {
@@ -773,14 +762,6 @@
             "description": "Het GGW-gebied waar de buurt in ligt",
             "ref": "gebieden:ggwgebieden"
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       },
       "wijken": {
@@ -835,14 +816,6 @@
             "description": "Het GGW-gebied waar de wijk in ligt.",
             "ref": "gebieden:ggwgebieden"
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       },
       "ggwgebieden": {
@@ -894,14 +867,6 @@
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       },
       "ggpgebieden": {
@@ -953,14 +918,6 @@
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       },
       "stadsdelen": {
@@ -1006,14 +963,6 @@
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
           }
-        },
-        "api": {
-          "filters": [
-            {
-              "field": "eind_geldigheid",
-              "op": "is_null"
-            }
-          ]
         }
       }
     }

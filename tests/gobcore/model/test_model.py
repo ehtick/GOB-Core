@@ -108,11 +108,6 @@ class TestModel(unittest.TestCase):
         self.assertEqual("idvalue.1", self.model.get_source_id(entity, spec))
         self.model.has_states.assert_called_with('meetbouten', 'meetbouten')
 
-    def test_set_api(self):
-        model = {}
-        self.model._set_api('meetbouten', 'meetbouten', model)
-        self.assertEqual(model, {'api': {'filters': []}})
-
     def test_get_table_name_from_ref(self):
         self.assertEqual("abc_def", self.model.get_table_name_from_ref("abc:def"))
 

@@ -68,7 +68,7 @@
       {
         "name": "destination",
         "default": "Objectstore",
-        "choices": ["Objectstore", "File"],
+        "choices": ["Objectstore", "File", "Database"],
         "description": "Destination, default is Objectstore"
       },
       {

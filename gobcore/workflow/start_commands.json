@@ -108,8 +108,7 @@
         "description": "The name of the data catalogue (example: \"meetbouten\")"
       }
     ],
-    "workflow": "export",
-    "start_step": "export_test"
+    "workflow": "export_test"
   },
   "e2e_test": {
     "description": "Run the end-to-end tests",

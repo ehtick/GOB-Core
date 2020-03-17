@@ -3,6 +3,10 @@ _CONVERSIONS = {
     "is_bron_voor_aantekening_kadastraal_object": "bron_kad_obj",
     "ontstaan_uit_appartementsrechtsplitsing_vve": "ontst_apprechtsplit_vve",
     "betrokken_bij_appartementsrechtsplitsing_vve": "betr_apprechtsplit_vve",
+    "heeft_een_relatie_met": "hft_rel_mt",
+    "heeft_betrekking_op": "hft_btrk_p",
+    "is_onderdeel_van": "ondrdl_vn",
+    "aangeduid_door": "angdd_dr",
 }
 
 

@@ -66,7 +66,8 @@ class TestGob(unittest.TestCase):
     @patch("gobcore.model.sa.gob.get_column")
     @patch("gobcore.model.sa.gob.split_relation_table_name")
     @patch("gobcore.model.sa.gob._create_model_type")
-    def test_columns_to_model_rel(self, mock_model_type, mock_split, mock_get_column):
+    @patch("gobcore.model.sa.gob.UniqueConstraint")
+    def test_columns_to_model_rel(self, mock_unique, mock_model_type, mock_split, mock_get_column):
         mock_get_column.side_effect = lambda name, spec: spec
         mock_split.return_value = {
             'src_cat_abbr': 'cat1',
@@ -87,6 +88,7 @@ class TestGob(unittest.TestCase):
         }, False, (
             self.MockForeignKeyConstraint('', '', 'table_name_sfk'),
             self.MockForeignKeyConstraint('', '', 'table_name_dfk'),
+            mock_unique.return_value,
         ))
 
     @patch("gobcore.model.sa.gob.GOBModel", MockModel)
@@ -95,7 +97,8 @@ class TestGob(unittest.TestCase):
     @patch("gobcore.model.sa.gob.get_column")
     @patch("gobcore.model.sa.gob.split_relation_table_name")
     @patch("gobcore.model.sa.gob._create_model_type")
-    def test_columns_to_model_rel_vmr(self, mock_model_type, mock_split, mock_get_column):
+    @patch("gobcore.model.sa.gob.UniqueConstraint")
+    def test_columns_to_model_rel_vmr(self, mock_unique, mock_model_type, mock_split, mock_get_column):
         mock_get_column.side_effect = lambda name, spec: spec
         mock_split.return_value = {
             'src_cat_abbr': 'cat1',
@@ -113,4 +116,4 @@ class TestGob(unittest.TestCase):
         mock_model_type.assert_called_with('table_name', {
             'column1': 'column1spec',
             'column2': 'column2spec',
-        }, False, None)
+        }, False, (mock_unique.return_value,))

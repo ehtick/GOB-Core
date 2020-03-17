@@ -12,7 +12,7 @@ INNER JOIN rel_wkpb_bpg_brk_kot_belast_kadastrale_objecten rel_bpg_kot
 INNER JOIN brk_kadastraleobjecten kot
   ON  rel_bpg_kot.dst_id = kot._id
   AND rel_bpg_kot.dst_volgnummer = kot.volgnummer
-INNER JOIN mv_brk_kot_brk_kse_aangeduid_door_kadastralesectie rel_kot_kse
+INNER JOIN mv_brk_kot_brk_kse__angdd_dr__kadastralesectie rel_kot_kse
   ON kot."_id"  = rel_kot_kse.src_id
   AND kot.volgnummer  = rel_kot_kse.src_volgnummer
 INNER JOIN brk_kadastralesecties kse

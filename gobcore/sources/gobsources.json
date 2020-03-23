@@ -1,6 +1,12 @@
 {
   "REL": {
     "test_catalogue": {
+      "test_entity": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "string"
+        }
+      },
       "rel_test_entity_a": {
         "ref_to_c": {
           "method": "equals",

@@ -114,5 +114,26 @@
     "description": "Run the end-to-end tests",
     "args": [],
     "workflow": "e2e_test"
+  },
+  "data_e2e_test": {
+    "description": "Run data consistency end-to-end tests",
+    "workflow": "data_consistency_test",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      },
+      {
+        "name": "collection",
+        "required": true,
+        "description": "The name of the data collection (example: \"metingen\")"
+      },
+      {
+        "name": "application",
+        "description": "The name of the application to import from",
+        "default": ""
+      }
+    ]
   }
 }

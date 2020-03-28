@@ -6,6 +6,7 @@ from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, STATUS_START, STATUS_FAIL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
+from gobcore.message_broker.notifications import contains_notifications, send_notifications
 
 CHECK_CONNECTION = 5    # Check connection every n seconds
 
@@ -32,6 +33,9 @@ def _on_message(connection, service, msg):
         Heartbeat.progress(connection, service, msg, STATUS_FAIL, str(err))
         # re-raise the exception, further handling is done in the message broker
         raise err
+
+    if contains_notifications(result_msg):
+        send_notifications(result_msg)
 
     # If a report_queue is defined, report the result message (if any)
     if 'report' in service and result_msg is not None:

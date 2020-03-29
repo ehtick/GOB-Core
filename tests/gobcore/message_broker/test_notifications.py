@@ -16,9 +16,9 @@ from gobcore.message_broker.notifications import listen_to_notifications,\
     listen_to_broadcasts
 
 @patch("gobcore.message_broker.notifications.NOTIFY_EXCHANGE", 'notification exchange')
+@patch("gobcore.message_broker.notifications.NOTIFY_BASE_QUEUE", 'base queue')
 @patch("gobcore.message_broker.notifications.NOTIFICATION_KEY", 'notification key')
 @patch("gobcore.message_broker.notifications.NOTIFICATION_HEADER_FIELDS", ['a', 'b'])
-@patch("gobcore.message_broker.notifications.BASE_QUEUE", 'base queue')
 class TestNotifications(TestCase):
 
     @patch("gobcore.message_broker.notifications.listen_to_broadcasts")

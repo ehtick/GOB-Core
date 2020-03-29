@@ -4,10 +4,15 @@ from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.utils import to_json
 from gobcore.message_broker.initialise_queues import _create_exchange, _create_queue, _bind_queue
 
+# Use a dedicated exchange for notifications
 NOTIFY_EXCHANGE = "gob.notify"
+# Each queue in the notification exchange starts with 'gob.notify'
+NOTIFY_BASE_QUEUE = 'gob.notify'
+# Notifications can be included in a message with the 'notification' key
 NOTIFICATION_KEY = 'notification'
-NOTIFICATION_HEADER_FIELDS = ['catalogue', 'collection', 'entity', 'version']
-BASE_QUEUE = 'gob.notify'
+# Notification messages copy a selection of the original header fields
+NOTIFICATION_HEADER_FIELDS = [
+    'process_id', 'jobid', 'stepid', 'source', 'catalogue', 'collection', 'entity', 'version']
 
 
 def listen_to_notifications(id):
@@ -18,7 +23,7 @@ def listen_to_notifications(id):
     :param id:
     :return:
     """
-    queue = f"{BASE_QUEUE}.{id}"
+    queue = f"{NOTIFY_BASE_QUEUE}.{id}"
     return listen_to_broadcasts(NOTIFY_EXCHANGE, queue)
 
 

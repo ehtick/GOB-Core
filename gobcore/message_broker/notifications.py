@@ -27,7 +27,7 @@ def listen_to_notifications(id, notification_type=None):
     :return:
     """
     queue = f"{NOTIFY_BASE_QUEUE}.{id}"
-    return listen_to_broadcasts(NOTIFY_EXCHANGE, queue, notification_type)
+    return listen_to_broadcasts(NOTIFY_EXCHANGE, queue, notification_type or '')
 
 
 def contains_notifications(result_msg):
@@ -169,5 +169,5 @@ def listen_to_broadcasts(exchange, queue, notification_type=None):
         _create_broadcast_exchange(channel=channel, exchange=exchange)
         _create_queue(channel=channel, queue=queue, durable=True)
         # Bind to the queue and listen to messages of the specifief type
-        _bind_queue(channel=channel, exchange=exchange, queue=queue, key=notification_type)
+        _bind_queue(channel=channel, exchange=exchange, queue=queue, key=notification_type or '')
     return queue

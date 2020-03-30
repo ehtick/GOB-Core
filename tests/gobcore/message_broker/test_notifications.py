@@ -21,8 +21,11 @@ class TestNotifications(TestCase):
     @patch("gobcore.message_broker.notifications.listen_to_broadcasts")
     def test_listen_to_notifications(self, mock_listen_to_broadcasts):
         result = listen_to_notifications('any id')
-        mock_listen_to_broadcasts.assert_called_with('notification exchange', 'base queue.any id')
+        mock_listen_to_broadcasts.assert_called_with('notification exchange', 'base queue.any id', None)
         self.assertEqual(result, mock_listen_to_broadcasts.return_value)
+
+        result = listen_to_notifications('any id', 'any type')
+        mock_listen_to_broadcasts.assert_called_with('notification exchange', 'base queue.any id', 'any type')
 
     def test_contains_notifications(self):
         result = contains_notifications(None)
@@ -42,10 +45,12 @@ class TestNotifications(TestCase):
         send_notifications({})
         mock_send_broadcast.assert_not_called()
 
-        send_notifications({'header': {'a': 1, 'c': 3}, 'notification key': {'x': 1, 'y': 2}})
+        send_notifications({'header': {'a': 1, 'c': 3}, 'notification key': {'type': "any type", 'x': 1, 'y': 2}})
         mock_send_broadcast.assert_called_with('notification exchange',
+                                               notification_type='any type',
                                                msg={
                                                    'header': {'a': 1, 'b': None},
+                                                   'type': "any type",
                                                    'x': 1,
                                                    'y': 2
                                                })
@@ -80,10 +85,9 @@ class TestNotifications(TestCase):
     @patch("gobcore.message_broker.notifications._create_exchange")
     def test__create_broadcast_exchange(self, mock_create_exchange):
         _create_broadcast_exchange('any channel', 'any exchange')
-        mock_create_exchange.assert_called_with('any channel',
+        mock_create_exchange.assert_called_with(channel='any channel',
                                                 durable=True,
-                                                exchange='any exchange',
-                                                exchange_type='fanout')
+                                                exchange='any exchange')
 
     @patch("gobcore.message_broker.notifications.pika.BasicProperties")
     @patch("gobcore.message_broker.notifications.pika.BlockingConnection")
@@ -93,15 +97,15 @@ class TestNotifications(TestCase):
         mock_channel = MagicMock()
         mock_blocking_connection.return_value.__enter__.return_value = mock_connection
         mock_connection.channel.return_value = mock_channel
-        send_broadcast('any exchange', {})
-        mock_create_broadcast_exchange.assert_called_with(mock_channel, 'any exchange')
+        send_broadcast('any exchange', 'any type', {})
+        mock_create_broadcast_exchange.assert_called_with(channel=mock_channel, exchange='any exchange')
         mock_channel.basic_publish.assert_called_with(
             body='{}',
             exchange='any exchange',
             properties=mock_basic_properties(
                 delivery_mode=2  # Make messages persistent
             ),
-            routing_key='')
+            routing_key='any type')
 
     @patch("gobcore.message_broker.notifications.pika.BlockingConnection")
     @patch("gobcore.message_broker.notifications._create_broadcast_exchange")
@@ -113,8 +117,8 @@ class TestNotifications(TestCase):
         mock_blocking_connection.return_value.__enter__.return_value = mock_connection
         mock_connection.channel.return_value = mock_channel
         result = listen_to_broadcasts('any exchange', 'any queue')
-        mock_create_broadcast_exchange.assert_called_with(mock_channel, 'any exchange')
+        mock_create_broadcast_exchange.assert_called_with(channel=mock_channel, exchange='any exchange')
         mock_create_queue.assert_called_with(channel=mock_channel, queue='any queue', durable=True)
-        mock_bind_queue.assert_called_with(channel=mock_channel, exchange='any exchange', queue='any queue', key='')
+        mock_bind_queue.assert_called_with(channel=mock_channel, exchange='any exchange', queue='any queue', key=None)
         self.assertEqual(result, 'any queue')
 

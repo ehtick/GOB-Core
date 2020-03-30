@@ -10,21 +10,24 @@ NOTIFY_EXCHANGE = "gob.notify"
 NOTIFY_BASE_QUEUE = 'gob.notify'
 # Notifications can be included in a message with the 'notification' key
 NOTIFICATION_KEY = 'notification'
+# Notification type (used as routing key) and contents
+NOTIFICATION_TYPE = 'type'
+NOTIFICATION_CONTENTS = 'contents'
 # Notification messages copy a selection of the original header fields
-NOTIFICATION_HEADER_FIELDS = [
-    'process_id', 'jobid', 'stepid', 'source', 'catalogue', 'collection', 'entity', 'version']
+NOTIFICATION_HEADER_FIELDS = ['source', 'catalogue', 'collection', 'entity', 'version']
 
 
-def listen_to_notifications(id):
+def listen_to_notifications(id, notification_type=None):
     """
     Listen to notification messages
     The id is used to create a queue on which notifications will be received for the id
+    A type can be specified to filter out unwanted messages
 
     :param id:
     :return:
     """
     queue = f"{NOTIFY_BASE_QUEUE}.{id}"
-    return listen_to_broadcasts(NOTIFY_EXCHANGE, queue)
+    return listen_to_broadcasts(NOTIFY_EXCHANGE, queue, notification_type)
 
 
 def contains_notifications(result_msg):
@@ -47,12 +50,13 @@ def send_notifications(result_msg):
     # If a notification has been specified then broadcast the notification
     if contains_notifications(result_msg):
         header_fields = NOTIFICATION_HEADER_FIELDS
+        notification = result_msg[NOTIFICATION_KEY]
         notification = {
             'header': {key: result_msg['header'].get(key) for key in header_fields},
-            **result_msg[NOTIFICATION_KEY]
+            **notification
         }
         # Broadcast notification
-        send_broadcast(NOTIFY_EXCHANGE, msg=notification)
+        send_broadcast(NOTIFY_EXCHANGE, notification_type=notification.get(NOTIFICATION_TYPE), msg=notification)
         # Delete when handled
         del result_msg[NOTIFICATION_KEY]
 
@@ -66,8 +70,8 @@ def add_notification(msg, notification):
     :return:
     """
     msg[NOTIFICATION_KEY] = {
-        'type': notification.type,
-        'contents': notification.contents
+        NOTIFICATION_TYPE: notification.type,
+        NOTIFICATION_CONTENTS: notification.contents
     }
 
 
@@ -78,7 +82,7 @@ def get_notification(msg):
     :param msg:
     :return:
     """
-    if msg.get('type') == EventNotification.type:
+    if msg.get(NOTIFICATION_TYPE) == EventNotification.type:
         return EventNotification.from_msg(msg)
 
 
@@ -91,7 +95,7 @@ class EventNotification():
         Initialize an Event Notification
 
         :param applied: What kind of events have been applied and how many
-        :param last_event: The last eventid after the events have been applied
+        :param last_event: The last eventid before and after the events have been applied
         :param header:
         """
         self.contents = {
@@ -108,7 +112,7 @@ class EventNotification():
         :param msg:
         :return:
         """
-        return cls(**msg['contents'], header=msg['header'])
+        return cls(**msg[NOTIFICATION_CONTENTS], header=msg['header'])
 
 
 def _create_broadcast_exchange(channel, exchange):
@@ -119,12 +123,12 @@ def _create_broadcast_exchange(channel, exchange):
     :param exchange:
     :return:
     """
-    _create_exchange(channel, exchange=exchange, durable=True, exchange_type='fanout')
+    _create_exchange(channel=channel, exchange=exchange, durable=True)
 
 
-def send_broadcast(exchange, msg):
+def send_broadcast(exchange, notification_type, msg):
     """
-    Send a broadcast message on the specified exchange
+    Send a broadcast message of a specified type (None for unspecied) on the specified exchange
 
     :param exchange:
     :param msg:
@@ -133,7 +137,8 @@ def send_broadcast(exchange, msg):
     with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
         channel = connection.channel()
 
-        _create_broadcast_exchange(channel, exchange)
+        # Create exchange if it does not yet exist
+        _create_broadcast_exchange(channel=channel, exchange=exchange)
 
         # Convert the message to json
         json_msg = to_json(msg)
@@ -141,7 +146,7 @@ def send_broadcast(exchange, msg):
         # Broadcast the message as a non-persistent message on the queue
         channel.basic_publish(
             exchange=exchange,
-            routing_key='',
+            routing_key=notification_type,
             properties=pika.BasicProperties(
                 delivery_mode=2  # Make messages persistent
             ),
@@ -149,9 +154,9 @@ def send_broadcast(exchange, msg):
         )
 
 
-def listen_to_broadcasts(exchange, queue):
+def listen_to_broadcasts(exchange, queue, notification_type=None):
     """
-    Listen to broadcast messages on the specified exchange and queue
+    Listen to broadcast messages on the specified exchange and queue of a specified type (None for all)
 
     :param exchange:
     :param queue:
@@ -160,7 +165,9 @@ def listen_to_broadcasts(exchange, queue):
     with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
         channel = connection.channel()
 
-        _create_broadcast_exchange(channel, exchange)
+        # Create exchange and queue if they do not yet exist
+        _create_broadcast_exchange(channel=channel, exchange=exchange)
         _create_queue(channel=channel, queue=queue, durable=True)
-        _bind_queue(channel=channel, exchange=exchange, queue=queue, key='')
+        # Bind to the queue and listen to messages of the specifief type
+        _bind_queue(channel=channel, exchange=exchange, queue=queue, key=notification_type)
     return queue

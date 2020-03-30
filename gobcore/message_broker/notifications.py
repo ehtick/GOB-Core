@@ -119,7 +119,7 @@ def _create_broadcast_exchange(channel, exchange):
     :param exchange:
     :return:
     """
-    _create_exchange(channel, exchange=exchange, durable=False, exchange_type='fanout')
+    _create_exchange(channel, exchange=exchange, durable=True, exchange_type='fanout')
 
 
 def send_broadcast(exchange, msg):
@@ -142,6 +142,9 @@ def send_broadcast(exchange, msg):
         channel.basic_publish(
             exchange=exchange,
             routing_key='',
+            properties=pika.BasicProperties(
+                delivery_mode=2  # Make messages persistent
+            ),
             body=json_msg
         )
 
@@ -158,6 +161,6 @@ def listen_to_broadcasts(exchange, queue):
         channel = connection.channel()
 
         _create_broadcast_exchange(channel, exchange)
-        _create_queue(channel=channel, queue=queue, durable=False)
+        _create_queue(channel=channel, queue=queue, durable=True)
         _bind_queue(channel=channel, exchange=exchange, queue=queue, key='')
     return queue

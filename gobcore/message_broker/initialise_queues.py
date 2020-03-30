@@ -37,7 +37,7 @@ def _create_vhost(vhost):
     response.raise_for_status()
 
 
-def _create_exchange(channel, exchange, durable, exchange_type="topic"):
+def _create_exchange(channel, exchange, durable):
     """
     Create a RabbitMQ exchange
 
@@ -48,7 +48,7 @@ def _create_exchange(channel, exchange, durable, exchange_type="topic"):
     """
     channel.exchange_declare(
         exchange=exchange,
-        exchange_type=exchange_type,
+        exchange_type="topic",
         durable=durable)
 
 

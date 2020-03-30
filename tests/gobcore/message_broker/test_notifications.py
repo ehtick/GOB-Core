@@ -21,7 +21,7 @@ class TestNotifications(TestCase):
     @patch("gobcore.message_broker.notifications.listen_to_broadcasts")
     def test_listen_to_notifications(self, mock_listen_to_broadcasts):
         result = listen_to_notifications('any id')
-        mock_listen_to_broadcasts.assert_called_with('notification exchange', 'base queue.any id', None)
+        mock_listen_to_broadcasts.assert_called_with('notification exchange', 'base queue.any id', '')
         self.assertEqual(result, mock_listen_to_broadcasts.return_value)
 
         result = listen_to_notifications('any id', 'any type')
@@ -119,6 +119,6 @@ class TestNotifications(TestCase):
         result = listen_to_broadcasts('any exchange', 'any queue')
         mock_create_broadcast_exchange.assert_called_with(channel=mock_channel, exchange='any exchange')
         mock_create_queue.assert_called_with(channel=mock_channel, queue='any queue', durable=True)
-        mock_bind_queue.assert_called_with(channel=mock_channel, exchange='any exchange', queue='any queue', key=None)
+        mock_bind_queue.assert_called_with(channel=mock_channel, exchange='any exchange', queue='any queue', key='')
         self.assertEqual(result, 'any queue')
 

@@ -10,17 +10,17 @@ class DatastoreFactory:
 
     @staticmethod
     def get_datastore(config: dict, read_config: dict = None) -> Datastore:
-        store_type = config.pop('type')
+        stores = {
+            ORACLE: OracleDatastore,
+            POSTGRES: PostgresDatastore,
+            OBJECTSTORE: ObjectDatastore,
+            WFS: WfsDatastore,
+            FILE: FileDatastore,
+        }
 
-        if store_type == ORACLE:
-            return OracleDatastore(config, read_config)
-        elif store_type == POSTGRES:
-            return PostgresDatastore(config, read_config)
-        elif store_type == OBJECTSTORE:
-            return ObjectDatastore(config, read_config)
-        elif store_type == WFS:
-            return WfsDatastore(config, read_config)
-        elif store_type == FILE:
-            return FileDatastore(config, read_config)
-        else:
+        store = stores.get(config.pop('type'))
+
+        if store is None:
             raise NotImplementedError
+
+        return store(config, read_config)

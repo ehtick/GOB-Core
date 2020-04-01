@@ -153,4 +153,10 @@ class TestPostgresDatastore(TestCase):
         )
         self.assertEqual(['table A', 'table B'], result)
 
+    def test_rename_schema(self):
+        store = PostgresDatastore({})
+        store.execute = MagicMock()
+        store.rename_schema('old schema', 'new schema')
+        store.execute.assert_called_with('ALTER SCHEMA "old schema" RENAME TO "new schema"')
+
 

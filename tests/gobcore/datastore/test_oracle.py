@@ -127,6 +127,7 @@ class TestOracleDatastore(TestCase):
             ('write_rows', ['the table', []]),
             ('execute', ['the query']),
             ('list_tables_for_schema', ['the schema']),
+            ('rename_schema', ['old', 'new']),
         ]
 
         store = OracleDatastore({}, {})

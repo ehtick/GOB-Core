@@ -86,3 +86,7 @@ class PostgresDatastore(SqlDatastore):
         query = f"SELECT table_name FROM information_schema.tables WHERE table_schema='{schema}'"
         result = self.query(query)
         return [row['table_name'] for row in result]
+
+    def rename_schema(self, schema: str, new_name: str) -> None:
+        query = f'ALTER SCHEMA "{schema}" RENAME TO "{new_name}"'
+        self.execute(query)

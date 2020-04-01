@@ -86,3 +86,6 @@ class OracleDatastore(SqlDatastore):
 
     def list_tables_for_schema(self, schema: str) -> List[str]:
         raise NotImplementedError("Please implement list_tables_for_schema for OracleDatastore")
+
+    def rename_schema(self, schema: str, new_name: str) -> None:
+        raise NotImplementedError("Please implement rename_schema for OracleDatastore")

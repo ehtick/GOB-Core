@@ -31,6 +31,10 @@ class SqlDatastore(Datastore, ABC):
     def list_tables_for_schema(self, schema: str) -> List[str]:
         pass  # pragma: no cover
 
+    @abstractmethod
+    def rename_schema(self, schema: str, new_name: str) -> None:
+        pass  # pragma: no cover
+
     def drop_schema(self, schema: str) -> None:
         """Drops schema with all its contents
 
@@ -43,7 +47,6 @@ class SqlDatastore(Datastore, ABC):
     def create_schema(self, schema: str) -> None:
         """Creates schema if not exists
 
-        :param connection:
         :param schema:
         :return:
         """
@@ -54,7 +57,6 @@ class SqlDatastore(Datastore, ABC):
         """Drops table
 
         :param cascade:
-        :param connection:
         :param table:
         :return:
         """

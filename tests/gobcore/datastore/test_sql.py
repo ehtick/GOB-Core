@@ -22,6 +22,9 @@ class SqlDatastoreImpl(SqlDatastore):
     def list_tables_for_schema(self, schema: str) -> List[str]:
         pass
 
+    def rename_schema(self, schema: str, new_name: str) -> None:
+        pass
+
 
 @patch("gobcore.datastore.sql.Datastore", MagicMock())
 class TestSqlDatastore(TestCase):

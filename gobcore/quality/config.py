@@ -39,7 +39,7 @@ class QA_CHECK:
         "pattern": "^\d+$",
         "msg": "value should be a valid positive integer",
     }
-    Format_alfabetic = {
+    Format_alphabetic = {
         "pattern": "^[^0-9]+$",
         "msg": "value should only contain characters",
     }

@@ -152,6 +152,8 @@ class TestLogger(TestCase):
         RequestsHandler.LOG_PUBLISHER.publish.assert_called_once()
         level, args = RequestsHandler.LOG_PUBLISHER.publish.call_args[0]
         self.assertEqual(args["name"], logger._name)
+        self.assertEqual(logger.get_name(), args["name"])
+        self.assertEqual(logger.get_attribute('source'), 'any source')
 
 
 class TestRequestHandler(TestCase):

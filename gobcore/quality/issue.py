@@ -1,6 +1,13 @@
 import datetime
 
 from gobcore.model import FIELD
+from gobcore.quality.config import QA_LEVEL, QA_CHECK
+from gobcore.logging.log_publisher import IssuePublisher
+from gobcore.logging.logger import Logger
+
+
+class IssueException(Exception):
+    pass
 
 
 class Issue():
@@ -11,7 +18,10 @@ class Issue():
     _DEFAULT_ENTITY_ID = 'identificatie'
     _NO_VALUE = '<<NO VALUE>>'
 
-    def __init__(self, check, entity, id_attribute, attribute, compared_to=None, compared_to_value=None):
+    def __init__(self, check: dict, entity: dict, id_attribute: str, attribute: str,
+                 compared_to: str=None, compared_to_value=None):
+        if not hasattr(QA_CHECK, check.get('id') or ""):
+            raise IssueException(f"Issue reported for undefined check: {check}")
         self.check = check
 
         # Entity id and sequence number
@@ -30,7 +40,10 @@ class Issue():
             # Default other attribute value is get its value from the entity itself
             self.compared_to_value = self._get_value(entity, self.compared_to)
 
-    def _get_value(self, entity, attribute):
+        # Allow for additional properties
+        self._properties = {}
+
+    def _get_value(self, entity: dict, attribute: str):
         """
         Gets the value of an entity attribute
 
@@ -45,7 +58,7 @@ class Issue():
             value = value.isoformat()
         return value
 
-    def _format_value(self, value):
+    def _format_value(self, value) -> str:
         """
         Returns the formatted value.
         Explicitly format None values
@@ -55,7 +68,25 @@ class Issue():
         """
         return self._NO_VALUE if value is None else str(value)
 
-    def msg(self):
+    def set_attribute(self, key: str, value, overwrite: bool=True) -> None:
+        if hasattr(self, key) and not overwrite:
+            return
+        self._properties[key] = value
+        setattr(self, key, value)
+
+    def _unique_id(self, contents: dict) -> str:
+        key_attributes = ['check',
+                          'process',
+                          'source',
+                          'application',
+                          'catalogue',
+                          'entity',
+                          'attribute',
+                          'id',
+                          FIELD.SEQNR]
+        return ".".join([contents.get(key) or "" for key in key_attributes])
+
+    def msg(self) -> str:
         """
         Return a message that describes the issue at a general level.
         No entity values are included in the message, only attribute names and static strings
@@ -67,7 +98,7 @@ class Issue():
             msg += f" {self.compared_to}"
         return msg
 
-    def log_args(self, **kwargs):
+    def log_args(self, **kwargs) -> dict:
         """
         Convert the issue into arguments that are suitable to add in a log message
 
@@ -78,7 +109,9 @@ class Issue():
             'id': self.msg(),
             'data': {
                 self.entity_id_attribute: self.entity_id,
+                FIELD.SEQNR: getattr(self, FIELD.SEQNR),
                 self.attribute: self._format_value(self.value),
+                **({self.compared_to: self._format_value(self.compared_to_value)} if self.compared_to else {}),
                 **kwargs
             }
         }
@@ -86,18 +119,40 @@ class Issue():
             args['data'][self.compared_to] = self._format_value(self.compared_to_value)
         return args
 
-    def contents(self):
+    def contents(self) -> dict:
         """
         Return the issue contents as a dictionary
 
         :return:
         """
-        return {
+        contents = {
             'check': self.check['id'],
             'id': self.entity_id,
             FIELD.SEQNR: getattr(self, FIELD.SEQNR),
             'attribute': self.attribute,
             'value': self.value,
             'compared_to': self.compared_to,
-            'compared_to_value': self.compared_to_value
+            'compared_to_value': self.compared_to_value,
+            **self._properties
         }
+        contents['key'] = self._unique_id(contents)
+        return contents
+
+
+def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
+    # Enrich issue contents (if not yet been set)
+    for attribute in ['source', 'application', 'catalogue', 'entity']:
+        issue.set_attribute(attribute, logger.get_attribute(attribute), overwrite=False)
+    issue.set_attribute('process', logger.get_name(), overwrite=False)
+
+    # Log the message
+    {
+        QA_LEVEL.FATAL: logger.error,
+        QA_LEVEL.ERROR: logger.error,
+        QA_LEVEL.WARNING: logger.warning,
+        QA_LEVEL.INFO: logger.info
+    }[level](issue.msg(), issue.log_args())
+
+    # Publish the issue
+    publisher = IssuePublisher()
+    publisher.publish(issue.contents())

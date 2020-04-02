@@ -3,6 +3,7 @@ class QA_LEVEL:
     Constants to denote the level or severity of a quality issue
     """
     FATAL = "fatal"
+    ERROR = "error"
     WARNING = "warning"
     INFO = "info"
 
@@ -21,6 +22,12 @@ class QA_CHECK:
     # Basic requirements
     Attribute_exists = {
         "msg": "attribute should exist"
+    }
+    Sourcevalue_exists = {
+        "msg": "source value should exist"
+    }
+    Reference_exists = {
+        "msg": "referenced entity should exist"
     }
 
     # Format requirements

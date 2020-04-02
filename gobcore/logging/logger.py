@@ -115,8 +115,14 @@ class Logger:
         self._name = name
         self._init_logger(name)
 
+    def get_name(self):
+        return self._name
+
     def set_default_args(self, default_args):
         self._default_args = default_args
+
+    def get_attribute(self, attribute):
+        return self._default_args.get(attribute)
 
     def configure(self, msg, name=None):
         """Configure the logger to store the relevant information for subsequent logging.

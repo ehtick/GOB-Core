@@ -10,7 +10,7 @@ import time
 
 from gobcore.message_broker.message_broker import Connection
 from gobcore.message_broker.config import CONNECTION_PARAMS
-from gobcore.message_broker.config import LOG_EXCHANGE, AUDIT_LOG_EXCHANGE
+from gobcore.message_broker.config import LOG_EXCHANGE, AUDIT_LOG_EXCHANGE, ISSUE_EXCHANGE, REQUEST
 
 
 class LogPublisher():
@@ -66,7 +66,8 @@ class AuditLogPublisher(LogPublisher):
     REQUEST_KEY = 'request'
     RESPONSE_KEY = 'response'
 
-    def __init__(self, connection_params=CONNECTION_PARAMS):
+    def __init__(self, connection_params=None):
+        connection_params = connection_params or CONNECTION_PARAMS
         super().__init__(connection_params, AUDIT_LOG_EXCHANGE)
 
     def publish_request(self, msg):
@@ -74,3 +75,13 @@ class AuditLogPublisher(LogPublisher):
 
     def publish_response(self, msg):
         self.publish(self.RESPONSE_KEY, msg)
+
+
+class IssuePublisher(LogPublisher):
+
+    def __init__(self, connection_params=None):
+        connection_params = connection_params or CONNECTION_PARAMS
+        super().__init__(connection_params, ISSUE_EXCHANGE)
+
+    def publish(self, msg):
+        super().publish(REQUEST, msg)

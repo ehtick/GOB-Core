@@ -1889,6 +1889,50 @@
             "description": "De datum waarop het brondocument is opgeslagen in het register."
           }
         }
+      },
+      "onderzoek": {
+        "version": "0.1",
+        "abbreviation": "OZK",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Iden­ti­fi­ca­tie van de ob­ject­klas­se On­der­zoek voor in­tern ge­bruik."
+          },
+          "object_identificatie": {
+            "type": "GOB.String",
+            "description": "Iden­ti­fi­ce­ren­de num­mer van het ob­ject dat in on­der­zoek is ge­plaatst."
+          },
+          "objecttype": {
+            "type": "GOB.String",
+            "description": "Geeft aan welk ob­ject­klas­se in on­der­zoek staat."
+          },
+          "kenmerk": {
+            "type": "GOB.String",
+            "description": "De naam van het kenmerk van het object dat in onderzoek is geplaatst. Het kenmerk kan ook een relatie zijn met een ander object."
+          },
+          "in_onderzoek": {
+            "type": "GOB.String",
+            "description": "In­di­ca­tie of het ken­merk wel of niet in on­der­zoek staat."
+          },
+          "documentdatum": {
+            "type": "GOB.Date",
+            "description": "De datum waarop het document, waarin de grondslag van het onderzoek wordt vastgelegd, is vastgesteld."
+          },
+          "documentnummer": {
+            "type": "GOB.String",
+            "description": "Het nummer van het document waarin de grondslag van het onderzoek wordt vastgelegd."
+          },
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "Het tijd­stip waar­op het on­der­zoek is ge­re­gi­streerd bij de bron­hou­der."
+          },
+          "eind_registratie": {
+            "type": "GOB.DateTime",
+            "description": "Het tijd­stip waar­op de re­gi­stra­tie van het on­der­zoek is beëin­digd bij de bron­hou­der."
+          }
+        }
       }
     }
   },

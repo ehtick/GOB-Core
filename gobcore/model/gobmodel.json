@@ -1916,6 +1916,14 @@
             "type": "GOB.String",
             "description": "In­di­ca­tie of het ken­merk wel of niet in on­der­zoek staat."
           },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De da­tum waar­op het ken­merk of de re­la­tie van een ob­ject bij de bron­hou­der in on­der­zoek is ge­plaatst."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De da­tum waar­op het on­der­zoek naar het ken­merk of de re­la­tie van een ob­ject door de bron­hou­der is af­ge­rond."
+          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het document, waarin de grondslag van het onderzoek wordt vastgelegd, is vastgesteld."

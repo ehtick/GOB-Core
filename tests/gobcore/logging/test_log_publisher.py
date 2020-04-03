@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from gobcore.logging.log_publisher import LogPublisher, AuditLogPublisher, IssuePublisher, AUDIT_LOG_EXCHANGE, ISSUE_EXCHANGE
+from gobcore.logging.log_publisher import LogPublisher, AuditLogPublisher, IssuePublisher, AUDIT_LOG_EXCHANGE, BASIC_UPLOAD_EXCHANGE
 
 
 class TestLogPublisher(TestCase):
@@ -97,7 +97,7 @@ class TestIssuePublisher(TestCase):
 
     def test_init(self):
         publisher = IssuePublisher()
-        self.assertEqual(ISSUE_EXCHANGE, publisher._exchange)
+        self.assertEqual(BASIC_UPLOAD_EXCHANGE, publisher._exchange)
 
     @patch("gobcore.logging.log_publisher.LogPublisher.publish")
     def test_publish(self, mock_publish):

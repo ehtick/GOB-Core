@@ -2,6 +2,7 @@ import datetime
 
 from gobcore.model import FIELD
 from gobcore.quality.config import QA_LEVEL, QA_CHECK
+from gobcore.quality.bevinding import KwaliteitBevinding
 from gobcore.logging.log_publisher import IssuePublisher
 from gobcore.logging.logger import Logger
 
@@ -23,6 +24,7 @@ class Issue():
         if not hasattr(QA_CHECK, check.get('id') or ""):
             raise IssueException(f"Issue reported for undefined check: {check}")
         self.check = check
+        self.check_id = check['id']
 
         # Entity id and sequence number
         self.entity_id_attribute = id_attribute or self._DEFAULT_ENTITY_ID
@@ -40,8 +42,7 @@ class Issue():
             # Default other attribute value is get its value from the entity itself
             self.compared_to_value = self._get_value(entity, self.compared_to)
 
-        # Allow for additional properties
-        self._properties = {}
+        self.explanation = None
 
     def _get_value(self, entity: dict, attribute: str):
         """
@@ -68,23 +69,11 @@ class Issue():
         """
         return self._NO_VALUE if value is None else str(value)
 
-    def set_attribute(self, key: str, value, overwrite: bool=True) -> None:
-        if hasattr(self, key) and not overwrite:
-            return
-        self._properties[key] = value
-        setattr(self, key, value)
-
-    def _unique_id(self, contents: dict) -> str:
-        key_attributes = ['check',
-                          'process',
-                          'source',
-                          'application',
-                          'catalogue',
-                          'entity',
-                          'attribute',
-                          'id',
-                          FIELD.SEQNR]
-        return ".".join([contents.get(key) or "" for key in key_attributes])
+    def get_explanation(self) -> str:
+        if self.explanation:
+            return self.explanation
+        elif self.compared_to:
+            return f"{self.compared_to} = {self.compared_to_value}"
 
     def msg(self) -> str:
         """
@@ -119,32 +108,8 @@ class Issue():
             args['data'][self.compared_to] = self._format_value(self.compared_to_value)
         return args
 
-    def contents(self) -> dict:
-        """
-        Return the issue contents as a dictionary
-
-        :return:
-        """
-        contents = {
-            'check': self.check['id'],
-            'id': self.entity_id,
-            FIELD.SEQNR: getattr(self, FIELD.SEQNR),
-            'attribute': self.attribute,
-            'value': self.value,
-            'compared_to': self.compared_to,
-            'compared_to_value': self.compared_to_value,
-            **self._properties
-        }
-        contents['key'] = self._unique_id(contents)
-        return contents
-
 
 def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
-    # Enrich issue contents (if not yet been set)
-    for attribute in ['source', 'application', 'catalogue', 'entity']:
-        issue.set_attribute(attribute, logger.get_attribute(attribute), overwrite=False)
-    issue.set_attribute('process', logger.get_name(), overwrite=False)
-
     # Log the message
     {
         QA_LEVEL.FATAL: logger.error,
@@ -153,6 +118,12 @@ def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
         QA_LEVEL.INFO: logger.info
     }[level](issue.msg(), issue.log_args())
 
-    # Publish the issue
-    publisher = IssuePublisher()
-    publisher.publish(issue.contents())
+    # Issues are published as KwaliteitBevindingen
+    bevinding = KwaliteitBevinding(issue)
+
+    # Enrich bevinding with logger info
+    for attribute in ['source', 'application', 'catalogue', 'entity']:
+        setattr(bevinding, attribute, logger.get_attribute(attribute))
+    bevinding.proces = logger.get_name()
+
+    IssuePublisher().publish(bevinding.get_msg())

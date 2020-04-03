@@ -47,14 +47,14 @@ WORKFLOW_EXCHANGE = "gob.workflow"
 LOG_EXCHANGE = "gob.log"
 STATUS_EXCHANGE = "gob.status"
 AUDIT_LOG_EXCHANGE = "gob.audit"
-ISSUE_EXCHANGE = "gob.issue"
+BASIC_UPLOAD_EXCHANGE = "gob.basic_upload"
 
 EXCHANGES = [
     WORKFLOW_EXCHANGE,
     LOG_EXCHANGE,
     STATUS_EXCHANGE,
     AUDIT_LOG_EXCHANGE,
-    ISSUE_EXCHANGE
+    BASIC_UPLOAD_EXCHANGE
 ]
 
 CHECK_RELATION = 'check_relation'
@@ -87,13 +87,13 @@ HEARTBEAT = 'heartbeat'
 PROGRESS = 'progress'
 STATUS = 'status'
 LOGS = 'logs'
-ISSUES = 'issues'
+BASIC_UPLOADS = 'uploads'
 
 HEARTBEAT_QUEUE = _build_queuename(STATUS_EXCHANGE, HEARTBEAT)
 PROGRESS_QUEUE = _build_queuename(STATUS_EXCHANGE, PROGRESS)
 LOG_QUEUE = _build_queuename(LOG_EXCHANGE, LOGS)
 AUDIT_LOG_QUEUE = _build_queuename(AUDIT_LOG_EXCHANGE, LOGS)
-ISSUE_QUEUE = _build_queuename(ISSUE_EXCHANGE, ISSUES)
+BASIC_UPLOADS_QUEUE = _build_queuename(BASIC_UPLOAD_EXCHANGE, BASIC_UPLOADS)
 EVERYTHING_KEY = '#'
 HEARTBEAT_KEY = _build_key(STATUS, HEARTBEAT)
 PROGRESS_KEY = _build_key(STATUS, PROGRESS)
@@ -247,8 +247,8 @@ QUEUE_CONFIGURATION = {
             EVERYTHING_KEY,
         ]
     },
-    ISSUE_EXCHANGE: {
-        ISSUE_QUEUE: [
+    BASIC_UPLOAD_EXCHANGE: {
+        BASIC_UPLOADS_QUEUE: [
             EVERYTHING_KEY,
         ]
     }

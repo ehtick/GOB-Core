@@ -88,17 +88,6 @@ class TestIssue(TestCase):
         result = issue._format_value(1)
         self.assertEqual(result, "1")
 
-    def test_set_attribute(self):
-        entity = {
-            'id': 'any id',
-            'attr': 'any attr'
-        }
-        issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
-        issue.set_attribute('anykey', 'anyvalue')
-        self.assertEqual(issue.anykey, "anyvalue")
-        issue.set_attribute('anykey', 'othervalue', overwrite=False)
-        self.assertEqual(issue.anykey, "anyvalue")
-
     def test_msg(self):
         entity = {
             'id': 'any id',
@@ -160,30 +149,20 @@ class TestIssue(TestCase):
                 'any_key': 'any value'
             }})
 
-    def test_contents(self):
+    def test_get_explanation(self):
         entity = {
             'id': 'any id',
-            'attr': 'any attr',
-            FIELD.SEQNR: 'any seqnr',
-            'compared to': 'any compared to value'
+            'attr': 'any attr'
         }
-        check = {
-            'id': 'any_check',
-            'msg': 'any msg'
-        }
-        issue = Issue(check, entity, 'id', 'attr', 'compared to')
+        issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
+        self.assertIsNone(issue.get_explanation())
 
-        result = issue.contents()
-        self.assertEqual(result, {
-            'check': 'any_check',
-            'id': 'any id',
-            'volgnummer': 'any seqnr',
-            'attribute': 'attr',
-            'value': 'any attr',
-            'compared_to': 'compared to',
-            'compared_to_value': 'any compared to value',
-            'key': 'any_check......attr.any id.any seqnr'
-        })
+        issue.compared_to = 'to'
+        issue.compared_to_value = 'value'
+        self.assertEqual(issue.get_explanation(), 'to = value')
+
+        issue.explanation = 'explanation'
+        self.assertEqual(issue.get_explanation(), 'explanation')
 
     @patch("gobcore.quality.issue.IssuePublisher")
     def test_log_issue(self, mock_issue_publisher):
@@ -196,19 +175,4 @@ class TestIssue(TestCase):
         mock_logger.get_attribute = lambda attr: f"any {attr}"
         mock_logger.get_name.return_value = "any name"
         log_issue(mock_logger, QA_LEVEL.INFO, issue)
-        contents = {
-            'check': 'any_check',
-            'id': 'any id',
-            'volgnummer': None,
-            'attribute': 'attr',
-            'value': 'any attr',
-            'compared_to': None,
-            'compared_to_value': None,
-            'source': 'any source',
-            'application': 'any application',
-            'catalogue': 'any catalogue',
-            'entity': 'any entity',
-            'process': 'any name',
-            'key': ANY
-        }
-        mock_issue_publisher.return_value.publish.assert_called_with(contents)
+        mock_issue_publisher.assert_called()

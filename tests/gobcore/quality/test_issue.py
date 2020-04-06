@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch, ANY
 import datetime
 
 from gobcore.model import FIELD
-from gobcore.quality.issue import QA_LEVEL, Issue, IssueException, log_issue
+from gobcore.quality.issue import QA_LEVEL, Issue, IssueException, log_issue, process_issues
 
 class Mock_QA_CHECK():
     any_check = {
@@ -164,15 +164,57 @@ class TestIssue(TestCase):
         issue.explanation = 'explanation'
         self.assertEqual(issue.get_explanation(), 'explanation')
 
-    @patch("gobcore.quality.issue.IssuePublisher")
-    def test_log_issue(self, mock_issue_publisher):
+    def test_log_issue(self):
         entity = {
             'id': 'any id',
             'attr': 'any attr'
         }
         issue = Issue({'id': 'any_check', 'msg': 'any msg'}, entity, 'id', 'attr')
         mock_logger = MagicMock()
-        mock_logger.get_attribute = lambda attr: f"any {attr}"
         mock_logger.get_name.return_value = "any name"
         log_issue(mock_logger, QA_LEVEL.INFO, issue)
-        mock_issue_publisher.assert_called()
+        mock_logger.add_issue.assert_called()
+
+    @patch("gobcore.quality.issue.start_workflow")
+    def test_process_issues(self, mock_start_workflow):
+        entity = {
+            'id': 'any id',
+            'attr': 'any attr'
+        }
+        issue = Issue({'id': 'any_check', 'msg': 'any msg'}, entity, 'id', 'attr')
+        mock_logger = MagicMock()
+        mock_logger.get_name.return_value = "any name"
+        mock_issue = MagicMock()
+        mock_logger.get_issues.return_value = [mock_issue]
+
+        msg = {
+            'header': {
+                'source': 'any source',
+                'application': 'any application',
+                'catalogue': 'any catalogue',
+                'collection': 'any collection',
+                'attribute': 'any attribute',
+                'other': 'any other',
+                'mode': 'any mode'
+            }
+        }
+        process_issues(msg, mock_logger)
+        mock_start_workflow.assert_called_with({
+            'workflow_name': "import",
+            'step_name': "update_model"
+        }, {
+            'header': {
+                'catalogue': 'qa',
+                'entity': 'any catalogue_any collection',
+                'collection': 'any catalogue_any collection',
+                'source': 'any name_any source_any application_any attribute',
+                'application': 'any application',
+                'timestamp': ANY,
+                'version': '0.1',
+                'mode': 'any mode'
+            },
+            'contents': ANY,
+            'summary': {
+                'num_records': 1
+            }
+        })

@@ -155,6 +155,12 @@ class TestLogger(TestCase):
         self.assertEqual(logger.get_name(), args["name"])
         self.assertEqual(logger.get_attribute('source'), 'any source')
 
+    def test_add_issue(self):
+        logger = Logger()
+        self.assertEqual(logger.get_issues(), [])
+        logger.add_issue("any issue")
+        self.assertEqual(logger.get_issues(), ["any issue"])
+
 
 class TestRequestHandler(TestCase):
 

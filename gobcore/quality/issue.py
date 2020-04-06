@@ -3,7 +3,7 @@ import datetime
 from gobcore.model import FIELD
 from gobcore.quality.config import QA_LEVEL, QA_CHECK
 from gobcore.quality.quality_update import QualityUpdate
-from gobcore.logging.logger import Logger
+from gobcore.logging.logger import Logger, logger
 from gobcore.workflow.start_workflow import start_workflow
 
 
@@ -121,7 +121,7 @@ def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
     logger.add_issue(issue)
 
 
-def process_issues(msg, logger):
+def process_issues(msg):
     issues = logger.get_issues()
     if not issues:
         return

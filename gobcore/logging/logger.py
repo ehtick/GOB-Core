@@ -68,6 +68,16 @@ class Logger:
             self.set_name(name)
         self._default_args = {}
         self._clear_logs()
+        self.clear_issues()
+
+    def clear_issues(self):
+        self._issues = []
+
+    def add_issue(self, issue):
+        self._issues.append(issue)
+
+    def get_issues(self):
+        return self._issues
 
     def _clear_logs(self):
         self.messages = {key: [] for key in Logger._SAVE_LOGS}

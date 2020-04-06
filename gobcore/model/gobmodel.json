@@ -286,64 +286,6 @@
       }
     }
   },
-  "kwaliteit": {
-    "version": "0.1",
-    "description": "Kwaliteits gegevens over GOB data.",
-    "abbreviation": "KWA",
-    "collections": {
-      "bevindingen" : {
-        "version": "0.1",
-        "abbreviation": "BEV",
-        "entity_id": "meldingnummer",
-        "attributes": {
-          "meldingnummer": {
-            "type": "GOB.String",
-            "description": "Unieke ID van de bevinding"
-          },
-          "code": {
-            "type": "GOB.String",
-            "description": "Foutcode van de bevinding"
-          },
-          "proces": {
-            "type": "GOB.String",
-            "description": "het proces waarin de bevinding is geconstateerd"
-          },
-          "registratie": {
-            "type": "GOB.String",
-            "description": "De basisregistratie welke het attribuut bevat dat betwijfeld wordt"
-          },
-          "objectklasse": {
-            "type": "GOB.String",
-            "description": "De entiteit welke het attribuut bevat dat betwijfeld wordt"
-          },
-          "attribuut": {
-            "type": "GOB.String",
-            "description": "Het attribuut waarop de melding van toepassing is"
-          },
-          "identificatie": {
-            "type": "GOB.String",
-            "description": "Unieke identificatie van het object waarop de melding van toepassing op is"
-          },
-          "volgnummer": {
-            "type": "GOB.String",
-            "description": "Volgnummer van het object waarop de melding van toepassing is"
-          },
-          "betwijfelde_waarde": {
-            "type": "GOB.String",
-            "description": "De waarde van het attribuut waar aan wordt getwijfeld"
-          },
-          "onderbouwing": {
-            "type": "GOB.String",
-            "description": "Een onderbouwing waarom de waarde van het attribuut niet correct is"
-          },
-          "voorgestelde_waarde": {
-            "type": "GOB.String",
-            "description": "De voorgestelde nieuwe waarde van het attribuut"
-          }
-        }
-      }
-    }
-  },
   "meetbouten": {
     "version": "0.1",
     "description": "De meetgegevens van bouten in de Amsterdamse panden.",

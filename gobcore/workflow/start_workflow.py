@@ -13,10 +13,13 @@ def start_workflow(workflow, arguments):
     :param workflow_spec:
     :return:
     """
+    # Store all arguments in the header if no header specified
+    header = arguments.get('header', arguments)
+    contents = arguments.get('contents', {})
 
-    # Simple version, store all arguments in the header
     msg = {
-        'header': arguments,
+        'header': header,
+        'contents': contents,
         'workflow': workflow
     }
 

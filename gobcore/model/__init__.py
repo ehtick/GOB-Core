@@ -6,6 +6,7 @@ from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import STATE_FIELDS
 from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
 from gobcore.model.relations import get_relations, get_inverse_relations
+from gobcore.model.quality import QUALITY_CATALOG, get_quality_assurances
 from gobcore.model.schema import load_schema, SchemaException
 
 
@@ -69,6 +70,7 @@ class GOBModel():
 
         GOBModel._data = data
         self._load_schemas()
+        data[QUALITY_CATALOG] = get_quality_assurances(self)
         data["rel"] = get_relations(self)
 
         global_attributes = {

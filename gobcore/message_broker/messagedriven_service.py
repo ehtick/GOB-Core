@@ -7,6 +7,8 @@ from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, S
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
 from gobcore.message_broker.notifications import contains_notification, send_notification
+from gobcore.logging.logger import logger
+from gobcore.quality.issue import process_issues
 
 CHECK_CONNECTION = 5    # Check connection every n seconds
 
@@ -33,6 +35,8 @@ def _on_message(connection, service, msg):
         Heartbeat.progress(connection, service, msg, STATUS_FAIL, str(err))
         # re-raise the exception, further handling is done in the message broker
         raise err
+
+    process_issues(result_msg, logger)
 
     if contains_notification(result_msg):
         send_notification(result_msg)

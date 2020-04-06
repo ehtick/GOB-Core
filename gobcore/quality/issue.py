@@ -2,9 +2,9 @@ import datetime
 
 from gobcore.model import FIELD
 from gobcore.quality.config import QA_LEVEL, QA_CHECK
-from gobcore.quality.bevinding import KwaliteitBevinding
-from gobcore.logging.log_publisher import IssuePublisher
+from gobcore.quality.quality_update import QualityUpdate
 from gobcore.logging.logger import Logger
+from gobcore.workflow.start_workflow import start_workflow
 
 
 class IssueException(Exception):
@@ -118,12 +118,30 @@ def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
         QA_LEVEL.INFO: logger.info
     }[level](issue.msg(), issue.log_args())
 
-    # Issues are published as KwaliteitBevindingen
-    bevinding = KwaliteitBevinding(issue)
+    logger.add_issue(issue)
+
+
+def process_issues(msg, logger):
+    issues = logger.get_issues()
+    if not issues:
+        return
+
+    # Issues are processed as updates to the quality catalog
+    quality_update = QualityUpdate(issues)
 
     # Enrich bevinding with logger info
-    for attribute in ['source', 'application', 'catalogue', 'entity']:
-        setattr(bevinding, attribute, logger.get_attribute(attribute))
-    bevinding.proces = logger.get_name()
+    quality_update.proces = logger.get_name()
 
-    IssuePublisher().publish(bevinding.get_msg())
+    # Enrich bevinding with msg info
+    header = msg.get('header', {})
+    for attribute in ['source', 'application', 'catalogue', 'collection', 'attribute']:
+        setattr(quality_update, attribute, header.get(f"original_{attribute}", header.get(attribute)))
+
+    workflow = {
+        'workflow_name': "import",
+        'step_name': "update_model"
+    }
+    wf_msg = quality_update.get_msg(msg)
+    start_workflow(workflow, wf_msg)
+
+    logger.clear_issues()

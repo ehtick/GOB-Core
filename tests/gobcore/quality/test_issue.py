@@ -175,14 +175,9 @@ class TestIssue(TestCase):
         log_issue(mock_logger, QA_LEVEL.INFO, issue)
         mock_logger.add_issue.assert_called()
 
+    @patch("gobcore.quality.issue.logger")
     @patch("gobcore.quality.issue.start_workflow")
-    def test_process_issues(self, mock_start_workflow):
-        entity = {
-            'id': 'any id',
-            'attr': 'any attr'
-        }
-        issue = Issue({'id': 'any_check', 'msg': 'any msg'}, entity, 'id', 'attr')
-        mock_logger = MagicMock()
+    def test_process_issues(self, mock_start_workflow, mock_logger):
         mock_logger.get_name.return_value = "any name"
         mock_issue = MagicMock()
         mock_logger.get_issues.return_value = [mock_issue]
@@ -198,7 +193,7 @@ class TestIssue(TestCase):
                 'mode': 'any mode'
             }
         }
-        process_issues(msg, mock_logger)
+        process_issues(msg)
         mock_start_workflow.assert_called_with({
             'workflow_name': "import",
             'step_name': "update_model"

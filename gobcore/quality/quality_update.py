@@ -61,7 +61,7 @@ class QualityUpdate():
             'attribuut': issue.attribute,
             'identificatie': issue.entity_id,
             'volgnummer': getattr(issue, FIELD.SEQNR),
-            'betwijfelde_waarde': issue.value,
+            'betwijfelde_waarde': str(issue.value),
             'onderbouwing': issue.get_explanation(),
             'voorgestelde_waarde': None
         }

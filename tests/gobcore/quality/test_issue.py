@@ -307,12 +307,19 @@ class TestIssue(TestCase):
             'id': 'any id',
             'attr': 'any attr',
             FIELD.SEQNR: 'any seqnr',
-            FIELD.START_VALIDITY: 'any start validity',
-            FIELD.END_VALIDITY: 'any end validity'
+            FIELD.START_VALIDITY: '2006-01-20',
+            FIELD.END_VALIDITY: '2006-01-20 12:35'
         }
         issue = Issue({'id': 'any_check', 'msg': 'any msg'}, entity, 'id', 'attr')
-        for attr in [FIELD.SEQNR, FIELD.START_VALIDITY, FIELD.END_VALIDITY]:
-            self.assertEqual(getattr(issue, attr), entity[attr])
+
+        self.assertEqual(getattr(issue, FIELD.SEQNR), entity[FIELD.SEQNR])
+        self.assertEqual(getattr(issue, FIELD.START_VALIDITY), '2006-01-20T00:00:00')
+        self.assertEqual(getattr(issue, FIELD.END_VALIDITY), '2006-01-20T12:35:00')
+
+        for v in [datetime.date(2020, 1, 20), datetime.datetime(2020, 1, 20), '20200120', '2020-01-20']:
+            entity[FIELD.START_VALIDITY] = v
+            issue = Issue({'id': 'any_check', 'msg': 'any msg'}, entity, 'id', 'attr')
+            self.assertEqual(getattr(issue, FIELD.START_VALIDITY), '2020-01-20T00:00:00')
 
         entity = {
             'id': 'any id',

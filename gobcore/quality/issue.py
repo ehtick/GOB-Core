@@ -1,4 +1,5 @@
 import datetime
+from dateutil import parser
 
 from gobcore.model import FIELD
 from gobcore.quality.config import QA_LEVEL, QA_CHECK
@@ -27,11 +28,14 @@ class Issue():
         self.check = check
         self.check_id = check['id']
 
-        # Entity id, sequence number, start- and end-validity
+        # Entity id and sequence number
         self.entity_id_attribute = id_attribute or self._DEFAULT_ENTITY_ID
         self.entity_id = self._get_value(entity, self.entity_id_attribute)
-        for attr in [FIELD.SEQNR, FIELD.START_VALIDITY, FIELD.END_VALIDITY]:
-            setattr(self, attr, self._get_value(entity, attr))
+        setattr(self, FIELD.SEQNR, self._get_value(entity, FIELD.SEQNR))
+
+        # Entity start- and end-validity
+        for attr in [FIELD.START_VALIDITY, FIELD.END_VALIDITY]:
+            setattr(self, attr, self._get_validity(entity, attr))
 
         # Concerned attribute and value
         self.attribute = attribute
@@ -67,6 +71,24 @@ class Issue():
             return ", ".join(sorted([self._format_value(value) for value in self._values]))
         else:
             return self._values[0]
+
+    def _get_validity(self, entity: dict, attribute: str):
+        """
+        Get a validity datetime
+
+        If the value is a string then parse it as a date-time
+        Use _get_value to convert the result in a regular attribute value
+
+        :param entity:
+        :param attribute:
+        :return:
+        """
+        value = entity.get(attribute)
+        if isinstance(value, str):
+            value = parser.parse(value)
+        elif isinstance(value, datetime.date):
+            value = datetime.datetime.combine(value, datetime.datetime.min.time())
+        return self._get_value({attribute: value}, attribute)
 
     def _get_value(self, entity: dict, attribute: str):
         """

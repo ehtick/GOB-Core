@@ -195,16 +195,20 @@ def process_issues(msg):
     for attribute in ['source', 'application', 'catalogue', 'collection', 'attribute']:
         setattr(quality_update, attribute, header.get(f"original_{attribute}", header.get(attribute)))
 
-    # Don't Quality check yourself
-    if msg['header'].get('catalogue') == QualityUpdate.CATALOG:
-        return
-
     # Only log quality for functional steps
     # Otherwise only log issues if there are any issues
     if not (is_functional_process(quality_update.proces) or issues):
         # Functional process issues are always processed, even if they are empty
         # Otherwise a check is made if there are any issues, if not then skip the empty set
         # So even an non-functional process may report Issues
+        return
+
+    # Skip GOBPrepare jobs
+    if quality_update.application == 'GOBPrepare':
+        return
+
+    # Don't Quality check yourself
+    if quality_update.catalogue == QualityUpdate.CATALOG:
         return
 
     workflow = {

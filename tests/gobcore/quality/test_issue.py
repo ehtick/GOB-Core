@@ -262,10 +262,18 @@ class TestIssue(TestCase):
         process_issues(msg)
         mock_start_workflow.assert_not_called()
 
+        # Skip GOBPrepare
+        mock_logger.get_issues.return_value = [mock_issue]
+        mock_is_functional.return_value = True
+        msg['header']['application'] = 'GOBPrepare'
+        process_issues(msg)
+        mock_start_workflow.assert_not_called()
+
         # Non-functional processes might report issues
         # In that case they will not be skipped and handled as regular issues
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = False
+        msg['header']['application'] = 'any application'
         msg['header']['catalogue'] = 'any catalogue'
         process_issues(msg)
         mock_start_workflow.assert_called()

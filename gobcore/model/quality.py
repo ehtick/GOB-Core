@@ -28,7 +28,7 @@ def _get_qa(catalog, collection):
                 "description": "Unieke identificatie van het object waarop de melding van toepassing op is"
             },
             "volgnummer": {
-                "type": "GOB.String",
+                "type": "GOB.Integer",
                 "description": "Volgnummer van het object waarop de melding van toepassing is"
             },
             "begin_geldigheid": {

@@ -29,6 +29,9 @@ class QA_CHECK:
     Reference_exists = {
         "msg": "referenced entity should exist"
     }
+    Unique_destination = {
+        "msg": "destination is ambiguous"
+    }
 
     # Format requirements
     Format_N8 = {

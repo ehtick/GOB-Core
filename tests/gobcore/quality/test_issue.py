@@ -298,7 +298,8 @@ class TestIssue(TestCase):
         process_issues(msg)
         mock_start_workflow.assert_called_with({
             'workflow_name': "import",
-            'step_name': "update_model"
+            'step_name': "update_model",
+            'retry_time': ANY
         }, {
             'header': {
                 'catalogue': 'qa',

@@ -257,9 +257,11 @@ def process_issues(msg):
     if quality_update.catalogue == QualityUpdate.CATALOG:
         return
 
+    # Start the workflow, allow retries when an identical workflow is already running for max_retry_time seconds
     workflow = {
         'workflow_name': "import",
-        'step_name': "update_model"
+        'step_name': "update_model",
+        'retry_time': 10 * 60   # retry for max 10 minutes
     }
     wf_msg = quality_update.get_msg(msg)
     start_workflow(workflow, wf_msg)

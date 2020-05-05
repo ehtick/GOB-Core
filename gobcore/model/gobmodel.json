@@ -1890,7 +1890,7 @@
           }
         }
       },
-      "onderzoek": {
+      "onderzoeken": {
         "version": "0.1",
         "abbreviation": "OZK",
         "entity_id": "identificatie",

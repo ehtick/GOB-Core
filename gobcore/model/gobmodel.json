@@ -1008,7 +1008,7 @@
           },
           "woonplaats_ptt": {
             "type": "GOB.String",
-            "description": "Woon­plaats­naam vol­gens de schrijf­wij­ze van Post­NL."
+            "description": "Woonplaatsnaam volgens de schrijfwijze van PostNL."
           },
           "naam": {
             "type": "GOB.String",
@@ -1033,6 +1033,11 @@
           "aanduiding_in_onderzoek": {
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
+          },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1134,6 +1139,11 @@
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het brondocument is vastgesteld."
@@ -1227,6 +1237,11 @@
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het brondocument is vastgesteld."
@@ -1313,6 +1328,11 @@
           "aanduiding_in_onderzoek": {
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
+          },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
           },
           "type": {
             "type": "GOB.JSON",
@@ -1425,6 +1445,11 @@
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+          },
           "ligt_aan_openbareruimte": {
             "type": "GOB.Reference",
             "ref": "bag:openbareruimtes",
@@ -1520,7 +1545,7 @@
           },
           "indicatie_woningvoorraad": {
             "type": "GOB.String",
-            "description": "Geeft aan of een ver­blijfs­ob­ject bij de woningvoorraad hoort."
+            "description": "Geeft aan of een verblijfsobject bij de woningvoorraad hoort."
           },
           "financieringscode": {
             "type": "GOB.JSON",
@@ -1589,6 +1614,11 @@
           "aanduiding_in_onderzoek": {
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
+          },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1759,6 +1789,11 @@
             "type": "GOB.Boolean",
             "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
+          "heeft_onderzoeken": {
+            "type": "GOB.ManyReference",
+            "ref": "bag:onderzoeken",
+            "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het brondocument is vastgesteld."
@@ -1898,15 +1933,15 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "Iden­ti­fi­ca­tie van de ob­ject­klas­se On­der­zoek voor in­tern ge­bruik."
+            "description": "Identificatie van de objectklasse Onderzoek voor intern gebruik."
           },
           "object_identificatie": {
             "type": "GOB.String",
-            "description": "Iden­ti­fi­ce­ren­de num­mer van het ob­ject dat in on­der­zoek is ge­plaatst."
+            "description": "Identificerende nummer van het object dat in onderzoek is geplaatst."
           },
           "objecttype": {
             "type": "GOB.String",
-            "description": "Geeft aan welk ob­ject­klas­se in on­der­zoek staat."
+            "description": "Geeft aan welk objectklasse in onderzoek staat."
           },
           "kenmerk": {
             "type": "GOB.String",
@@ -1914,15 +1949,15 @@
           },
           "in_onderzoek": {
             "type": "GOB.String",
-            "description": "In­di­ca­tie of het ken­merk wel of niet in on­der­zoek staat."
+            "description": "Indicatie of het kenmerk wel of niet in onderzoek staat."
           },
           "begin_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De da­tum waar­op het ken­merk of de re­la­tie van een ob­ject bij de bron­hou­der in on­der­zoek is ge­plaatst."
+            "description": "De datum waarop het kenmerk of de relatie van een object bij de bronhouder in onderzoek is geplaatst."
           },
           "eind_geldigheid": {
             "type": "GOB.DateTime",
-            "description": "De da­tum waar­op het on­der­zoek naar het ken­merk of de re­la­tie van een ob­ject door de bron­hou­der is af­ge­rond."
+            "description": "De datum waarop het onderzoek naar het kenmerk of de relatie van een object door de bronhouder is afgerond."
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1934,11 +1969,11 @@
           },
           "tijdstip_registratie": {
             "type": "GOB.DateTime",
-            "description": "Het tijd­stip waar­op het on­der­zoek is ge­re­gi­streerd bij de bron­hou­der."
+            "description": "Het tijdstip waarop het onderzoek is geregistreerd bij de bronhouder."
           },
           "eind_registratie": {
             "type": "GOB.DateTime",
-            "description": "Het tijd­stip waar­op de re­gi­stra­tie van het on­der­zoek is beëin­digd bij de bron­hou­der."
+            "description": "Het tijdstip waarop de registratie van het onderzoek is beëindigd bij de bronhouder."
           }
         }
       }
@@ -2981,20 +3016,20 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "De unie­ke aan­dui­ding van een Ka­das­tra­le sec­tie."
+            "description": "De unieke aanduiding van een Kadastrale sectie."
           },
           "code": {
             "type": "GOB.String",
-            "description": "Een al­fa­nu­me­rie­ke aan­dui­ding van de ka­das­tra­le sec­tie, deel van de ka­das­tra­le aan­dui­ding van de on­roe­ren­de zaak."
+            "description": "Een alfanumerieke aanduiding van de kadastrale sectie, deel van de kadastrale aanduiding van de onroerende zaak."
           },
           "is_onderdeel_van_kadastralegemeentecode": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralegemeentecodes",
-            "description": "Een al­fa­nu­me­rie­ke aan­dui­ding van de ka­das­tra­le ge­meen­tecode, deel van de ka­das­tra­le aan­dui­ding van de on­roe­ren­de zaak. (bv. AS­D02)."
+            "description": "Een alfanumerieke aanduiding van de kadastrale gemeentecode, deel van de kadastrale aanduiding van de onroerende zaak. (bv. ASD02)."
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Vorm en lig­ging van de ka­das­tra­le sec­tie in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
+            "description": "Vorm en ligging van de kadastrale sectie in het stelsel van de Rijksdriehoekmeting (RD)."
           }
         }
       },
@@ -3005,16 +3040,16 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "De unie­ke aan­dui­ding van een Ka­das­tra­le gemeentecode."
+            "description": "De unieke aanduiding van een Kadastrale gemeentecode."
           },
           "is_onderdeel_van_kadastralegemeente": {
             "type": "GOB.Reference",
             "ref": "brk:kadastralegemeentes",
-            "description": "De ka­das­tra­le ge­meen­te waar de kadastrale gemeentecode onderdeel van is (bv. Sloten)."
+            "description": "De kadastrale gemeente waar de kadastrale gemeentecode onderdeel van is (bv. Sloten)."
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Vorm en lig­ging van de ka­das­tra­le gemeentecode in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
+            "description": "Vorm en ligging van de kadastrale gemeentecode in het stelsel van de Rijksdriehoekmeting (RD)."
           }
         }
       },
@@ -3025,7 +3060,7 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "De unie­ke aan­dui­ding van een Ka­das­tra­le ge­meen­te."
+            "description": "De unieke aanduiding van een Kadastrale gemeente."
           },
           "ligt_in_gemeente": {
             "type": "GOB.Reference",
@@ -3034,7 +3069,7 @@
           },
           "geometrie": {
             "type": "GOB.Geo.Geometry",
-            "description": "Vorm en lig­ging van de ka­das­tra­le gemeente in het stel­sel van de Rijks­drie­hoek­me­ting (RD)."
+            "description": "Vorm en ligging van de kadastrale gemeente in het stelsel van de Rijksdriehoekmeting (RD)."
           }
         }
       }

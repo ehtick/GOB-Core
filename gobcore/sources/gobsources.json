@@ -240,6 +240,10 @@
   "Neuron": {
     "bag": {
       "woonplaatsen": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "heeft_dossier": {
           "method": "equals",
           "destination_attribute": "dossier"
@@ -250,6 +254,10 @@
         }
       },
       "standplaatsen": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "heeft_hoofdadres": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -269,6 +277,10 @@
         }
       },
       "ligplaatsen": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "heeft_hoofdadres": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -288,6 +300,10 @@
         }
       },
       "openbareruimtes": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "ligt_in_woonplaats": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -298,6 +314,10 @@
         }
       },
       "nummeraanduidingen": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "ligt_aan_openbareruimte": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -324,6 +344,10 @@
         }
       },
       "verblijfsobjecten": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "heeft_hoofdadres": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -347,6 +371,10 @@
         }
       },
       "panden": {
+        "heeft_onderzoeken": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
         "ligt_in_bouwblok": {
           "method": "lies_in",
           "source_attribute": "geometrie",

@@ -182,3 +182,7 @@ class TestGeometry(unittest.TestCase):
 
         Geometry.from_value({'dict': 'value'})
         mock_dumps.assert_called_with({'dict': 'value'}, cls=GobTypeJSONEncoder)
+
+        # Geometries can be None
+        result = Geometry.from_value(None)
+        self.assertIsInstance(result, Geometry)

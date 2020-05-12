@@ -83,6 +83,8 @@ class GEOType(GOBType):
         """
         Instantiates the GOBGeoType, with either a database value, a geojson or WKT string
         """
+        if value is None:
+            return cls(None)
 
         if isinstance(value, str):
             # WKT => GeoJSON, raises ValueError if fails

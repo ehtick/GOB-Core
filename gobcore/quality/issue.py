@@ -126,10 +126,14 @@ class Issue():
         :return:
         """
         value = entity.get(attribute)
-        if isinstance(value, str):
-            value = parser.parse(value)
-        elif isinstance(value, datetime.date):
-            value = datetime.datetime.combine(value, datetime.datetime.min.time())
+        try:
+            if isinstance(value, str):
+                value = parser.parse(value)
+            elif isinstance(value, datetime.date):
+                value = datetime.datetime.combine(value, datetime.datetime.min.time())
+        except ValueError:
+            # Validity is erroneous; set value to None
+            value = None
         return self._get_value({attribute: value}, attribute)
 
     def _get_value(self, entity: dict, attribute: str):

@@ -317,6 +317,21 @@ class TestIssue(TestCase):
             }
         })
 
+    def test_get_validity(self):
+        entity = {
+            'id': 'any id',
+            'validity': '2020-05-22'
+        }
+        issue = Issue({'id': 'any_check'}, entity, 'id', 'validity')
+        self.assertEqual(issue._get_validity(entity, 'validity'), '2020-05-22T00:00:00')
+
+        entity['validity'] = datetime.date(year=1020, month=5, day=22)
+        self.assertEqual(issue._get_validity(entity, 'validity'), '1020-05-22T00:00:00')
+
+        # Conversion fails, set to None
+        entity['validity'] = 'non date'
+        self.assertEqual(issue._get_validity(entity, 'validity'), None)
+
     def test_state_attributes(self):
         entity = {
             'id': 'any id',

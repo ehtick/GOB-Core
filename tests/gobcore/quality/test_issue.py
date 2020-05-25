@@ -363,5 +363,5 @@ class TestIssue(TestCase):
         for process in ['aap', 'noot', '']:
             self.assertFalse(is_functional_process(process))
 
-        for process in ['Import', 'import', 'ImporT', 'IMPORT', 'check_relation']:
+        for process in ['Import', 'import', 'ImporT', 'IMPORT', 'relate_check']:
             self.assertTrue(is_functional_process(process))

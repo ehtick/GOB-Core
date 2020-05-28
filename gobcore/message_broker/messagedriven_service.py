@@ -80,7 +80,7 @@ class MessagedrivenService:
     MessagedrivenService(SERVICEDEFINITION).start()
 
     """
-    def __init__(self, services, name, params=None):
+    def __init__(self, services: dict, name: str, params=None):
         self.services = services
         self.name = name
         self.params = params or {}
@@ -107,6 +107,12 @@ class MessagedrivenService:
             sys.exit(1)
 
         print("Succesfully initialized message broker")
+
+        # Call all queue functions that need setting up after the message broker is initialized
+        # For example, in a SERVICEDEFINITION, you'll find 'queue': lambda: listen_to_notifications(....)
+        for service_id, service in self.services.items():
+            if callable(service['queue']):
+                service['queue'] = service['queue']()
 
     def _start_threads(self, queues: list):
         for queue in queues:

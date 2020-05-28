@@ -94,13 +94,18 @@ class TestMessageDrivenService(unittest.TestCase):
                 "handler": "h1",
             },
             "b": {
-                "queue": "q2",
+                "queue": lambda: "q2",
                 "handler": "h2",
             }
         }
         messagedriven_service = MessagedrivenService(services, 'name', {})
         self.assertTrue(messagedriven_service._get_service("q1") == services["a"])
-        self.assertTrue(messagedriven_service._get_service("q2") == services["b"])
+
+        # Queue lambda function is replaced with its result
+        self.assertTrue(messagedriven_service._get_service("q2") == {
+            **services["b"],
+            "queue": "q2"
+        })
 
     @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
     def test_messagedriven_service(self, mocked_connection, mock_init_broker):
@@ -143,7 +148,7 @@ class TestMessageDrivenService(unittest.TestCase):
         messagedriven_service._start_threads.assert_called_once()
 
     def test_messagedriven_service_startthreads(self, mock_init_broker):
-        messagedriven_service = MessagedrivenService([], 'Some name', {'thread_per_service': True})
+        messagedriven_service = MessagedrivenService({}, 'Some name', {'thread_per_service': True})
         queues = ['queue1', 'queue2']
         messagedriven_service._start_thread = MagicMock()
         messagedriven_service._start_threads(queues)
@@ -155,7 +160,7 @@ class TestMessageDrivenService(unittest.TestCase):
 
     @mock.patch("gobcore.message_broker.messagedriven_service.threading.Thread")
     def test_messagedriven_service_startthread(self, mock_thread, mock_init_broker):
-        messagedriven_service = MessagedrivenService([], 'Some name', {'thread_per_service': True})
+        messagedriven_service = MessagedrivenService({}, 'Some name', {'thread_per_service': True})
         queues_arg = ['some queue', 'some other queue']
         mock_thread.return_value = MagicMock()
         result = messagedriven_service._start_thread(queues_arg)
@@ -173,13 +178,13 @@ class TestMessageDrivenService(unittest.TestCase):
     def test_init_exception(self, mock_exit, mock_init_messagebroker):
         mock_init_messagebroker.side_effect = Exception
 
-        MessagedrivenService([], 'name', {})
+        MessagedrivenService({}, 'name', {})
 
         mock_exit.assert_called_with(1)
 
     @mock.patch("gobcore.message_broker.messagedriven_service._on_message")
     def test_on_message(self, mock_on_message, mock_init_messagebroker):
-        messagedriven_service = MessagedrivenService([], 'name', {})
+        messagedriven_service = MessagedrivenService({}, 'name', {})
         messagedriven_service._get_service = MagicMock()
         messagedriven_service._on_message('connection', 'exchange', 'queue', 'key', 'msg')
         messagedriven_service._get_service.assert_called_with('queue')
@@ -187,7 +192,7 @@ class TestMessageDrivenService(unittest.TestCase):
 
     @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
     def test_listen(self, mock_connection, mock_init_messagebroker):
-        messagedriven_service = MessagedrivenService([], 'name', {})
+        messagedriven_service = MessagedrivenService({}, 'name', {})
 
         class MockConnection:
             subscribe = MagicMock()
@@ -205,7 +210,7 @@ class TestMessageDrivenService(unittest.TestCase):
     @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
     @mock.patch("gobcore.message_broker.messagedriven_service.Heartbeat")
     def test_heartbeat_loop(self, mock_heartbeat, mock_connection, mock_init_messagebroker):
-        messagedriven_service = MessagedrivenService([], 'name', {})
+        messagedriven_service = MessagedrivenService({}, 'name', {})
 
         class MockConnection:
             subscribe = MagicMock()

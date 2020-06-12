@@ -59,6 +59,258 @@
       }
     }
   },
+  "MAsrcA1": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB1": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
+  "MAsrcA2": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB2": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
+  "MAsrcA3": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB3": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
+  "MAsrcA4": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB4": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
+  "MAsrcA5": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB5": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
+  "MAsrcA6": {
+    "test_catalogue": {
+      "rel_multiple_allowed_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute",
+          "multiple_allowed": true
+        }
+      }
+    }
+  },
+  "MAsrcB6": {
+    "test_catalogue": {
+      "rel_multiple_allowed_multisource_src": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        },
+        "manyreference": {
+          "method": "equals",
+          "destination_attribute": "referenced_attribute"
+        }
+      }
+    }
+  },
   "Grondslag": {
     "meetbouten": {
       "meetbouten": {

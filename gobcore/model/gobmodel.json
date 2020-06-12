@@ -263,6 +263,105 @@
           }
         }
       },
+      "rel_multiple_allowed_src": {
+        "version": "0.1",
+        "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+        "abbreviation": "MA1",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Identifying attribute"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Object identificatie"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is gecreëerd."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is komen te vervallen."
+          },
+          "reference": {
+            "type": "GOB.Reference",
+            "description": "A single reference to dst",
+            "ref": "test_catalogue:rel_multiple_allowed_dst"
+          },
+          "manyreference": {
+            "type": "GOB.ManyReference",
+            "description": "A many reference to dst",
+            "ref": "test_catalogue:rel_multiple_allowed_dst"
+          }
+        }
+      },
+      "rel_multiple_allowed_multisource_src": {
+        "version": "0.1",
+        "description": "Entity to test relations with multiple possible destination objects per bronwaarde for only one source",
+        "abbreviation": "MA2",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Identifying attribute"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Object identificatie"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is gecreëerd."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is komen te vervallen."
+          },
+          "reference": {
+            "type": "GOB.Reference",
+            "description": "A single reference to dst",
+            "ref": "test_catalogue:rel_multiple_allowed_dst"
+          },
+          "manyreference": {
+            "type": "GOB.ManyReference",
+            "description": "A many reference to dst",
+            "ref": "test_catalogue:rel_multiple_allowed_dst"
+          }
+        }
+      },
+      "rel_multiple_allowed_dst": {
+        "version": "0.1",
+        "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+        "abbreviation": "MA3",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Identifying attribute"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Object identificatie"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is gecreëerd."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is komen te vervallen."
+          },
+          "referenced_attribute": {
+            "type": "GOB.String",
+            "description": "The referenced attribute from src"
+          }
+        }
+      },
       "secure": {
         "version": "0.1",
         "abbreviation": "SEC",

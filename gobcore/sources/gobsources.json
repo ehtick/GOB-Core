@@ -19,6 +19,16 @@
       }
     }
   },
+  "DELETE_ALL": {
+    "test_catalogue": {
+      "test_entity": {
+        "reference": {
+          "method": "equals",
+          "destination_attribute": "string"
+        }
+      }
+    }
+  },
   "REL": {
     "test_catalogue": {
       "rel_test_entity_a": {
@@ -625,7 +635,10 @@
       "panden": {
         "heeft_onderzoeken": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "source_attribute": "identificatie",
+          "destination_attribute": "object_identificatie",
+          "multiple_allowed": true,
+          "none_allowed": true
         },
         "ligt_in_bouwblok": {
           "method": "lies_in",

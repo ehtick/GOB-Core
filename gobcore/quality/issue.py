@@ -22,7 +22,7 @@ class Issue():
     _NO_VALUE = '<<NO VALUE>>'
 
     def __init__(self, check: dict, entity: dict, id_attribute: str, attribute: str,
-                 compared_to: str=None, compared_to_value=None):
+                 compared_to: str = None, compared_to_value=None):
         """
         Initialises an Issue
 
@@ -254,18 +254,18 @@ def process_issues(msg):
         return
 
     # Skip GOBPrepare jobs
-    if quality_update.application == 'GOBPrepare':
-        return
-
     # Don't Quality check yourself
-    if quality_update.catalogue == QualityUpdate.CATALOG:
+    # Don't check jobs where no collection is present
+    if quality_update.application == 'GOBPrepare' \
+            or quality_update.catalogue == QualityUpdate.CATALOG \
+            or quality_update.collection is None:
         return
 
     # Start the workflow, allow retries when an identical workflow is already running for max_retry_time seconds
     workflow = {
         'workflow_name': "import",
         'step_name': "update_model",
-        'retry_time': 10 * 60   # retry for max 10 minutes
+        'retry_time': 10 * 60  # retry for max 10 minutes
     }
     wf_msg = quality_update.get_msg(msg)
     start_workflow(workflow, wf_msg)

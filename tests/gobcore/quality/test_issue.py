@@ -271,7 +271,16 @@ class TestIssue(TestCase):
         # Skip GOBPrepare
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = True
+        msg['header']['catalogue'] = 'any catalogue'
         msg['header']['application'] = 'GOBPrepare'
+        process_issues(msg)
+        mock_start_workflow.assert_not_called()
+
+        # Skip when no collection is present
+        mock_logger.get_issues.return_value = [mock_issue]
+        mock_is_functional.return_value = True
+        msg['header']['application'] = 'any application'
+        del msg['header']['collection']
         process_issues(msg)
         mock_start_workflow.assert_not_called()
 
@@ -279,8 +288,7 @@ class TestIssue(TestCase):
         # In that case they will not be skipped and handled as regular issues
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = False
-        msg['header']['application'] = 'any application'
-        msg['header']['catalogue'] = 'any catalogue'
+        msg['header']['collection'] = 'any collection'
         process_issues(msg)
         mock_start_workflow.assert_called()
         mock_start_workflow.reset_mock()

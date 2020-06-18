@@ -518,7 +518,10 @@
       "standplaatsen": {
         "heeft_onderzoeken": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "source_attribute": "identificatie",
+          "destination_attribute": "object_identificatie",
+          "multiple_allowed": true,
+          "none_allowed": true
         },
         "heeft_hoofdadres": {
           "method": "equals",

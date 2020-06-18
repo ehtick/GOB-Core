@@ -1,6 +1,6 @@
     SELECT
       pnd.identificatie,
-      pnd.aanduiding_in_onderzoek,
+      CASE WHEN ozk.src_id IS NOT NULL THEN 'J' ELSE 'N' END AS aanduiding_in_onderzoek,
       pnd.geconstateerd,
       pnd.oorspronkelijk_bouwjaar,
       pnd.status,
@@ -76,6 +76,17 @@
         ON rel_5.src_id = brt_0._id AND rel_5.src_volgnummer = brt_0.volgnummer
     LEFT JOIN gebieden_ggpgebieden ggp_0
         ON rel_5.dst_id = ggp_0._id AND rel_5.dst_volgnummer = ggp_0.volgnummer AND COALESCE(ggp_0._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
+    LEFT JOIN (
+          SELECT
+              src_id, src_volgnummer
+          FROM mv_bag_pnd_bag_ozk_heeft_onderzoeken rel
+          INNER JOIN bag_onderzoeken ozk
+              ON rel.dst_id = ozk._id
+                     AND rel.dst_volgnummer = ozk.volgnummer
+                     AND ozk.in_onderzoek = 'J'
+                     AND COALESCE(ozk._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
+          GROUP BY rel.src_id, rel.src_volgnummer
+    ) ozk ON pnd._id = ozk.src_id AND pnd.volgnummer = ozk.src_volgnummer
     WHERE
       COALESCE(pnd._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
       AND pnd._date_deleted IS NULL

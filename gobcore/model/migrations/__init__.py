@@ -71,6 +71,12 @@ class GOBMigrations():
                 if modification.get('key') == old_key:
                     modification['key'] = new_key
 
+    def _delete_column(self, event, data, column):
+        if event.action == 'ADD':
+            data['entity'].pop(column)
+        elif event.action == 'MODIFY':
+            data['modifications'] = [mod for mod in data['modifications'] if mod.get('key') != column]
+
     def _apply_migration(self, event, data, migration):
         """
         Apply a migration on an event by converting the data based on all conversion in the migration
@@ -89,6 +95,11 @@ class GOBMigrations():
                 assert all([old_key, new_key]), "Invalid conversion definition"
 
                 self._rename_column(event, data, old_key, new_key)
+            elif conversion.get('action') == 'delete':
+                column = conversion.get('column')
+                assert column, "Invalid conversion definition"
+
+                self._delete_column(event, data, column)
             else:
                 raise NotImplementedError(f"Conversion {conversion['action']} not implemented")
 

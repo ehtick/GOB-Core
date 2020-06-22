@@ -1211,7 +1211,7 @@
         }
       },
       "standplaatsen": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "SPS",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1884,7 +1884,7 @@
         }
       },
       "panden": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "PND",
         "entity_id": "identificatie",
         "has_states": true,

@@ -24,6 +24,10 @@ class TestMigrations(unittest.TestCase):
                     'action': 'rename',
                     'old_column': 'old',
                     'new_column': 'new'
+                },
+                {
+                    'action': 'delete',
+                    'column': 'deleted_column'
                 }
             ]
         }
@@ -46,7 +50,8 @@ class TestMigrations(unittest.TestCase):
         # Test if a column has been renamed in event data
         data = {
             'entity': {
-                'old': 'value'
+                'old': 'value',
+                'deleted_column': 'some value',
             }
         }
 
@@ -70,13 +75,18 @@ class TestMigrations(unittest.TestCase):
                 {
                     'key': 'old',
                     'old_value': 'test',
-                    'new_value': 'modify'
+                    'new_value': 'modify',
                 },
                 {
                     'key': 'other_key',
                     'old_value': 'test',
                     'new_value': 'modify'
                 },
+                {
+                    'key': 'deleted_column',
+                    'old_value': 'test',
+                    'new_value': 'modify',
+                }
             ]
         }
 

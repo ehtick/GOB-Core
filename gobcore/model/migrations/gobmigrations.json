@@ -12,5 +12,29 @@
         ]
       }
     }
+  },
+  "bag": {
+    "standplaatsen": {
+      "0.1": {
+        "target_version": "0.2",
+        "conversions": [
+          {
+            "action": "delete",
+            "column": "aanduiding_in_onderzoek"
+          }
+        ]
+      }
+    },
+    "panden": {
+      "0.1": {
+        "target_version": "0.2",
+        "conversions": [
+          {
+            "action": "delete",
+            "column": "aanduiding_in_onderzoek"
+          }
+        ]
+      }
+    }
   }
 }

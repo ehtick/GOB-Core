@@ -1825,7 +1825,14 @@
           "toegang": {
             "type": "GOB.JSON",
             "description": "Plaats waar zich de toegang tot het verblijfsobject bevindt.",
-            "attributes": {}
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
           },
           "redenopvoer": {
             "type": "GOB.JSON",

@@ -380,8 +380,8 @@
     }
   },
   "Basisinformatie": {
-    "test_catalogue": {
-      "anydata" : {
+    "any": {
+      "data" : {
         "woont_in_stadsdeel": {
           "method": "equals",
           "destination_attribute": "code"

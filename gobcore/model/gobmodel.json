@@ -410,10 +410,17 @@
             "description": "date time."
           }
         }
-      },
-      "anydata": {
+      }
+    }
+  },
+  "any": {
+    "version": "0.1",
+    "abbreviation": "ANY",
+    "description": "Any catalogue.",
+    "collections": {
+      "data": {
         "version": "0.1",
-        "abbreviation": "ANY",
+        "abbreviation": "DATA",
         "entity_id": "identificatie",
         "attributes": {
           "identificatie": {

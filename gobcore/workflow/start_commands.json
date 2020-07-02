@@ -95,6 +95,13 @@
       {
         "name": "attribute",
         "description": "The name of the attribute containing the relation to relate (example: \"ligt_in_buurt\")"
+      },
+      {
+        "name": "mode",
+        "required": false,
+        "description": "The mode to use. Defaults to update",
+        "default": "update",
+        "choices": ["update", "full"]
       }
     ],
     "workflow": "relate"

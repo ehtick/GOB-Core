@@ -14,7 +14,7 @@ NOTIFICATION_KEY = 'notification'
 NOTIFICATION_TYPE = 'type'
 NOTIFICATION_CONTENTS = 'contents'
 # Notification messages copy a selection of the original header fields
-NOTIFICATION_HEADER_FIELDS = ['source', 'catalogue', 'collection', 'application', 'entity', 'version']
+NOTIFICATION_HEADER_FIELDS = ['source', 'catalogue', 'collection', 'application', 'entity', 'version', 'process_id']
 
 
 def listen_to_notifications(id, notification_type=None):

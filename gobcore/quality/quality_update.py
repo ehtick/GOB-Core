@@ -48,6 +48,7 @@ class QualityUpdate():
             'collection': get_entity_name(self.catalogue, self.collection),
             'source': self.get_source(),
             'application': self.application,
+            'process_id': msg_header.get('process_id'),
             'timestamp': datetime.datetime.utcnow().isoformat(),
             'version': '0.1'
         }

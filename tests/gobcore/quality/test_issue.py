@@ -240,6 +240,7 @@ class TestIssue(TestCase):
             'header': {
                 'source': 'any source',
                 'application': 'any application',
+                'process_id': 'the original process id',
                 'catalogue': 'any catalogue',
                 'collection': 'any collection',
                 'attribute': 'any attribute',
@@ -315,6 +316,7 @@ class TestIssue(TestCase):
                 'collection': 'any catalogue_any collection',
                 'source': 'any name_any source_any application_any attribute',
                 'application': 'any application',
+                'process_id': 'the original process id',
                 'timestamp': ANY,
                 'version': '0.1',
                 'mode': 'any mode'

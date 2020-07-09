@@ -2,7 +2,7 @@
       nag.identificatie,
       nag.volgnummer,
       nag.registratiedatum,
-      nag.aanduiding_in_onderzoek,
+      CASE WHEN ozk.src_id IS NOT NULL THEN 'J' ELSE 'N' END AS aanduiding_in_onderzoek,
       nag.geconstateerd,
       nag.huisnummer,
       nag.huisletter,
@@ -97,4 +97,15 @@
                ) q GROUP BY dst_id, dst_volgnummer, src_id
       ) sps_adressen ON sps_adressen.dst_id = nag._id AND sps_adressen.dst_volgnummer = nag.volgnummer
     LEFT JOIN bag_standplaatsen adresseert_standplaats ON sps_adressen.src_id = adresseert_standplaats._id and sps_adressen.src_volgnummer = adresseert_standplaats.volgnummer
+    -- SELECT in_onderzoek
+    LEFT JOIN (
+          SELECT
+              src_id, src_volgnummer
+          FROM mv_bag_nag_bag_ozk_heeft_onderzoeken rel
+                   INNER JOIN bag_onderzoeken ozk
+                              ON rel.dst_id = ozk._id
+                                  AND rel.dst_volgnummer = ozk.volgnummer
+                                  AND ozk.in_onderzoek = 'J'
+          GROUP BY rel.src_id, rel.src_volgnummer
+      ) ozk ON nag._id = ozk.src_id AND nag.volgnummer = ozk.src_volgnummer
     WHERE nag._date_deleted IS NULL

@@ -1395,7 +1395,7 @@
         }
       },
       "openbareruimtes": {
-        "version": "0.1",
+        "version": "0.2",
         "entity_id": "identificatie",
         "abbreviation": "ORE",
         "has_states": true,
@@ -1439,10 +1439,6 @@
           "geconstateerd": {
             "type": "GOB.Boolean",
             "description": "Dit geeft aan dat een OPENBARE RUIMTE in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument (J/N)"
-          },
-          "aanduiding_in_onderzoek": {
-            "type": "GOB.Boolean",
-            "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1510,7 +1506,7 @@
         }
       },
       "nummeraanduidingen": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "NAG",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1555,10 +1551,6 @@
           "eind_geldigheid": {
             "type": "GOB.DateTime",
             "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een NUMMERAANDUIDING."
-          },
-          "aanduiding_in_onderzoek": {
-            "type": "GOB.Boolean",
-            "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1641,7 +1633,7 @@
         }
       },
       "verblijfsobjecten": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "VOT",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1732,10 +1724,6 @@
           "eind_geldigheid": {
             "type": "GOB.DateTime",
             "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een VERBLIJFSOBJECT."
-          },
-          "aanduiding_in_onderzoek": {
-            "type": "GOB.Boolean",
-            "description": "Hiermee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object (J/N)."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",

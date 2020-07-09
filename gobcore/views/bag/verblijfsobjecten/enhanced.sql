@@ -1,6 +1,6 @@
     SELECT
       vot.identificatie,
-      vot.aanduiding_in_onderzoek,
+      CASE WHEN ozk.src_id IS NOT NULL THEN 'J' ELSE 'N' END AS aanduiding_in_onderzoek,
       vot.geconstateerd,
       json_build_object(
         'identificatie', nag_0.identificatie,
@@ -173,6 +173,18 @@
         ON rel_10.src_id = brt_0._id AND rel_10.src_volgnummer = brt_0.volgnummer
     LEFT JOIN gebieden_ggpgebieden ggp_0
         ON rel_10.dst_id = ggp_0._id AND rel_10.dst_volgnummer = ggp_0.volgnummer AND COALESCE(ggp_0._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
+    -- SELECT in_onderzoek
+    LEFT JOIN (
+          SELECT
+              src_id, src_volgnummer
+          FROM mv_bag_vot_bag_ozk_heeft_onderzoeken rel
+          INNER JOIN bag_onderzoeken ozk
+              ON rel.dst_id = ozk._id
+                     AND rel.dst_volgnummer = ozk.volgnummer
+                     AND ozk.in_onderzoek = 'J'
+                     AND COALESCE(ozk._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
+          GROUP BY rel.src_id, rel.src_volgnummer
+    ) ozk ON vot._id = ozk.src_id AND vot.volgnummer = ozk.src_volgnummer
     WHERE
       COALESCE(vot._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
       AND vot._date_deleted IS NULL

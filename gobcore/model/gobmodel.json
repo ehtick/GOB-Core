@@ -263,6 +263,61 @@
           }
         }
       },
+      "rel_collapsed_a": {
+        "version": "0.1",
+        "description": "Entity to test collapsed state relations",
+        "abbreviation": "COLA",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Identifying attribute"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Object identificatie"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is gecreëerd."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is komen te vervallen."
+          },
+          "reference": {
+            "type": "GOB.Reference",
+            "description": "The reference that is tested",
+            "ref": "test_catalogue:rel_collapsed_b"
+          }
+        }
+      },
+      "rel_collapsed_b": {
+        "version": "0.1",
+        "description": "Entity to test collapsed state relations",
+        "abbreviation": "COLB",
+        "entity_id": "identificatie",
+        "has_states": true,
+        "attributes": {
+          "id": {
+            "type": "GOB.Integer",
+            "description": "Identifying attribute"
+          },
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Object identificatie"
+          },
+          "begin_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is gecreëerd."
+          },
+          "eind_geldigheid": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop het object is komen te vervallen."
+          }
+        }
+      },
       "rel_multiple_allowed_src": {
         "version": "0.1",
         "description": "Entity to test relations with multiple possible destination objects per bronwaarde",

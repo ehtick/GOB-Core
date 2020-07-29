@@ -22,6 +22,7 @@ class Job(Base):
     __tablename__ = 'jobs'
 
     id = Column(Integer, primary_key=True, doc="Internal primary key", index=True)
+    process_id = Column(String, index=True, doc="The id of the logical process")
     name = Column(String, doc="e.g. import.data/metingen.json.2020-01-20T12:43:18.005")
     type = Column(String, doc="import, export, ...", index=True)
     args = Column(ARRAY(String), doc="whatever was passed as argument when the job was started")

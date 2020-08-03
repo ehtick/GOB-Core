@@ -142,5 +142,10 @@
         "default": ""
       }
     ]
+  },
+  "brp_regression_test": {
+    "description": "Run BRP API regression tests",
+    "workflow": "brp_regression_test",
+    "args": []
   }
 }

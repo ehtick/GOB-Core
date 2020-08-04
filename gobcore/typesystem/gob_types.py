@@ -98,8 +98,12 @@ class GOBType(metaclass=ABCMeta):
         if cls.is_secure:
             # Secure types require a confidence level
             kwargs["level"] = typeinfo["level"]
-        if isinstance(value, dict) and typeinfo.get("secure"):
-            kwargs["secure"] = typeinfo["secure"]
+        if isinstance(value, dict):
+            # Attributes are either defined in the 'secure' dict or the 'attributes' dict. Pass either.
+            if typeinfo.get("secure"):
+                kwargs["secure"] = typeinfo["secure"]
+            elif typeinfo.get("attributes"):
+                kwargs["attributes"] = typeinfo["attributes"]
         return cls.from_value(value, **kwargs)
 
     @classmethod
@@ -282,7 +286,7 @@ class Boolean(GOBType):
 
     def __init__(self, value):
         if value is not None:
-            if value not in ['True', 'False']:
+            if value.lower() not in ['true', 'false']:
                 raise GOBTypeException(f"Boolean should be False, True or None")
         super().__init__(value)
 
@@ -330,12 +334,12 @@ class Boolean(GOBType):
         return self._bool()
 
     def _bool(self):
-        if self._string == str(True):
-            return True
-        elif self._string == str(False):
-            return False
-        else:
-            return None
+        if self._string is not None:
+            if self._string.lower() == str(True).lower():
+                return True
+            elif self._string.lower() == str(False).lower():
+                return False
+        return None
 
 
 class Date(String):
@@ -453,16 +457,22 @@ class JSON(GOBType):
         return value
 
     @classmethod
-    def _process_from_value(cls, value, secure):
+    def _process_from_value(cls, value, attributes):
+        """
+
+        :param value:
+        :param attributes: Either the 'secure' dict or 'attributes' dict from the field definition
+        :return:
+        """
         for attr, attr_value in value.items():
             if isinstance(attr_value, dict):
-                cls._process_from_value(attr_value, secure)
-            elif secure.get(attr):
-                secure_attr = secure[attr]
-                gob_type = secure_attr['gob_type']
-                type_kwargs = {k: v for k, v in secure_attr.items()
+                cls._process_from_value(attr_value, attributes)
+            elif attributes.get(attr):
+                attribute = attributes[attr]
+                gob_type = attribute['gob_type']
+                type_kwargs = {k: v for k, v in attribute.items()
                                if k not in ['type', 'gob_type', 'source_mapping', 'filters']}
-                value[attr] = gob_type.from_value_secure(attr_value, secure_attr, **type_kwargs).to_value
+                value[attr] = gob_type.from_value_secure(attr_value, attribute, **type_kwargs).to_value
 
     @classmethod
     def from_value(cls, value, **kwargs):
@@ -474,11 +484,13 @@ class JSON(GOBType):
         if value is None:
             return cls(None)
 
-        if isinstance(value, dict) and kwargs.get('secure'):
-            cls._process_from_value(value, kwargs['secure'])
+        # Take the secure attributes, or use the attributes dict when no secure attributes present.
+        attributes = kwargs.get('secure', kwargs.get('attributes'))
+        if isinstance(value, dict) and attributes:
+            cls._process_from_value(value, attributes)
 
         if isinstance(value, dict) or isinstance(value, list):
-            return cls(json.dumps(value), spec=kwargs.get('secure'))
+            return cls(json.dumps(value), spec=attributes)
 
         return cls(str(value))
 

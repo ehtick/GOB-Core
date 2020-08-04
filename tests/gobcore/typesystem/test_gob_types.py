@@ -382,6 +382,9 @@ class TestGOBType(unittest.TestCase):
         res = self.MockChild.from_value_secure({'key': 'value'}, {'secure': 'any security info'})
         mock_from_value.assert_called_with({'key': 'value'}, secure='any security info')
 
+        res = self.MockChild.from_value_secure({'key': 'value'}, {'attributes': 'any other attribute'})
+        mock_from_value.assert_called_with({'key': 'value'}, attributes='any other attribute')
+
 
 class TestBoolean(unittest.TestCase):
 

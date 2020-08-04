@@ -13,7 +13,8 @@ class TestStartCommandArgument(TestCase):
             'required': True,
             'default': 'the default',
             'choices': ['A', 'B', 'C'],
-            'named': True
+            'named': True,
+            'action': 'some action'
         }
 
         sca = StartCommandArgument(init_args)
@@ -28,6 +29,7 @@ class TestStartCommandArgument(TestCase):
             'required': False,
             'default': None,
             'choices': None,
+            'action': None,
         }
 
         sca = StartCommandArgument({'name': 'some name'})

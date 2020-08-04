@@ -19,6 +19,7 @@ class StartCommandArgument:
     required: bool = False
     default: str = None
     choices: list = None
+    action: str = None
 
     def __init__(self, config: dict):
         assert 'name' in config
@@ -29,6 +30,7 @@ class StartCommandArgument:
         self.named = config.get('named', False)
         self.default = config.get('default')
         self.choices = config.get('choices')
+        self.action = config.get('action')
 
 
 class StartCommand:

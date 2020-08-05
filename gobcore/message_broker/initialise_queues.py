@@ -95,6 +95,22 @@ def _initialize_queues(channel, queue_configuration):
                 _bind_queue(channel=channel, exchange=exchange, queue=queue, key=key)
 
 
+def create_queue_with_binding(exchange, queue, key):
+    """
+    Utility function to create a queue and an exchange and their key binding at once.
+
+    :param exchange:
+    :param queue:
+    :param key:
+    :return:
+    """
+    with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
+        channel = connection.channel()
+        _create_exchange(channel, exchange, True)
+        _create_queue(channel, queue, True)
+        _bind_queue(channel, exchange, queue, key)
+
+
 def initialize_message_broker():
     """
     Initializes the RabbitMQ message broker.

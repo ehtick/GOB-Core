@@ -2,7 +2,8 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock, call
 
 from gobcore.message_broker.initialise_queues import _create_vhost, _create_exchange, _create_queue, _bind_queue, \
-    _initialize_queues, initialize_message_broker, MESSAGE_BROKER_VHOST, CONNECTION_PARAMS, QUEUE_CONFIGURATION
+    _initialize_queues, initialize_message_broker, MESSAGE_BROKER_VHOST, CONNECTION_PARAMS, QUEUE_CONFIGURATION, \
+    create_queue_with_binding
 
 
 class TestInitialiseQueues(TestCase):
@@ -86,6 +87,27 @@ class TestInitialiseQueues(TestCase):
             call(channel=channel, exchange='exchange2', queue='queue2', key='key4'),
             call(channel=channel, exchange='exchange2', queue='queue3', key='key5'),
             call(channel=channel, exchange='exchange2', queue='queue3', key='key2'),
+        ])
+
+    @patch("gobcore.message_broker.initialise_queues._create_exchange")
+    @patch("gobcore.message_broker.initialise_queues._create_queue")
+    @patch("gobcore.message_broker.initialise_queues._bind_queue")
+    @patch("gobcore.message_broker.initialise_queues.pika.BlockingConnection")
+    def test_create_queue_with_binding(self, mock_connection, mock_bind, mock_create_queue, mock_create_exchange):
+        mocks = MagicMock()
+        mocks.attach_mock(mock_create_exchange, 'create_exchange')
+        mocks.attach_mock(mock_create_queue, 'create_queue')
+        mocks.attach_mock(mock_bind, 'bind_queue')
+
+        create_queue_with_binding('some exchange', 'some queue', 'some key')
+
+        mock_connection.assert_called_with(CONNECTION_PARAMS)
+        channel = mock_connection.return_value.__enter__.return_value.channel.return_value
+
+        mocks.assert_has_calls([
+            call.create_exchange(channel, 'some exchange', True),
+            call.create_queue(channel, 'some queue', True),
+            call.bind_queue(channel, 'some exchange', 'some queue', 'some key')
         ])
 
     @patch("gobcore.message_broker.initialise_queues._create_vhost")

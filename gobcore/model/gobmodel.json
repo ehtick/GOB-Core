@@ -496,7 +496,7 @@
             "description": "Status van de meetbout (1=actueel, 2=niet te meten, 3=vervallen)",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -512,7 +512,7 @@
             "description": "Merk",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -593,7 +593,7 @@
             "description": "Wijze waarop de meting is ingewonnen",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -679,7 +679,7 @@
             "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -695,7 +695,7 @@
             "description": "Merk van het referentiepunt",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -799,7 +799,7 @@
             "description": "Merk van het referentiepunt",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -836,7 +836,7 @@
             "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"

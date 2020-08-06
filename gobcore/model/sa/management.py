@@ -33,6 +33,7 @@ class Job(Base):
     catalogue = Column(String, doc='The catalogue this job refers to')
     collection = Column(String, doc='The collection this job refers to')
     attribute = Column(String, doc='The attribute this job refers to')
+    application = Column(String, doc='The application this job refers to')
 
     def __repr__(self):
         return f'<Job {self.name}>'

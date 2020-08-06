@@ -30,6 +30,9 @@ class Job(Base):
     end = Column(DateTime, doc="Time when the job has ended", index=True)
     status = Column(String, doc="started, paused, waiting, ended, ...", index=True)
     user = Column(String, doc="user or process name that started the job")
+    catalogue = Column(String, doc='The catalogue this job refers to')
+    collection = Column(String, doc='The collection this job refers to')
+    attribute = Column(String, doc='The attribute this job refers to')
 
     def __repr__(self):
         return f'<Job {self.name}>'

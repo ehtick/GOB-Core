@@ -3318,7 +3318,7 @@
             "description": "De aard van de handeling die op de beperking heeft plaatsgevonden.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -3330,7 +3330,7 @@
             "description": "Het orgaan dat de beperking heeft opgelegd.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -3355,7 +3355,7 @@
             "description": "De fase van het proces waarin de beperking zich bevindt.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"

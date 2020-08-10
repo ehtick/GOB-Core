@@ -799,7 +799,7 @@
             "description": "Merk van het referentiepunt",
             "attributes": {
               "code": {
-                "type": "GOB.Integer"
+                "type": "GOB.String"
               },
               "omschrijving": {
                 "type": "GOB.String"

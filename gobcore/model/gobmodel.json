@@ -2337,10 +2337,10 @@
             "description": "Coördinaten voor het verschuiven van het perceelnummer op de kaart naar een locatie waar meer ruimte is om het nummer af te beelden",
             "attributes": {
               "x": {
-                "type": "GOB.Decimal"
+                "type": "GOB.String"
               },
               "y": {
-                "type": "GOB.Decimal"
+                "type": "GOB.String"
               }
             }
           },

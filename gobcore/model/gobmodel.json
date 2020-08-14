@@ -1230,7 +1230,7 @@
             "description": "Levenscyclus van de woonplaats, Woonplaats aangewezen, Woonplaats ingetrokken.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1252,7 +1252,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1284,7 +1284,7 @@
             "description": "De fase van de levenscyclus van een standplaats, waarin de betreffende standplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1346,7 +1346,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1378,7 +1378,7 @@
             "description": "De fase van de levenscyclus van een ligplaats, waarin de betreffende ligplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1440,7 +1440,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1476,7 +1476,7 @@
             "description": "De status van de levenscyclus van een openbare ruimte (Naamgeving uitgegeven, Naamgeving ingetrokken).",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1505,7 +1505,7 @@
             "description": "De aard van de zodanig benoemde openbare ruimte (01 Weg, 02 Water, 03 Spoorbaan, 04 Terrein, 05 Kunstwerk, 06 Landschappelijk gebied, 07 Administratief gebied)",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1547,7 +1547,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1622,7 +1622,7 @@
             "description": "Het type adresseerbaar object waaraan een nummeraanduiding is toegekend.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1642,7 +1642,7 @@
             "description": "De fase van de levenscyclus van een nummeraanduiding,waarin de betreffende nummeraanduiding zich bevindt. (Naamgeving uitgegeven, Naamgeving ingetrokken).",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1678,7 +1678,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1956,7 +1956,7 @@
             "description": "De fase van de levenscyclus van een pand, waarin het betreffende pand zich bevindt.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -1993,7 +1993,7 @@
             "description": "Situering pand met verblijfsobject (vrijstaand, tussenwoning, etc.).",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"
@@ -2031,7 +2031,7 @@
             "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
             "attributes": {
               "code": {
-                "type": "GOB.String"
+                "type": "GOB.Integer"
               },
               "omschrijving": {
                 "type": "GOB.String"

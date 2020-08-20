@@ -36,6 +36,23 @@ class TestLogger(TestCase):
         logger.messages['data_error'] = ['data error messages']
         self.assertEqual(['error messages', 'data error messages'], logger.get_errors())
 
+    def test_get_log_counts(self):
+        logger = Logger()
+        logger._data_msg_count = MagicMock()
+        self.assertEqual(logger._data_msg_count, logger.get_log_counts())
+
+    def test_get_summary(self):
+        logger = Logger()
+        logger.get_warnings = MagicMock(return_value=['the warnings'])
+        logger.get_errors = MagicMock(return_value=['the errors'])
+        logger.get_log_counts = MagicMock(return_value={'the': 'log counts'})
+
+        self.assertEqual({
+            'warnings': ['the warnings'],
+            'errors': ['the errors'],
+            'log_counts': {'the': 'log counts'}
+        }, logger.get_summary())
+
     def test_log(self):
         mock_level_logger = MagicMock()
         mock_logger = type('MockLogger', (object,), {'level': mock_level_logger})
@@ -79,22 +96,28 @@ class TestLogger(TestCase):
 
     def test_data_info(self):
         logger = Logger("Data info logger")
+        self.assertEqual(logger._data_msg_count['data_info'], 0)
         with self.assertLogs(logger=Logger._logger[logger._name], level=ExtendedLogger.DATAINFO) as result:
             logger.data_info("test")
         self.assertEqual(result.output, [f"DATAINFO:{logger._name}:test"])
+        self.assertEqual(logger._data_msg_count['data_info'], 1)
 
     def test_data_warning(self):
         logger = Logger("Data warning logger")
+        self.assertEqual(logger._data_msg_count['data_warning'], 0)
         with self.assertLogs(logger=Logger._logger[logger._name], level=ExtendedLogger.DATAWARNING) as result:
             logger.data_warning("test")
         self.assertEqual(result.output, [f"DATAWARNING:{logger._name}:test"])
+        self.assertEqual(logger._data_msg_count['data_warning'], 1)
 
     def test_data_error(self):
         logger = Logger("Data error logger")
+        self.assertEqual(logger._data_msg_count['data_error'], 0)
         # RequestsHandler.LOG_PUBLISHER.publish.reset_mock()
         with self.assertLogs(logger=Logger._logger[logger._name], level=ExtendedLogger.DATAERROR) as result:
             logger.data_error("test")
         self.assertEqual(result.output, [f"DATAERROR:{logger._name}:test"])
+        self.assertEqual(logger._data_msg_count['data_error'], 1)
 
     def test_configure(self):
         RequestsHandler.LOG_PUBLISHER = MagicMock(spec=LogPublisher)
@@ -184,21 +207,25 @@ class TestLogger(TestCase):
         any_issue = MagicMock()
         any_issue.get_unique_id.return_value = 1
 
-        logger.add_issue(any_issue)
+        logger.add_issue(any_issue, 'error')
         self.assertEqual(logger.get_issues(), [any_issue])
+        self.assertEqual(1, logger._data_msg_count['data_error'])
 
-        logger.add_issue(any_issue)
+        logger.add_issue(any_issue, 'warning')
         self.assertEqual(logger.get_issues(), [any_issue])
+        self.assertEqual(1, logger._data_msg_count['data_warning'])
 
         another_issue = MagicMock()
         another_issue.get_unique_id.return_value = 1
 
-        logger.add_issue(another_issue)
+        logger.add_issue(another_issue, 'info')
         self.assertEqual(logger.get_issues(), [any_issue])
+        self.assertEqual(1, logger._data_msg_count['data_info'])
 
         another_issue.get_unique_id.return_value = 2
-        logger.add_issue(another_issue)
+        logger.add_issue(another_issue, 'error')
         self.assertEqual(logger.get_issues(), [any_issue, another_issue])
+        self.assertEqual(2, logger._data_msg_count['data_error'])
 
 
 class TestRequestHandler(TestCase):

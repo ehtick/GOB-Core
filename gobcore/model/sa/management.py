@@ -6,6 +6,7 @@ SQLAlchemy Management Models
 from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean, ForeignKey, Index
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.mutable import MutableDict
 
 Base = declarative_base()
 
@@ -34,6 +35,7 @@ class Job(Base):
     collection = Column(String, doc='The collection this job refers to')
     attribute = Column(String, doc='The attribute this job refers to')
     application = Column(String, doc='The application this job refers to')
+    log_counts = Column(MutableDict.as_mutable(JSON), doc='The summary of the results of this job')
 
     def __repr__(self):
         return f'<Job {self.name}>'

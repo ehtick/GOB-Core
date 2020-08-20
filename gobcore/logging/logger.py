@@ -11,6 +11,7 @@ Each log message will so be populated with the message details
 import logging
 import datetime
 import threading
+from collections import defaultdict
 
 from gobcore.logging.log_publisher import LogPublisher
 
@@ -104,8 +105,9 @@ class Logger:
 
     def clear_issues(self):
         self._issues = {}
+        self._data_msg_count = defaultdict(int)
 
-    def add_issue(self, issue):
+    def add_issue(self, issue, level):
         id = issue.get_unique_id()
         if self._issues.get(id):
             # Join this issue with an already existing issue for the same check, attribute and entity
@@ -113,6 +115,8 @@ class Logger:
         else:
             # Add this issue as a new issue
             self._issues[id] = issue
+
+        self._data_msg_count['data_' + level] += 1
 
     def get_issues(self):
         return list(self._issues.values())
@@ -129,6 +133,16 @@ class Logger:
 
     def get_errors(self):
         return self.messages['error'] + self.messages['data_error']
+
+    def get_log_counts(self):
+        return self._data_msg_count
+
+    def get_summary(self):
+        return {
+            'warnings': self.get_warnings(),
+            'errors': self.get_errors(),
+            'log_counts': self.get_log_counts(),
+        }
 
     def _log(self, level, msg, kwargs=None):
         """
@@ -160,12 +174,15 @@ class Logger:
         self._log('error', msg, kwargs)
 
     def data_info(self, msg, kwargs=None):
+        self._data_msg_count['data_info'] += 1
         self._log('data_info', msg, kwargs)
 
     def data_warning(self, msg, kwargs=None):
+        self._data_msg_count['data_warning'] += 1
         self._log('data_warning', msg, kwargs)
 
     def data_error(self, msg, kwargs=None):
+        self._data_msg_count['data_error'] += 1
         self._log('data_error', msg, kwargs)
 
     def set_name(self, name):

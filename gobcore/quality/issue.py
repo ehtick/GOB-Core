@@ -202,17 +202,29 @@ class Issue():
 
 
 def log_issue(logger: Logger, level: QA_LEVEL, issue: Issue) -> None:
-    # Log the message
-    {
-        QA_LEVEL.FATAL: logger.data_error,
-        QA_LEVEL.ERROR: logger.data_error,
-        QA_LEVEL.WARNING: logger.data_warning,
-        QA_LEVEL.INFO: logger.data_info
-    }[level](issue.msg(), issue.log_args())
+    """Logs Issue
+
+    Only issues without an entity_id are actually written as log messages. All other issues are added
+    to the logger instance for further handling (they will be picked up by the process_issues function in
+    this file)
+
+    :param logger:
+    :param level:
+    :param issue:
+    :return:
+    """
 
     if issue.entity_id is not None:
         # Only add issues that are linked to entities
-        logger.add_issue(issue)
+        logger.add_issue(issue, level)
+    else:
+        # Log the message
+        {
+            QA_LEVEL.FATAL: logger.data_error,
+            QA_LEVEL.ERROR: logger.data_error,
+            QA_LEVEL.WARNING: logger.data_warning,
+            QA_LEVEL.INFO: logger.data_info
+        }[level](issue.msg(), issue.log_args())
 
 
 def is_functional_process(process):

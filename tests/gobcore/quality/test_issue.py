@@ -209,6 +209,7 @@ class TestIssue(TestCase):
         self.assertEqual(issue.value, '1, 5, 7, 8, 9')
 
     def test_log_issue(self):
+        # Issue without id. Should add issue, but not log it
         entity = {
             'id': 'any id',
             'attr': 'any attr'
@@ -218,6 +219,14 @@ class TestIssue(TestCase):
         mock_logger.get_name.return_value = "any name"
         log_issue(mock_logger, QA_LEVEL.INFO, issue)
         mock_logger.add_issue.assert_called()
+        mock_logger.data_info.assert_not_called()
+
+        # Issue with id. Should not add issue, but should log it
+        mock_logger.reset_mock()
+        issue = Issue({'id': 'any_check', 'msg': 'any msg'}, {}, 'id', 'attr')
+        log_issue(mock_logger, QA_LEVEL.INFO, issue)
+        mock_logger.add_issue.assert_not_called()
+        mock_logger.data_info.assert_called()
 
     def test_log_issue_no_entity(self):
         # Skip issues that are not linked to an entity

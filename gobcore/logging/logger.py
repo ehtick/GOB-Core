@@ -115,8 +115,7 @@ class Logger:
         else:
             # Add this issue as a new issue
             self._issues[id] = issue
-
-        self._data_msg_count['data_' + level] += 1
+            self._data_msg_count['data_' + level] += 1
 
     def get_issues(self):
         return list(self._issues.values())

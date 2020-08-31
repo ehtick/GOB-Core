@@ -211,21 +211,24 @@ class TestLogger(TestCase):
         self.assertEqual(logger.get_issues(), [any_issue])
         self.assertEqual(1, logger._data_msg_count['data_error'])
 
+        any_issue.get_unique_id.return_value = 2
         logger.add_issue(any_issue, 'warning')
-        self.assertEqual(logger.get_issues(), [any_issue])
+        self.assertEqual(logger.get_issues(), [any_issue, any_issue])
         self.assertEqual(1, logger._data_msg_count['data_warning'])
 
+        logger = Logger()
+        any_issue.get_unique_id.return_value = 1
         another_issue = MagicMock()
         another_issue.get_unique_id.return_value = 1
 
-        logger.add_issue(another_issue, 'info')
+        logger.add_issue(any_issue, 'info')
         self.assertEqual(logger.get_issues(), [any_issue])
         self.assertEqual(1, logger._data_msg_count['data_info'])
 
         another_issue.get_unique_id.return_value = 2
         logger.add_issue(another_issue, 'error')
         self.assertEqual(logger.get_issues(), [any_issue, another_issue])
-        self.assertEqual(2, logger._data_msg_count['data_error'])
+        self.assertEqual(1, logger._data_msg_count['data_error'])
 
 
 class TestRequestHandler(TestCase):

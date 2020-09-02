@@ -29,6 +29,7 @@ class MockUVA2():
 
 
 @patch("gobcore.datastore.objectstore.Datastore", MagicMock)
+@patch("gobcore.datastore.objectstore.os.getenv", lambda *args: "containerfromenv")
 class TestObjectDatastore(TestCase):
 
     def setUp(self):
@@ -37,6 +38,13 @@ class TestObjectDatastore(TestCase):
             'TENANT_NAME': 'tenant',
             'name': 'connection_name',
         }
+
+    def test_init(self):
+        store = ObjectDatastore(self.config)
+        self.assertEqual("containerfromenv", store.container_name)
+
+        store = ObjectDatastore(self.config, {'container': 'the container'})
+        self.assertEqual("the container", store.container_name)
 
     @patch("gobcore.datastore.objectstore.get_connection")
     def test_connect(self, mock_get_connection):
@@ -224,13 +232,10 @@ class TestObjectDatastore(TestCase):
     def test_put_file(self, mock_open, mock_get_connection):
         mock_connection = mock_get_connection.return_value
 
-        store = ObjectDatastore(self.config)
+        store = ObjectDatastore(self.config, {'container': 'any container_name'})
         store.connect()
-
-        with self.assertRaises(AssertionError):
-            store.put_file('any src', 'any dest')
 
         mock_file = mock_open.return_value.__enter__.return_value
 
-        store.put_file('any src', 'any dest', **{'container_name': 'any container_name'})
+        store.put_file('any src', 'any dest')
         mock_connection.put_object.assert_called_with('any container_name', 'any dest', contents=mock_file)

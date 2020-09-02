@@ -15,6 +15,7 @@ class ObjectDatastore(Datastore):
         super(ObjectDatastore, self).__init__(connection_config, read_config)
 
         self.connection = None
+        self.container_name = self.read_config.get('container', os.getenv("CONTAINER_BASE", "acceptatie"))
 
     def connect(self):
         try:
@@ -35,19 +36,18 @@ class ObjectDatastore(Datastore):
         :return: a list of data
         """
         # Allow the container name to be set in the config or else get it from the env
-        container_name = self.read_config.get('container', os.getenv("CONTAINER_BASE", "acceptatie"))
         file_filter = self.read_config.get("file_filter", ".*")
         file_type = self.read_config.get("file_type")
 
         # Use the container base env variable
-        result = get_full_container_list(self.connection, container_name)
+        result = get_full_container_list(self.connection, self.container_name)
         pattern = re.compile(file_filter)
 
         for row in result:
             if pattern.match(row["name"]):
                 file_info = dict(row)  # File information
                 if file_type in ["XLS", "CSV", "UVA2"]:
-                    obj = get_object(self.connection, row, container_name)
+                    obj = get_object(self.connection, row, self.container_name)
                     if file_type == "XLS":
                         # Include (non-empty) Excel rows
                         _read = self._read_xls
@@ -135,8 +135,6 @@ class ObjectDatastore(Datastore):
                     row = {key.lower(): value for key, value in row.items()}
                 yield row
 
-    def put_file(self, src, dest, **kwargs):
-        assert 'container_name' in kwargs, "container_name should be provided"
-
+    def put_file(self, src, dest):
         with open(src, 'rb') as file:
-            self.connection.put_object(kwargs['container_name'], dest, contents=file)
+            self.connection.put_object(self.container_name, dest, contents=file)

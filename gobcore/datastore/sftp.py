@@ -25,5 +25,18 @@ class SFTPDatastore(Datastore):
     def query(self):
         pass  # pragma: no cover
 
+    def _create_directories(self, path: str):
+        split_path = path.split('/')
+        dircnt = len(split_path)
+
+        for i in range(dircnt):
+            try:
+                self.connection.mkdir('/'.join(split_path[:i+1]))
+            except OSError:
+                # Directory already exists
+                pass
+
     def put_file(self, src, dest):
+        dest_dir = '/'.join(dest.split('/')[:-1])
+        self._create_directories(dest_dir)
         self.connection.put(src, dest)

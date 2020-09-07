@@ -16,7 +16,7 @@ setup(
         'shapely',
         'cx-Oracle==7.3.0',
         'xlrd==1.2.0',
-        'datapunt-objectstore',
+        'datapunt-objectstore==2020.9.7',
         'requests==2.20.0',
         'psycopg2-binary==2.7.7',
         'pandas==0.23.4',

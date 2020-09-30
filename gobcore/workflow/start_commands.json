@@ -166,14 +166,9 @@
         "description": "The name of the data catalogue (example: \"meetbouten\")"
       },
       {
-        "name": "collection",
+        "name": "fileset",
         "required": false,
-        "description": "The name of the data collection (example: \"metingen\")"
-      },
-      {
-        "name": "product",
-        "required": false,
-        "description": "The product of the data collection (example: \"csv_actueel\")"
+        "description": "The name of the data collection (example: \"actueel\")"
       }
     ]
   }

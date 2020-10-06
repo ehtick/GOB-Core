@@ -23,6 +23,26 @@
             "column": "aanduiding_in_onderzoek"
           }
         ]
+      },
+      "0.2": {
+        "target_version": "0.3",
+        "conversions": [
+          {
+            "action": "delete",
+            "column": "feitelijk_gebruik"
+          }
+        ]
+      }
+    },
+    "ligplaatsen": {
+      "0.1": {
+        "target_version": "0.2",
+        "conversions": [
+          {
+            "action": "delete",
+            "column": "feitelijk_gebruik"
+          }
+        ]
       }
     },
     "panden": {

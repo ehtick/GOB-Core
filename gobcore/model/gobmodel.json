@@ -1262,7 +1262,7 @@
         }
       },
       "standplaatsen": {
-        "version": "0.2",
+        "version": "0.3",
         "abbreviation": "SPS",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1326,11 +1326,6 @@
             "type": "GOB.String",
             "description": "Het unieke nummer van het brondocument."
           },
-          "feitelijk_gebruik": {
-            "type": "GOB.JSON",
-            "description": "Feitelijk gebruik van een standplaats.",
-            "attributes": {}
-          },
           "ligt_in_buurt": {
             "type": "GOB.Reference",
             "ref": "gebieden:buurten",
@@ -1356,7 +1351,7 @@
         }
       },
       "ligplaatsen": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "LPS",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1419,11 +1414,6 @@
           "documentnummer": {
             "type": "GOB.String",
             "description": "Het unieke nummer van het brondocument."
-          },
-          "feitelijk_gebruik": {
-            "type": "GOB.JSON",
-            "description": "Feitelijk gebruik van een ligplaats.",
-            "attributes": {}
           },
           "ligt_in_buurt": {
             "type": "GOB.Reference",

@@ -1739,7 +1739,8 @@
               "omschrijving": {
                 "type": "GOB.String"
               }
-            }
+            },
+            "has_multiple_values": true
           },
           "oppervlakte": {
             "type": "GOB.Integer",
@@ -1865,7 +1866,8 @@
               "omschrijving": {
                 "type": "GOB.String"
               }
-            }
+            },
+            "has_multiple_values": true
           },
           "redenopvoer": {
             "type": "GOB.JSON",
@@ -2299,7 +2301,8 @@
               "omschrijving": {
                 "type": "GOB.String"
               }
-            }
+            },
+            "has_multiple_values": true
           },
           "soort_cultuur_onbebouwd": {
             "type": "GOB.JSON",

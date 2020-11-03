@@ -1,9 +1,9 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from gobcore.events import import_events
 from gobcore.exceptions import GOBException
-from gobcore.typesystem import GOB
+from gobcore.model import GOBModel
 
 from tests.gobcore import fixtures
 
@@ -89,3 +89,36 @@ class TestImportEvents(unittest.TestCase):
 
         gob_event = import_events.MODIFY({}, fixtures.get_metadata_fixture())
         self.assertEqual({'a': 'new a', 'b': 'new b'}, gob_event._extract_modifications({}, modifications))
+
+    def test_catalogue_entity(self):
+        metadata = MagicMock()
+        metadata.catalogue = 'cat'
+        metadata.entity = 'coll'
+
+        import_events.ADD.gob_model = MagicMock()
+
+        event = import_events.ADD({}, metadata)
+        self.assertEqual('cat', event.catalogue)
+        self.assertEqual('coll', event.entity)
+
+        # Put back
+        import_events.ADD.gob_model = GOBModel()
+
+    def test_actions_names(self):
+        testcases = [
+            (import_events.ADD, 'ADD', 'ADD'),
+            (import_events.MODIFY, 'MODIFY', 'MODIFY'),
+            (import_events.DELETE, 'DELETE', 'DELETE'),
+            (import_events.CONFIRM, 'CONFIRM', 'CONFIRM'),
+            (import_events.BULKCONFIRM, 'BULKCONFIRM', 'CONFIRM'),
+        ]
+
+        for event, name, action in testcases:
+            event.gob_model = MagicMock()
+            event_obj = event({}, MagicMock())
+
+            self.assertEqual(name, event_obj.name)
+            self.assertEqual(action, event_obj.action)
+
+            # Put back to avoid failing tests using this object
+            event.gob_model = GOBModel()

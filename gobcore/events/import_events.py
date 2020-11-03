@@ -48,6 +48,18 @@ class ImportEvent(metaclass=ABCMeta):
     def last_event(cls, data):
         return {"_last_event": data.get("_last_event")}
 
+    @property
+    def action(self):
+        return self.name
+
+    @property
+    def catalogue(self):
+        return self._metadata.catalogue
+
+    @property
+    def entity(self):
+        return self._metadata.entity
+
     def __init__(self, data, metadata):
         self._data = data
         self._metadata = metadata
@@ -260,3 +272,11 @@ class BULKCONFIRM(ImportEvent):
             '_entity_source_id': None
         }
         return {"event": cls.name, "data": data}
+
+    @property
+    def action(self):
+        """The underlying action for a BULKCONFIRM is a CONFIRM
+
+        :return:
+        """
+        return CONFIRM.name

@@ -60,6 +60,10 @@ class ImportEvent(metaclass=ABCMeta):
     def entity(self):
         return self._metadata.entity
 
+    @property
+    def source(self):
+        return self._metadata.source
+
     def __init__(self, data, metadata):
         self._data = data
         self._metadata = metadata

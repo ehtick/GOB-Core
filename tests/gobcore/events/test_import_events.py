@@ -90,16 +90,18 @@ class TestImportEvents(unittest.TestCase):
         gob_event = import_events.MODIFY({}, fixtures.get_metadata_fixture())
         self.assertEqual({'a': 'new a', 'b': 'new b'}, gob_event._extract_modifications({}, modifications))
 
-    def test_catalogue_entity(self):
+    def test_catalogue_entity_source(self):
         metadata = MagicMock()
         metadata.catalogue = 'cat'
         metadata.entity = 'coll'
+        metadata.source = 'source'
 
         import_events.ADD.gob_model = MagicMock()
 
         event = import_events.ADD({}, metadata)
         self.assertEqual('cat', event.catalogue)
         self.assertEqual('coll', event.entity)
+        self.assertEqual('source', event.source)
 
         # Put back
         import_events.ADD.gob_model = GOBModel()

@@ -3408,7 +3408,7 @@
     "collections": {
       "wozobjecten": {
         "version": "0.1",
-        "abbreviation": "WOZ",
+        "abbreviation": "WOT",
         "entity_id": "wozobjectnummer",
         "attributes": {
           "wozobjectnummer": {
@@ -3452,7 +3452,7 @@
       },
       "wozdeelobjecten": {
         "version": "0.1",
-        "abbreviation": "WOZ",
+        "abbreviation": "WDT",
         "entity_id": "wozdeelobjectnummer",
         "attributes": {
           "wozdeelobjectnummer": {

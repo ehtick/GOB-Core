@@ -855,6 +855,36 @@
           "destination_attribute": "naam"
         }
       }
+    },
+    "woz": {
+      "wozobjecten": {
+        "bevat_kadastraalobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      },
+      "wozdeelobjecten": {
+        "heeft_relatie_met_wozobject": {
+          "method": "equals",
+          "destination_attribute": "wozobjectnummer"
+        },
+        "is_verbonden_met_verblijfsobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_verbonden_met_ligplaats": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "is_verbonden_met_standplaats": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_pand": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      }
     }
   }
 }

@@ -870,19 +870,23 @@
         },
         "is_verbonden_met_verblijfsobject": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed":  true
         },
         "is_verbonden_met_ligplaats": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed":  true
         },
         "is_verbonden_met_standplaats": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed":  true
         },
         "heeft_pand": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed":  true
         }
       }
     }

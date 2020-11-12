@@ -8,6 +8,7 @@ OBJECTSTORE = 'objectstore'
 WFS = 'wfs'
 FILE = 'file'
 SFTP = 'sftp'
+SQL_SERVER = 'sqlserver'
 
 
 class Datastore(ABC):

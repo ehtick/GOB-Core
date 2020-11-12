@@ -23,7 +23,8 @@ setup(
         'paramiko==2.7.1',
         'ijson==2.3',
         'cryptography==3.2.1',
-        'pycryptodome==3.9.4'
+        'pycryptodome==3.9.4',
+        'pyodbc==4.0.30',
     ],
     packages=find_packages(exclude=['tests*']),
     dependency_links=[

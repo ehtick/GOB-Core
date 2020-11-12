@@ -22,14 +22,7 @@ class TestSqlServerDatastore(TestCase):
         store.connect()
 
         self.assertEqual(mock_pyodbc.connect.return_value, store.connection)
-        mock_pyodbc.connect.assert_called_with(
-            server='HOST',
-            database='DB',
-            user='USER',
-            password='PASS',
-            port='PORT',
-            driver='DRIVER'
-        )
+        mock_pyodbc.connect.assert_called_with('DRIVER={DRIVER};SERVER=HOST,PORT;DATABASE=DB;UID=USER;PWD=PASS', autocommit=True)
 
     class MockRow:
         cursor_description = [('columnA',), ('otherColumn',), ('intColumn',)]

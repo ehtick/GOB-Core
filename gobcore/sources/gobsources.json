@@ -857,12 +857,6 @@
       }
     },
     "woz": {
-      "wozobjecten": {
-        "bevat_kadastraalobject": {
-          "method": "equals",
-          "destination_attribute": "identificatie"
-        }
-      },
       "wozdeelobjecten": {
         "heeft_relatie_met_wozobject": {
           "method": "equals",

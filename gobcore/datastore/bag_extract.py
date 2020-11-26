@@ -147,6 +147,17 @@ class BagExtractDatastore(Datastore):
         return gml.ExportToWkt()
 
     def _flatten_nested_list(self, lst: list, key_prefix: str):
+        """Flattens list, called from the _flatten_dict method. Pulls the dict keys in the list out.
+
+        For example, when called with list [{'some_key': 'A'}, {'some_key': 'B'}] and key_prefix 'prefix', the result
+        is dict of the form:
+
+        { 'prefix/some_key': ['A', 'B'] }
+
+        :param lst:
+        :param key_prefix:
+        :return:
+        """
         result = {}
         for item in lst:
             if isinstance(item, dict):
@@ -165,6 +176,28 @@ class BagExtractDatastore(Datastore):
         return result
 
     def _flatten_dict(self, d: dict):
+        """Flattens dictionary, separates keys by a / character.
+
+        {
+            'a': {
+                'b': {
+                    'c': 'd',
+                },
+                'e': 'f',
+            'g': [{'h': 4}, {'h': 5}]
+        }
+
+        will become:
+
+        {
+            'a/b/c': 'd',
+            'a/e': 'f',
+            'g/h': [4, 5]
+        }
+
+        :param d:
+        :return:
+        """
 
         def flatten(dct: dict):
             result = {}
@@ -181,6 +214,11 @@ class BagExtractDatastore(Datastore):
         return flatten(d)
 
     def _element_to_dict(self, element: ET.Element):
+        """Transforms an XML element to a dictionary.
+
+        :param element:
+        :return:
+        """
         childs = list(element)
 
         if len(childs) == 1 and self.namespaces['gml'] in childs[0].tag:

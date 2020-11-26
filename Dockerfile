@@ -1,10 +1,16 @@
 FROM amsterdam/python:3.7-buster
 MAINTAINER datapunt@amsterdam.nl
 
+# Install GDAL and ODBC
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends libgdal-dev unixodbc-dev
+
+# Update C env vars so compiler can find gdal
+ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
+ENV C_INCLUDE_PATH=/usr/include/gdal
+
 # Install gobworkflow in /app folder
 WORKDIR /app
-
-RUN apt-get update && apt-get -y --no-install-recommends install unixodbc-dev
 
 # Copy testscript to where jenkins expect them
 COPY test.sh /app/

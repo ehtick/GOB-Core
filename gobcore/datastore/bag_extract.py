@@ -74,7 +74,6 @@ class BagExtractDatastore(Datastore):
         self.tmp_dir = TemporaryDirectory()
         self.files = []
 
-        self.files = [os.path.join('/tmp/test', f) for f in sorted(os.listdir('/tmp/test'))]
         self._check_config()
 
     def _check_config(self):

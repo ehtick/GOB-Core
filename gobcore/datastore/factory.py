@@ -1,4 +1,5 @@
-from gobcore.datastore.datastore import Datastore, ORACLE, POSTGRES, OBJECTSTORE, WFS, FILE, SFTP, SQL_SERVER
+from gobcore.datastore.datastore import Datastore, ORACLE, POSTGRES, OBJECTSTORE, WFS, FILE, SFTP, SQL_SERVER, \
+    BAG_EXTRACT
 from gobcore.datastore.oracle import OracleDatastore
 from gobcore.datastore.postgres import PostgresDatastore
 from gobcore.datastore.objectstore import ObjectDatastore
@@ -6,6 +7,7 @@ from gobcore.datastore.wfs import WfsDatastore
 from gobcore.datastore.file import FileDatastore
 from gobcore.datastore.sftp import SFTPDatastore
 from gobcore.datastore.sqlserver import SqlServerDatastore
+from gobcore.datastore.bag_extract import BagExtractDatastore
 
 
 class DatastoreFactory:
@@ -20,6 +22,7 @@ class DatastoreFactory:
             FILE: FileDatastore,
             SFTP: SFTPDatastore,
             SQL_SERVER: SqlServerDatastore,
+            BAG_EXTRACT: BagExtractDatastore,
         }
 
         store = stores.get(config.pop('type'))

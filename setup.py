@@ -13,7 +13,7 @@ setup(
         'sqlalchemy==1.3.3',
         'geoalchemy2',
         'geomet',
-        'shapely',
+        'shapely==1.7.1',
         'cx-Oracle==7.3.0',
         'xlrd==1.2.0',
         'datapunt-objectstore==2020.9.7',
@@ -25,6 +25,7 @@ setup(
         'cryptography==3.2.1',
         'pycryptodome==3.9.4',
         'pyodbc==4.0.30',
+        'GDAL==2.4.4',
     ],
     packages=find_packages(exclude=['tests*']),
     dependency_links=[

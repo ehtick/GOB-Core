@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-
 ORACLE = 'oracle'
 POSTGRES = 'postgres'
 OBJECTSTORE = 'objectstore'
@@ -9,6 +8,7 @@ WFS = 'wfs'
 FILE = 'file'
 SFTP = 'sftp'
 SQL_SERVER = 'sqlserver'
+BAG_EXTRACT = 'bagextract'
 
 
 class Datastore(ABC):

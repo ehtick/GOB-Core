@@ -96,7 +96,8 @@ class BagExtractDatastore(Datastore):
             f"{gemeente}{self.read_config['object_type']}{datestr}.zip",
         ], self.tmp_dir.name)
 
-        self.files = [os.path.join(self.tmp_dir.name, f) for f in sorted(os.listdir(self.tmp_dir.name))]
+        self.files = [os.path.join(self.tmp_dir.name, f)
+                      for f in sorted(os.listdir(self.tmp_dir.name)) if f.endswith('.xml')]
 
     def _download_file(self):
         """Downloads source file and returns file location

@@ -44,8 +44,9 @@ class TestBagExtractDatastore(TestCase):
         ds = self.get_test_object()
         ds._download_file = MagicMock(return_value="thepath/to/BAGGEM1234L-12345678.zip")
         mock_listdir.return_value = [
-            "fileA0001.zip",
-            "fileA0002.zip",
+            "fileA0001.xml",
+            "fileA0002.xml",
+            "fileA0003.zip",
         ]
 
         ds.connect()
@@ -58,8 +59,8 @@ class TestBagExtractDatastore(TestCase):
             "/tmp_dir_name",
         )
         self.assertEqual([
-            "/tmp_dir_name/fileA0001.zip",
-            "/tmp_dir_name/fileA0002.zip",
+            "/tmp_dir_name/fileA0001.xml",
+            "/tmp_dir_name/fileA0002.xml",
         ], ds.files)
 
         # Invalid filename

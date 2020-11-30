@@ -86,6 +86,16 @@ class TestOracleDatastore(TestCase):
             store.connect()
 
     @patch("gobcore.datastore.oracle.OracleDatastore.get_url", MagicMock())
+    def test_disconnect(self):
+        store = OracleDatastore({})
+        connection = MagicMock()
+        store.connection = connection
+        store.disconnect()
+        connection.close.assert_called_once()
+        self.assertIsNone(store.connection)
+        store.disconnect()
+
+    @patch("gobcore.datastore.oracle.OracleDatastore.get_url", MagicMock())
     def test_makedict(self):
         cursor = type('MockCursor', (object,), {'description': ['a', 'b', 'c']})
         args = [1, 2, 3, 4]

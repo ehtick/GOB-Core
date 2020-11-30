@@ -23,6 +23,11 @@ class SqlServerDatastore(SqlDatastore):
 
         self.connection = pyodbc.connect(connstring, autocommit=True)
 
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+
     def query(self, query):
         cursor = self.connection.cursor()
         with self.connection:

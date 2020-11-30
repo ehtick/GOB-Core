@@ -29,6 +29,10 @@ class Datastore(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
+    def disconnect(self):
+        pass  # pragma: no cover
+
+    @abstractmethod
     def query(self, query):
         pass  # pragma: no cover
 

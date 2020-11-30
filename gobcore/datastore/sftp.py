@@ -24,6 +24,11 @@ class SFTPDatastore(Datastore, PutEnabledDatastore, ListEnabledDatastore, Delete
 
         self.connection = paramiko.SFTPClient.from_transport(transport)
 
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+
     def query(self):
         pass  # pragma: no cover
 

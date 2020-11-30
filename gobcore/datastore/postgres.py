@@ -35,6 +35,11 @@ class PostgresDatastore(SqlDatastore):
         except KeyError as e:
             raise GOBException(f'Missing configuration for source {self.connection_config["name"]}. Error: {e}')
 
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+
     def query(self, query):
         """Query Postgres
 

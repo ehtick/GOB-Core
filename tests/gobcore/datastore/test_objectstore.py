@@ -55,6 +55,15 @@ class TestObjectDatastore(TestCase):
         self.assertEqual({'connected': True}, store.connection)
         self.assertEqual("(someuser@tenant)", store.user)
 
+    def test_disconnect(self):
+        store = ObjectDatastore(self.config)
+        connection = MagicMock()
+        store.connection = connection
+        store.disconnect()
+        connection.close.assert_called_once()
+        self.assertIsNone(store.connection)
+        store.disconnect()
+
     def test_missing_config(self):
         del self.config['TENANT_NAME']
         store = ObjectDatastore(self.config)

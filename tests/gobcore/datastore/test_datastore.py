@@ -13,6 +13,9 @@ class DatastoreImpl(Datastore):
     def connect(self):
         pass
 
+    def disconnect(self):
+        pass
+
     def query(self, query):
         pass
 
@@ -22,6 +25,9 @@ class DatastoreImplPut(Datastore, PutEnabledDatastore):
         super().__init__(connection_config, read_config)
 
     def connect(self):
+        pass
+
+    def disconnect(self):
         pass
 
     def query(self, query):
@@ -39,6 +45,9 @@ class DatastoreImplDelete(Datastore, DeleteEnabledDatastore):
     def connect(self):
         pass
 
+    def disconnect(self):
+        pass
+
     def query(self, query):
         pass
 
@@ -52,6 +61,9 @@ class DatatoreImplList(Datastore, ListEnabledDatastore):
         super().__init__(connection_config, read_config)
 
     def connect(self):
+        pass
+
+    def disconnect(self):
         pass
 
     def query(self, query):

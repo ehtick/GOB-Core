@@ -26,6 +26,9 @@ class FileDatastore(Datastore):
         else:
             raise NotImplementedError
 
+    def disconnect(self):
+        pass  # pragma: no cover
+
     def query(self, query):
         """Reads from the file connection
 

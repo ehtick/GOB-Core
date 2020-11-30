@@ -26,6 +26,15 @@ class TestSFTPDatastore(TestCase):
         
         mock_paramiko.SFTPClient.from_transport.assert_called_with(mock_transport)
 
+    def test_disconnect(self):
+        store = SFTPDatastore({})
+        connection = MagicMock()
+        store.connection = connection
+        store.disconnect()
+        connection.close.assert_called_once()
+        self.assertIsNone(store.connection)
+        store.disconnect()
+
     def test_create_directories(self):
         store = SFTPDatastore({})
         store.connection = MagicMock()

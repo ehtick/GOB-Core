@@ -21,6 +21,9 @@ class WfsDatastore(Datastore):
         self.response = requests.get(self.connection_config['url'])
         assert self.response.ok, f"API Response not OK for url {self.connection_config['url']}"
 
+    def disconnect(self):
+        pass  # pragma: no cover
+
     def query(self, query):
         """Reads from the response
 

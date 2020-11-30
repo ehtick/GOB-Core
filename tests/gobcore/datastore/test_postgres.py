@@ -84,6 +84,15 @@ class TestPostgresDatastore(TestCase):
         with self.assertRaises(GOBException):
             store.connect()
 
+    def test_disconnect(self):
+        store = PostgresDatastore({})
+        connection = MagicMock()
+        store.connection = connection
+        store.disconnect()
+        connection.close.assert_called_once()
+        self.assertIsNone(store.connection)
+        store.disconnect()
+
     def test_query(self):
         expected_result = [i for i in range(10)]
         connection = MockConnection(expected_result)

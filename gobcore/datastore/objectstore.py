@@ -28,6 +28,11 @@ class ObjectDatastore(Datastore, ListEnabledDatastore, PutEnabledDatastore, Dele
             raise GOBException(f"Objectstore connection for source {self.connection_config['name']} failed. "
                                f"Error: {e}.")
 
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+
     def query(self, query):
         """Reads from the objectstore
 

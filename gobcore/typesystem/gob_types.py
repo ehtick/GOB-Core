@@ -439,7 +439,8 @@ class JSON(GOBType):
                 self._process_get_dict_value(attr_value, user)
             elif self._spec and self._spec.get(attr):
                 # Resolve secure attributes
-                value[attr] = self._spec[attr]['gob_type'](attr_value).get_value(user)
+                level = self._spec[attr].get('level')
+                value[attr] = self._spec[attr]['gob_type'](attr_value, level=level).get_value(user)
 
     def _process_get_value(self, value, user):
         if isinstance(value, dict):

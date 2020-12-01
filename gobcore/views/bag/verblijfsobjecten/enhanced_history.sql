@@ -143,13 +143,10 @@ LEFT JOIN (
 ON pnd_0.src_id = vot._id AND pnd_0.src_volgnummer = vot.volgnummer
 -- SELECT first ligt_in_bouwblok
 LEFT JOIN LATERAL (
-    SELECT DISTINCT ON (pnd_1.src_id)
+    SELECT DISTINCT ON (pnd_1.src_id, pnd_1.src_volgnummer)
        pnd_1.src_id, pnd_1.dst_id, pnd_1.src_volgnummer, pnd_1.dst_volgnummer
     FROM mv_bag_vot_bag_pnd_ligt_in_panden pnd_1
-    INNER JOIN (SELECT src_id, MAX(src_volgnummer::INTEGER) src_volgnummer
-      FROM mv_bag_vot_bag_pnd_ligt_in_panden
-      GROUP BY src_id) max_pnd ON pnd_1.src_id = max_pnd.src_id AND pnd_1.src_volgnummer::INTEGER = max_pnd.src_volgnummer
-      ORDER BY pnd_1.src_id, pnd_1.src_volgnummer, pnd_1.dst_id
+    ORDER BY pnd_1.src_id, pnd_1.src_volgnummer, pnd_1.dst_id, pnd_1.dst_volgnummer DESC
 ) AS rel_4
     ON rel_4.src_id = vot._id AND rel_4.src_volgnummer = vot.volgnummer
 LEFT JOIN bag_panden pnd_2

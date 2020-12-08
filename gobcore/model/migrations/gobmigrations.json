@@ -89,5 +89,35 @@
         ]
       }
     }
+  },
+  "woz": {
+    "wozdeelobjecten": {
+      "0.1": {
+        "target_version": "0.2",
+        "conversions": [
+          {
+            "action": "delete",
+            "column": "heeft_relatie_met_wozobject"
+          },
+          {
+            "action": "add",
+            "column": "volgnummer",
+            "default": 1
+          }
+        ]
+      }
+    },
+    "wozobjecten": {
+      "0.1": {
+        "target_version": "0.2",
+        "conversions": [
+          {
+            "action": "add",
+            "column": "volgnummer",
+            "default": 1
+          }
+        ]
+      }
+    }
   }
 }

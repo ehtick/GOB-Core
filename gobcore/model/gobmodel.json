@@ -3407,9 +3407,10 @@
     "abbreviation": "WOZ",
     "collections": {
       "wozobjecten": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "WOT",
         "entity_id": "wozobjectnummer",
+        "has_states": true,
         "attributes": {
           "wozobjectnummer": {
             "type": "GOB.String",
@@ -3447,13 +3448,19 @@
             "type": "GOB.ManyReference",
             "description": "Relatie naar kadastraal object",
             "ref": "brk:kadastraleobjecten"
+          },
+          "bestaat_uit_wozdeelobjecten": {
+            "type": "GOB.ManyReference",
+            "description": "Relatie naar de deelobjecten",
+            "ref": "woz:wozdeelobjecten"
           }
         }
       },
       "wozdeelobjecten": {
-        "version": "0.1",
+        "version": "0.2",
         "abbreviation": "WDT",
         "entity_id": "wozdeelobjectnummer",
+        "has_states": true,
         "attributes": {
           "wozdeelobjectnummer": {
             "type": "GOB.String",
@@ -3463,10 +3470,9 @@
             "type": "GOB.String",
             "description": "Unieke identificatie WOZ-deelobject binnen het WOZ-object"
           },
-          "heeft_relatie_met_wozobject": {
-            "type": "GOB.Reference",
-            "description": "Van welk WOZ-object is dit WOZ-deelobject een onderdeel",
-            "ref": "woz:wozobjecten"
+          "wozobjectnummer": {
+            "type": "GOB.String",
+            "description": "Van welk WOZ-object is dit WOZ-deelobject een onderdeel"
           },
           "soortobject": {
             "type": "GOB.JSON",

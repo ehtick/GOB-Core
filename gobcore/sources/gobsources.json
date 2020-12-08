@@ -857,11 +857,15 @@
       }
     },
     "woz": {
-      "wozdeelobjecten": {
-        "heeft_relatie_met_wozobject": {
+      "wozobjecten": {
+        "bestaat_uit_wozdeelobjecten": {
           "method": "equals",
-          "destination_attribute": "wozobjectnummer"
-        },
+          "source_attribute": "wozobjectnummer",
+          "destination_attribute": "wozobjectnummer",
+          "multiple_allowed": true
+        }
+      },
+      "wozdeelobjecten": {
         "is_verbonden_met_verblijfsobject": {
           "method": "equals",
           "destination_attribute": "identificatie",

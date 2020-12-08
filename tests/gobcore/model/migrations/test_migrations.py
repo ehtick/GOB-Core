@@ -28,6 +28,11 @@ class TestMigrations(unittest.TestCase):
                 {
                     'action': 'delete',
                     'column': 'deleted_column'
+                },
+                {
+                    'action': 'add',
+                    'column': 'added_column',
+                    'default': 'default value'
                 }
             ]
         }
@@ -57,7 +62,8 @@ class TestMigrations(unittest.TestCase):
 
         expected_data = {
             'entity': {
-                'new': 'value'
+                'new': 'value',
+                'added_column': 'default value',
             }
         }
 
@@ -140,6 +146,7 @@ class TestMigrations(unittest.TestCase):
         expected_data = {
             'entity': {
                 'new': 'value',
+                'added_column': 'default value',
             }
         }
 
@@ -173,6 +180,7 @@ class TestMigrations(unittest.TestCase):
         expected_data = {
             'entity': {
                 'extra_new': 'value',
+                'added_column': 'default value',
             }
         }
 

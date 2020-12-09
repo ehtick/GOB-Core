@@ -1347,6 +1347,19 @@
                 "type": "GOB.String"
               }
             }
+          },
+          "gebruiksdoel": {
+            "type": "GOB.JSON",
+            "description": "Een categorisering van de gebruiksdoelen van de betreffende standplaats, zoals dit door de overheid als zodanig is toegestaan.",
+            "attributes": {
+              "code": {
+                "type": "GOB.Integer"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
           }
         }
       },
@@ -1436,6 +1449,19 @@
                 "type": "GOB.String"
               }
             }
+          },
+          "gebruiksdoel": {
+            "type": "GOB.JSON",
+            "description": "Een categorisering van de gebruiksdoelen van de betreffende ligplaats, zoals dit door de overheid als zodanig is toegestaan.",
+            "attributes": {
+              "code": {
+                "type": "GOB.Integer"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
           }
         }
       },

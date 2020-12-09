@@ -863,6 +863,10 @@
           "source_attribute": "wozobjectnummer",
           "destination_attribute": "wozobjectnummer",
           "multiple_allowed": true
+        },
+        "bevat_kadastraalobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       },
       "wozdeelobjecten": {

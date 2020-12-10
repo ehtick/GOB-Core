@@ -124,6 +124,24 @@ class QA_CHECK:
     Value_1_1_reference = {
         "msg": 'value should be a one to one reference'
     }
+    Value_aantal_bouwlagen_should_match = {
+        "msg": 'aantal_bouwlagen does not match hoogste_bouwlaag and laagste_bouwlaag'
+    }
+    Value_aantal_bouwlagen_not_filled = {
+        "msg": 'aantal_bouwlagen should not be empty if hoogste_bouwlaag and laagste_bouwlaag are filled'
+    }
+    Value_gebruiksdoel_in_domain = {
+        "msg": 'gebruiksdoel should be one of the domain'
+    }
+    Value_gebruiksdoel_woonfunctie_should_match = {
+        "msg": 'gebruiksdoel_woonfunctie should only be filled if gebruiksdoel is woonfunctie'
+    }
+    Value_gebruiksdoel_gezondheidszorgfunctie_should_match = {
+        "msg": 'gebruiksdoel_gezondheidszorgfunctie should only be filled if gebruiksdoel is gezondheidszorgfunctie'
+    }
+    Value_aantal_eenheden_complex_filled = {
+        "msg": 'aantal_eenheden_complex should only be filled if complex is in woonfunctie or gezondheidszorgfunctie'
+    }
 
 
 # Initialisation of QA Checks

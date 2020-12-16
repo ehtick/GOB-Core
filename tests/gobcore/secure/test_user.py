@@ -1,23 +1,20 @@
 from unittest import TestCase, mock
 
-from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
+from gobcore.secure.config import GOB_SECURE_ATTRS
 from gobcore.secure.user import User
 
 
+@mock.patch("gobcore.secure.user.extract_roles")
 class TestUser(TestCase):
 
-    def setup(self):
-        pass
-
-    def test_create(self):
+    def test_create(self, mock_extract):
+        mock_extract.return_value = ['role1', 'role2']
         mock_request = mock.MagicMock()
-        mock_request.headers = {
-            REQUEST_ROLES: GOB_SECURE_ATTRS
-        }
         user = User(mock_request)
-        self.assertIsNotNone(user._roles)
+        self.assertEqual(['role1', 'role2'], user._roles)
+        mock_extract.assert_called_with(mock_request.headers)
 
-    def test_has_access(self):
+    def test_has_access(self, mock_extract):
         mock_request = mock.MagicMock()
         mock_request.headers = {}
         user = User(mock_request)

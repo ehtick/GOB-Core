@@ -1,4 +1,5 @@
-from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
+from gobcore.secure.config import GOB_SECURE_ATTRS
+from gobcore.secure.request import extract_roles
 
 
 class User:
@@ -9,8 +10,7 @@ class User:
 
         :param request:
         """
-        roles = request.headers.get(REQUEST_ROLES, "")
-        self._roles = roles.split(",")
+        self._roles = extract_roles(request.headers)
 
     def has_access_to(self, encrypted_value):
         """

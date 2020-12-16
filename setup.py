@@ -21,6 +21,7 @@ setup(
         'pika==0.12.0',
         'psycopg2-binary==2.8.6',
         'pycryptodome==3.9.4',
+        'pyjwt==1.7.1',
         'pyodbc==4.0.30',
         'requests==2.20.0',
         'shapely==1.7.1',

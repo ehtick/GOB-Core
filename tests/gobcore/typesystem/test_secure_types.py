@@ -1,11 +1,12 @@
 import unittest
+from unittest.mock import MagicMock
 import mock
 
 from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate
 from gobcore.typesystem.gob_types import JSON, String
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
-from gobcore.secure.config import REQUEST_ROLES, GOB_SECURE_ATTRS
+from gobcore.secure.config import GOB_SECURE_ATTRS
 
 
 class MockBaseType:
@@ -19,12 +20,11 @@ class TestSecure(unittest.TestCase):
         BaseType = MockBaseType
 
     @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @mock.patch('gobcore.secure.user.extract_roles', MagicMock())
     def test_create(self):
         mock_request = mock.MagicMock()
-        mock_request.headers = {
-            REQUEST_ROLES: GOB_SECURE_ATTRS
-        }
         user = User(mock_request)
+        user._roles = [GOB_SECURE_ATTRS]
 
         sec_string = SecureString.from_value(read_protect("some string"), level=5)
         self.assertTrue(isinstance(sec_string, SecureString))

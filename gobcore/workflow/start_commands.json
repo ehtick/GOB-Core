@@ -171,5 +171,21 @@
         "description": "The name of the data collection (example: \"actueel\")"
       }
     ]
+  },
+  "kafka_produce": {
+    "description": "Send last Kafka events for catalogue/collection",
+    "workflow": "kafka_produce",
+    "args": [
+      {
+        "name": "catalogue",
+        "required": true,
+        "description": "The name of the data catalogue (example: \"meetbouten\")"
+      },
+      {
+        "name": "collection",
+        "required": true,
+        "description": "The name of the data collection (example: \"metingen\")"
+      }
+    ]
   }
 }

@@ -198,15 +198,3 @@ class TestAsyncConnection(TestCase):
         print_msg = mock_print.call_args[0][0]
 
         self.assertTrue(print_msg.startswith('Message handling has failed on second try'))
-
-        # Events should never be dropped
-        basic_deliver.exchange = "gob.event"
-        basic_deliver.redelivered = True
-        on_message(channel, basic_deliver, properties, json.dumps(msg))
-
-        thread_target = mock_thread.call_args[1]['target']
-        thread_target()
-
-        print_msg = mock_print.call_args[0][0]
-
-        self.assertEqual(print_msg, 'Message handling has failed, terminating program')

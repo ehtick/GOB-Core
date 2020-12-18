@@ -9,6 +9,9 @@ The definition and characteristics of each event is in the gob_events module
 """
 from gobcore.exceptions import GOBException
 from gobcore.events import import_events
+from gobcore.events.import_message import MessageMetaData
+from gobcore.model import GOBModel
+from gobcore.model.migrations import GOBMigrations
 
 # The possible events are imported from the gob_events module
 GOB = import_events
@@ -133,3 +136,42 @@ def GobEvent(event_message, metadata):
     data = event_message["data"]
 
     return _get_event(event_name)(data, metadata)
+
+
+def database_to_gobevent(event, data):
+    """Reconstruct the original event out of the stored event
+
+    :param event: the database event
+    :param data: the data that is associated with the event
+    :return: a ADD, MODIFY, CONFIRM or DELETE event
+    """
+
+    # Get the model version to check if the event should be migrated to the correct version
+    model_version = GOBModel().get_collection(event.catalogue, event.entity)['version']
+
+    if model_version != event.version:
+        # Event should be migrated to the correct GOBModel version
+        data = GOBMigrations().migrate_event_data(event, data, event.catalogue, event.entity, model_version)
+
+    event_msg = {
+        "event": event.action,
+        "data": data
+    }
+
+    msg_header = {
+        "process_id": None,
+        "source": event.source,
+        "application": event.application,
+        "id_column": data.get("id_column"),
+        "catalogue": event.catalogue,
+        "entity": event.entity,
+        "version": event.version,
+        "timestamp": event.timestamp
+    }
+
+    # Construct the event out of the reconstructed event data
+    gob_event = GobEvent(event_msg, MessageMetaData(msg_header))
+
+    # Store the id of the event in the gob_event
+    gob_event.id = event.eventid
+    return gob_event

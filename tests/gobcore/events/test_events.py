@@ -1,10 +1,18 @@
 import unittest
+from unittest.mock import patch
 
 from gobcore import events
-from gobcore.events import GOB, GobEvent
+from gobcore.events import GOB, GobEvent, database_to_gobevent
 from gobcore.exceptions import GOBException
 
 from tests.gobcore import fixtures
+
+def dict_to_object(dict):
+    class Obj(object):
+        def __init__(self, dict):
+            self.__dict__ = dict
+            self.eventid = 1
+    return Obj(dict)
 
 
 class TestEvents(unittest.TestCase):
@@ -72,3 +80,93 @@ class TestEvents(unittest.TestCase):
         self.assertIsInstance(gob_event, events._get_event(event['event']))
         self.assertEqual(event['data'], gob_event._data)
         self.assertEqual(metadata, gob_event._metadata)
+
+    @patch('gobcore.events.GOBModel')
+    @patch('gobcore.events.GobEvent')
+    @patch('gobcore.events.MessageMetaData')
+    def test_database_to_gobevent(self, mock_message_meta_data, mock_gob_event, mock_model):
+        mock_model().get_collection.return_value = {
+            'version': '0.1'
+        }
+
+        mock_event = {
+            'version': '0.1',
+            'catalogue': 'test_catalogue',
+            'application': 'TEST',
+            'entity': 'test_entity',
+            'timestamp': None,
+            'source': 'test',
+            'action': 'ADD',
+            'source_id': 'source_id',
+            'contents': None
+        }
+
+        event = dict_to_object(mock_event)
+        data = {
+            'entity': {
+                '_version': '0.1'
+            }
+        }
+
+        expected_event_msg = {
+            'event': event.action,
+            'data': data
+        }
+        expected_meta_data = mock_message_meta_data.return_value = 'meta_data'
+
+        database_to_gobevent(event, data)
+
+        mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)
+
+    @patch('gobcore.events.GOBMigrations')
+    @patch('gobcore.events.GOBModel')
+    @patch('gobcore.events.GobEvent')
+    @patch('gobcore.events.MessageMetaData')
+    def test_database_to_gobevent_migration(self, mock_message_meta_data, mock_gob_event, mock_model, mock_migrations):
+        target_version = '0.2'
+
+        mock_model().get_collection.return_value = {
+            'version': target_version
+        }
+
+        mock_migrations().migrate_event_data.return_value = {
+            'entity': {
+                '_version': target_version
+            }
+        }
+
+        mock_event = {
+            'version': '0.1',
+            'catalogue': 'test_catalogue',
+            'application': 'TEST',
+            'entity': 'test_entity',
+            'timestamp': None,
+            'source': 'test',
+            'action': 'ADD',
+            'source_id': 'source_id',
+            'contents': None
+        }
+
+        event = dict_to_object(mock_event)
+        data = {
+            'entity': {
+                '_version': '0.1'
+            }
+        }
+
+        expected_event_msg = {
+            'event': event.action,
+            'data': {
+                'entity': {
+                    '_version': target_version
+                }
+            }
+        }
+        expected_meta_data = mock_message_meta_data.return_value = 'meta_data'
+
+        database_to_gobevent(event, data)
+
+        mock_migrations().migrate_event_data.assert_called_with(event, data, event.catalogue, event.entity,
+                                                                target_version)
+
+        mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)

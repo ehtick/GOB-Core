@@ -65,7 +65,8 @@ class ImportEvent(metaclass=ABCMeta):
         return self._metadata.source
 
     def __init__(self, data, metadata):
-        self._data = data
+        self.data = data  # Original data for use by calling code. Should not be modified
+        self._data = data  # Data for internal used. Can be modified
         self._metadata = metadata
         self.last_event = self._data.pop("_last_event", None)
 

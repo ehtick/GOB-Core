@@ -1,4 +1,5 @@
 import unittest
+import json
 from unittest.mock import patch
 
 from gobcore import events
@@ -98,15 +99,15 @@ class TestEvents(unittest.TestCase):
             'source': 'test',
             'action': 'ADD',
             'source_id': 'source_id',
-            'contents': None
         }
 
-        event = dict_to_object(mock_event)
         data = {
             'entity': {
                 '_version': '0.1'
             }
         }
+        mock_event['contents'] = data
+        event = dict_to_object(mock_event)
 
         expected_event_msg = {
             'event': event.action,
@@ -114,7 +115,7 @@ class TestEvents(unittest.TestCase):
         }
         expected_meta_data = mock_message_meta_data.return_value = 'meta_data'
 
-        database_to_gobevent(event, data)
+        database_to_gobevent(event)
 
         mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)
 
@@ -147,12 +148,14 @@ class TestEvents(unittest.TestCase):
             'contents': None
         }
 
-        event = dict_to_object(mock_event)
         data = {
             'entity': {
                 '_version': '0.1'
             }
         }
+        # Create JSON string. Force unpacking. Test above handles default dict case
+        mock_event['contents'] = json.dumps(data)
+        event = dict_to_object(mock_event)
 
         expected_event_msg = {
             'event': event.action,
@@ -164,7 +167,7 @@ class TestEvents(unittest.TestCase):
         }
         expected_meta_data = mock_message_meta_data.return_value = 'meta_data'
 
-        database_to_gobevent(event, data)
+        database_to_gobevent(event)
 
         mock_migrations().migrate_event_data.assert_called_with(event, data, event.catalogue, event.entity,
                                                                 target_version)

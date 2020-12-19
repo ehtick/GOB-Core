@@ -7,6 +7,8 @@ The possible events are defined in this module.
 The definition and characteristics of each event is in the gob_events module
 
 """
+import json
+
 from gobcore.exceptions import GOBException
 from gobcore.events import import_events
 from gobcore.events.import_message import MessageMetaData
@@ -138,13 +140,18 @@ def GobEvent(event_message, metadata):
     return _get_event(event_name)(data, metadata)
 
 
-def database_to_gobevent(event, data):
+def database_to_gobevent(event):
     """Reconstruct the original event out of the stored event
 
     :param event: the database event
     :param data: the data that is associated with the event
     :return: a ADD, MODIFY, CONFIRM or DELETE event
     """
+    # Parse the json data of the event
+    if isinstance(event.contents, dict):
+        data = event.contents
+    else:
+        data = json.loads(event.contents)
 
     # Get the model version to check if the event should be migrated to the correct version
     model_version = GOBModel().get_collection(event.catalogue, event.entity)['version']

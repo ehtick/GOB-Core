@@ -108,14 +108,14 @@ class TestSFTPDatastore(TestCase):
         ], store.list_files())
 
         self.assertEqual([
-            'a/b.file',
-        ], store.list_files('a/b'))
-
-        self.assertEqual([
             'a/c/e/g.file',
             'a/a.file',
             'a/b.file',
         ], store.list_files('a'))
+
+        # Test path not exists
+        store.connection.stat = MagicMock(side_effect = FileNotFoundError)
+        self.assertEqual([], store.list_files('a'))
 
     def test_delete_file(self):
         store = SFTPDatastore({})

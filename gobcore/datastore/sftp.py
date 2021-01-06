@@ -48,22 +48,37 @@ class SFTPDatastore(Datastore, PutEnabledDatastore, ListEnabledDatastore, Delete
         self._create_directories(dest_dir)
         self.connection.put(local_file_path, dst_path)
 
+    def _list_dir_recursively(self, rec_path: str = ''):
+        """Used by list_files below
+
+        :param rec_path:
+        :return:
+        """
+        if rec_path is None:
+            rec_path = ''
+
+        result = []
+        for p in self.connection.listdir(rec_path):
+            full_path = f"{rec_path}/{p}"
+
+            if stat.S_ISDIR(self.connection.stat(full_path).st_mode):
+                result += self._list_dir_recursively(full_path)
+            else:
+                result.append(full_path)
+        return result
+
     def list_files(self, path=None):
+        start_path = f'/{path}' if path and path[0] != '/' else path
 
-        def list_dir_recursively(rec_path: str = ''):
-
-            result = []
-            for p in self.connection.listdir(rec_path):
-                full_path = f"{rec_path}/{p}"
-
-                if stat.S_ISDIR(self.connection.stat(full_path).st_mode):
-                    result += list_dir_recursively(full_path)
-                else:
-                    result.append(full_path)
-            return result
+        if start_path:
+            try:
+                # Start path does not exist
+                self.connection.stat(start_path)
+            except FileNotFoundError:
+                return []
 
         # Call recursive function above, and remove leading /
-        all_files = [re.sub('^/', '', item) for item in list_dir_recursively()]
+        all_files = [re.sub('^/', '', item) for item in self._list_dir_recursively(start_path)]
         return [file for file in all_files if file.startswith(path)] if path else all_files
 
     def delete_file(self, filename: str):

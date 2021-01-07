@@ -214,7 +214,7 @@ class Logger:
             'destination': header.get('destination'),
             'application': header.get('application'),
             'catalogue': header.get('catalogue'),
-            'entity': header.get('entity'),
+            'entity': header.get('entity', header.get('collection')),
             'jobid': header.get('jobid'),
             'stepid': header.get('stepid')
         })

@@ -188,7 +188,7 @@ class TestLogger(TestCase):
                 'source': 'any source',
                 'application': 'any application',
                 'catalogue': 'any catalogue',
-                'entity': 'any entity'
+                'collection': 'any entity'
             },
             "some": "other"
         }
@@ -198,6 +198,8 @@ class TestLogger(TestCase):
         RequestsHandler.LOG_PUBLISHER.publish.assert_called_once()
         level, args = RequestsHandler.LOG_PUBLISHER.publish.call_args[0]
         self.assertEqual(args["name"], logger._name)
+        # Test collection fallback
+        self.assertEqual(args["entity"], msg['header']['collection'])
         self.assertEqual(logger.get_name(), args["name"])
         self.assertEqual(logger.get_attribute('source'), 'any source')
 

@@ -5,16 +5,12 @@ This prevents the message broker from transferring large messages
 
 """
 import gc
-import uuid
 import json
 import ijson
 import os
-from datetime import datetime
-from pathlib import Path
 
-from gobcore.message_broker.config import GOB_SHARED_DIR
 from gobcore.typesystem.json import GobTypeJSONEncoder
-from gobcore.utils import gettotalsizeof
+from gobcore.utils import gettotalsizeof, get_filename, get_unique_name
 
 _MAX_CONTENTS_SIZE = 8192                   # Any message contents larger than this size is stored offline
 _CONTENTS = "contents"                      # The name of the message attribute to check for its contents
@@ -30,8 +26,8 @@ class ContentsWriter:
         Opens a file
         The entities are written to the file as an array
         """
-        unique_name = _get_unique_name()
-        self.filename = _get_filename(unique_name)
+        unique_name = get_unique_name()
+        self.filename = get_filename(unique_name, _MESSAGE_BROKER_FOLDER)
 
     def __enter__(self):
         self.open()
@@ -92,31 +88,6 @@ class ContentsReader:
         self.file.close()
 
 
-def _get_unique_name():
-    """Returns a unique name to store the offloaded message contents
-
-    :return:
-    """
-    now = datetime.utcnow().strftime("%Y%m%d.%H%M%S")  # Start with a timestamp
-    unique = str(uuid.uuid4())  # Add a random uuid
-    return f"{now}.{unique}"
-
-
-def _get_filename(name):
-    """Gets the full filename given a the name of a file
-
-    The filename resolves to the file in the message broker folder
-
-    :param name:
-    :return:
-    """
-    dir = os.path.join(GOB_SHARED_DIR, _MESSAGE_BROKER_FOLDER)
-    # Create the path if the path not yet exists
-    path = Path(dir)
-    path.mkdir(exist_ok=True)
-    return os.path.join(dir, name)
-
-
 def offload_message(msg, converter):
     """Offload message content
 
@@ -128,8 +99,8 @@ def offload_message(msg, converter):
         contents = msg[_CONTENTS]
         size = gettotalsizeof(contents)
         if size > _MAX_CONTENTS_SIZE:
-            unique_name = _get_unique_name()
-            filename = _get_filename(unique_name)
+            unique_name = get_unique_name()
+            filename = get_filename(unique_name)
             try:
                 with open(filename, 'w') as file:
                     file.write(converter(contents))
@@ -153,7 +124,7 @@ def load_message(msg, converter, params):
     unique_name = None
     if _CONTENTS_REF in msg:
         unique_name = msg[_CONTENTS_REF]
-        filename = _get_filename(unique_name)
+        filename = get_filename(unique_name)
         if params['stream_contents']:
             reader = ContentsReader(filename)
             msg[_CONTENTS] = reader.items()
@@ -179,7 +150,7 @@ def end_message(msg, unique_name):
             reader.close()
 
         try:
-            filename = _get_filename(unique_name)
+            filename = get_filename(unique_name)
             os.remove(filename)
         except Exception as e:
             print(f"Remove failed ({str(e)})", filename)

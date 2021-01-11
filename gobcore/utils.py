@@ -1,6 +1,12 @@
+from datetime import datetime
+from itertools import chain
+import os
+from pathlib import Path
 import socket
 from sys import getsizeof
-from itertools import chain
+import uuid
+
+from gobcore.message_broker.config import GOB_SHARED_DIR
 
 
 def gettotalsizeof(o):
@@ -101,3 +107,28 @@ def get_host_info():
         'address': get_ip_address(),
         'dns': get_dns()
     }
+
+
+def get_unique_name():
+    """Returns a unique name for files to offload content
+
+    :return:
+    """
+    now = datetime.utcnow().strftime("%Y%m%d.%H%M%S")  # Start with a timestamp
+    unique = str(uuid.uuid4())  # Add a random uuid
+    return f"{now}.{unique}"
+
+
+def get_filename(name, offload_folder):
+    """Gets the full filename given a the name of a file
+
+    The filename resolves to the file in the offload folder
+
+    :param name:
+    :return:
+    """
+    dir = os.path.join(GOB_SHARED_DIR, offload_folder)
+    # Create the path if the path not yet exists
+    path = Path(dir)
+    path.mkdir(exist_ok=True)
+    return os.path.join(dir, name)

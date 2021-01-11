@@ -8,8 +8,7 @@ class QualityUpdate():
 
     CATALOG = QUALITY_CATALOG
 
-    def __init__(self, issues):
-        self.issues = issues if isinstance(issues, list) else [issues]
+    def __init__(self):
         self.source = None
         self.application = None
         self.catalogue = None
@@ -71,15 +70,4 @@ class QualityUpdate():
             'betwijfelde_waarde': str(issue.value),
             'onderbouwing': issue.get_explanation(),
             'voorgestelde_waarde': None
-        }
-
-    def get_msg(self, msg):
-        msg_header = msg.get('header', {})
-
-        return {
-            'header': self.get_header(msg_header),
-            'contents': [self.get_contents(issue) for issue in self.issues],
-            'summary': {
-                'num_records': len(self.issues)
-            }
         }

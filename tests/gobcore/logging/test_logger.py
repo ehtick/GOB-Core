@@ -1,7 +1,7 @@
 import logging
 
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, mock_open, call
 
 from gobcore.logging.log_publisher import LogPublisher
 from gobcore.logging.logger import Logger, RequestsHandler, LoggerManager, ExtendedLogger
@@ -203,20 +203,43 @@ class TestLogger(TestCase):
         self.assertEqual(logger.get_name(), args["name"])
         self.assertEqual(logger.get_attribute('source'), 'any source')
 
-    def test_add_issue(self):
+    @patch("gobcore.quality.issue.Issue")
+    @patch("gobcore.logging.logger.Logger.open_offload_file")
+    @patch("gobcore.logging.logger.Logger.write_issue")
+    def test_add_issue(self, mock_write_issue, mock_open_offload_file, mock_issue):
         logger = Logger()
-        self.assertEqual(logger.get_issues(), [])
         any_issue = MagicMock()
+        any_issue.json = '{"issue": 1}'
         any_issue.get_unique_id.return_value = 1
 
-        logger.add_issue(any_issue, 'error')
-        self.assertEqual(logger.get_issues(), [any_issue])
-        self.assertEqual(1, logger._data_msg_count['data_error'])
+        mock_byte_position = 1024
 
-        any_issue.get_unique_id.return_value = 2
-        logger.add_issue(any_issue, 'warning')
-        self.assertEqual(logger.get_issues(), [any_issue, any_issue])
-        self.assertEqual(1, logger._data_msg_count['data_warning'])
+        mock_write_issue.return_value = mock_byte_position
+
+        logger.add_issue(any_issue, 'error')
+        # Assert issue offload file is opened
+        mock_open_offload_file.assert_called()
+
+        # Assert issue is written to file and data count has been updated
+        mock_write_issue.assert_called_with(any_issue)
+        self.assertEqual(1, logger._data_msg_count['data_error'])
+        self.assertEqual(logger._issues, {1: 1024})
+
+        mocked_issue = MagicMock()
+        mock_issue.from_json.return_value = mocked_issue
+
+        mock_offload_file = MagicMock()
+        logger._offload_file = mock_offload_file
+
+        # Add the same issue again to make sure it is joined
+        logger.add_issue(any_issue, 'error')
+        mock_offload_file.seek.assert_has_calls([call(1024), call(0,2)])
+        mock_offload_file.readline.assert_called()
+
+        mocked_issue.join_issue.assert_called_with(any_issue)
+        mock_write_issue.assert_called_with(mocked_issue)
+        # Still one data error
+        self.assertEqual(1, logger._data_msg_count['data_error'])
 
         logger = Logger()
         any_issue.get_unique_id.return_value = 1
@@ -224,22 +247,91 @@ class TestLogger(TestCase):
         another_issue.get_unique_id.return_value = 1
 
         logger.add_issue(any_issue, 'info')
-        self.assertEqual(logger.get_issues(), [any_issue])
         self.assertEqual(1, logger._data_msg_count['data_info'])
 
         another_issue.get_unique_id.return_value = 2
         logger.add_issue(another_issue, 'error')
-        self.assertEqual(logger.get_issues(), [any_issue, another_issue])
         self.assertEqual(1, logger._data_msg_count['data_error'])
 
         logger = Logger()
-        another_issue.get_unique_id.return_value = 1
-
         logger.add_issue(any_issue, 'info')
-        logger.add_issue(another_issue, 'info')
         self.assertEqual(1, logger._data_msg_count['data_info'])
-        any_issue.join_issue.asert_called_with(another_issue)
 
+    @patch("gobcore.logging.logger.Logger.close_offload_file")
+    @patch("gobcore.logging.logger.json")
+    def test_get_issues(self, mock_json, mock_close):
+        logger = Logger()
+        logger._issues = {'1': 'any issue', '2': 'any other issue'}
+
+        self.assertEqual(logger._issues, {'1': 'any issue', '2': 'any other issue'})
+
+        mocked_file = mock_open(read_data='any line\nany other line\n')
+
+        with patch('builtins.open', mocked_file):
+            issues = logger.get_issues()
+            result = [issue for issue in issues]
+            mock_close.assert_called()
+
+            mock_json.loads.assert_has_calls([call('any line'), call('any other line')])
+
+    def test_write_issue(self):
+        logger = Logger()
+
+        mock_issue = MagicMock()
+        mock_issue.json = 'any json'
+
+        mock_file = MagicMock()
+        mock_file.tell.return_value = 'any byte offset'
+        logger._offload_file = mock_file
+
+
+        result = logger.write_issue(mock_issue)
+
+        mock_file.tell.assert_called()
+        mock_file.write.assert_called_with('any json')
+
+        self.assertEqual(result, 'any byte offset')
+
+        # The second time, also expect a newline to be written
+        logger.write_issue(mock_issue)
+        mock_file.write.assert_has_calls([call('\n'), call('any json')])
+
+    @patch("gobcore.logging.logger.os")
+    def test_clear_issues(self, mock_os):
+        logger = Logger()
+        logger._issues = {'1': 1}
+        logger._data_msg_count = {'any': 'value'}
+        logger._offload_file = 'any file'
+        logger._offload_filename = 'any filename'
+
+        # Assert all variables have been cleared
+        logger.clear_issues()
+        self.assertEqual(logger._issues, {})
+        self.assertEqual(logger._offload_file, None)
+        mock_os.remove.assert_called_with('any filename')
+
+        # Check an OSError is passed without error
+        mock_os.remove.side_effect = OSError()
+        logger._offload_filename = 'any non existing filename'
+        logger.clear_issues()
+
+    @patch("gobcore.logging.logger.get_filename", lambda x, y: f"{y}.{x}")
+    @patch("gobcore.logging.logger.get_unique_name", lambda: 'any unique name')
+    def test_open_offload_file(self):
+        logger = Logger()
+        mocked_file = mock_open()
+        with patch('builtins.open', mocked_file):
+            logger.open_offload_file()
+            self.assertEqual(logger._offload_filename, 'issues.any unique name')
+            mocked_file.assert_called_once_with('issues.any unique name', 'w+')
+
+    def test_close_offload_file(self):
+        logger = Logger()
+        mock_file = MagicMock()
+        logger._offload_file = mock_file
+
+        logger.close_offload_file()
+        mock_file.close.assert_called()
 
 class TestRequestHandler(TestCase):
 

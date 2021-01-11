@@ -4,7 +4,8 @@ from unittest.mock import MagicMock, patch, ANY
 import datetime
 
 from gobcore.model import FIELD
-from gobcore.quality.issue import QA_LEVEL, Issue, IssueException, log_issue, process_issues, is_functional_process
+from gobcore.quality.issue import QA_LEVEL, Issue, IssueException, log_issue, process_issues, is_functional_process, \
+                                  _start_issue_workflow
 
 class Mock_QA_CHECK():
     any_check = {
@@ -87,6 +88,21 @@ class TestIssue(TestCase):
 
         result = issue._format_value(1)
         self.assertEqual(result, "1")
+
+    def test_json(self):
+        entity = {
+            'id': 'any id',
+            'attr': 'any attr',
+            'compared attr': 'any compared value'
+        }
+        issue = Issue({'id': 'any_check'}, entity, 'id', 'attr', 'compared attr')
+
+        expected_json = '{"check": {"id": "any_check"}, "entity": {"id": "any id", "volgnummer": null, "begin_geldigheid": null, "eind_geldigheid": null, "attr": "any attr"}, "id_attribute": "id", "attribute": "attr", "compared_to": "compared attr", "compared_to_value": "any compared value"}'
+
+        self.assertEqual(expected_json, issue.json)
+
+        from_json = Issue.from_json(expected_json)
+        self.assertEqual(from_json.value, issue.value)
 
     def test_msg(self):
         entity = {
@@ -185,16 +201,20 @@ class TestIssue(TestCase):
             'id': 'any id',
             'attr': 5
         }
+        other_entity = {
+            'id': 'any id',
+            'attr': 6
+        }
         issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
-        other_issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
+        other_issue = Issue({'id': 'any_check'}, other_entity, 'id', 'attr')
         issue.join_issue(other_issue)
-        self.assertEqual(issue.value, '5, 5')
+        self.assertEqual(issue.value, '5, 6')
 
-        entity['attr'] = None
+        # The same value will not be stored twice
         issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
         other_issue = Issue({'id': 'any_check'}, entity, 'id', 'attr')
         issue.join_issue(other_issue)
-        self.assertEqual(issue.value, f"{Issue._NO_VALUE}, {Issue._NO_VALUE}")
+        self.assertEqual(issue.value, 5)
 
         other_issue.entity_id = 'other id'
         with self.assertRaises(IssueException):
@@ -239,11 +259,14 @@ class TestIssue(TestCase):
         log_issue(mock_logger, QA_LEVEL.INFO, issue)
         mock_logger.add_issue.assert_not_called()
 
+    @patch("gobcore.quality.issue.QualityUpdate")
     @patch("gobcore.quality.issue.logger")
-    @patch("gobcore.quality.issue.start_workflow")
     @patch("gobcore.quality.issue.is_functional_process")
-    def test_process_issues(self, mock_is_functional, mock_start_workflow, mock_logger):
+    @patch("gobcore.quality.issue._start_issue_workflow")
+    def test_process_issues(self, mock_start_issue_workflow, mock_is_functional, mock_logger, mock_quality_update):
         mock_issue = MagicMock()
+
+        mock_quality_update.CATALOG = 'qa'
 
         msg = {
             'header': {
@@ -261,7 +284,7 @@ class TestIssue(TestCase):
         # Skip issues for unnamed process steps
         mock_logger.get_name.return_value = None
         process_issues(msg)
-        mock_start_workflow.assert_not_called()
+        mock_start_issue_workflow.assert_not_called()
 
         mock_logger.get_name.return_value = "any name"
 
@@ -269,14 +292,14 @@ class TestIssue(TestCase):
         mock_logger.get_issues.return_value = []
         mock_is_functional.return_value = False
         process_issues(msg)
-        mock_start_workflow.assert_not_called()
+        mock_start_issue_workflow.assert_not_called()
 
         # Always skip any issues of the QA catalog itself
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = True
         msg['header']['catalogue'] = 'qa'
         process_issues(msg)
-        mock_start_workflow.assert_not_called()
+        mock_start_issue_workflow.assert_not_called()
 
         # Skip GOBPrepare
         mock_logger.get_issues.return_value = [mock_issue]
@@ -284,7 +307,7 @@ class TestIssue(TestCase):
         msg['header']['catalogue'] = 'any catalogue'
         msg['header']['application'] = 'GOBPrepare'
         process_issues(msg)
-        mock_start_workflow.assert_not_called()
+        mock_start_issue_workflow.assert_not_called()
 
         # Skip when no collection is present
         mock_logger.get_issues.return_value = [mock_issue]
@@ -292,7 +315,7 @@ class TestIssue(TestCase):
         msg['header']['application'] = 'any application'
         del msg['header']['collection']
         process_issues(msg)
-        mock_start_workflow.assert_not_called()
+        mock_start_issue_workflow.assert_not_called()
 
         # Non-functional processes might report issues
         # In that case they will not be skipped and handled as regular issues
@@ -300,41 +323,21 @@ class TestIssue(TestCase):
         mock_is_functional.return_value = False
         msg['header']['collection'] = 'any collection'
         process_issues(msg)
-        mock_start_workflow.assert_called()
-        mock_start_workflow.reset_mock()
+        mock_start_issue_workflow.assert_called()
+        mock_start_issue_workflow.reset_mock()
 
         # Do not skip empty issues for functional process steps
         mock_logger.get_issues.return_value = []
         mock_is_functional.return_value = True
         process_issues(msg)
-        mock_start_workflow.assert_called()
-        mock_start_workflow.reset_mock()
+        mock_start_issue_workflow.assert_called()
+        mock_start_issue_workflow.reset_mock()
 
         # The regular case is a functional process step that has any issues to report
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = True
         process_issues(msg)
-        mock_start_workflow.assert_called_with({
-            'workflow_name': "import",
-            'step_name': "update_model",
-            'retry_time': ANY
-        }, {
-            'header': {
-                'catalogue': 'qa',
-                'entity': 'any catalogue_any collection',
-                'collection': 'any catalogue_any collection',
-                'source': 'any name_any source_any application_any attribute',
-                'application': 'any application',
-                'process_id': 'the original process id',
-                'timestamp': ANY,
-                'version': '0.1',
-                'mode': 'any mode'
-            },
-            'contents': ANY,
-            'summary': {
-                'num_records': 1
-            }
-        })
+        mock_start_issue_workflow.assert_called_with(msg.get('header'), [mock_issue], mock_quality_update.return_value)
 
     def test_get_validity(self):
         entity = {
@@ -350,6 +353,22 @@ class TestIssue(TestCase):
         # Conversion fails, set to None
         entity['validity'] = 'non date'
         self.assertEqual(issue._get_validity(entity, 'validity'), None)
+
+    @patch('gobcore.quality.issue.Issue')
+    @patch('gobcore.quality.issue.start_workflow')
+    @patch('gobcore.quality.issue.ContentsWriter', MagicMock())
+    @patch("gobcore.quality.issue.ProgressTicker", MagicMock())
+    def test_start_issue_workflow(self, mock_start_workflow, mock_issue):
+        header = {
+            'catalogue': 'qa',
+            'collection': 'any collection',
+        }
+        issues = [{'id': 'issue 1'}, {'id': 'issue 2'}]
+        quality_update = MagicMock()
+
+        _start_issue_workflow(header, issues, quality_update)
+        
+        mock_start_workflow.assert_called()
 
     def test_state_attributes(self):
         entity = {

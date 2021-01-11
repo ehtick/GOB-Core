@@ -8,14 +8,17 @@ The instance can be configured with a message that is being processed
 Each log message will so be populated with the message details
 
 """
-import logging
 import datetime
+import io
+import json
+import logging
+import os
 import threading
 from collections import defaultdict
 
 from gobcore.logging.log_publisher import LogPublisher
 
-from gobcore.utils import gettotalsizeof
+from gobcore.utils import gettotalsizeof, get_unique_name, get_filename
 
 
 class RequestsHandler(logging.Handler):
@@ -91,6 +94,9 @@ class Logger:
     # Save these messages to report at end of msg handling
     _SAVE_LOGS = ['warning', 'error', 'data_warning', 'data_error']
 
+    # Save issues to file
+    _ISSUES_FOLDER = "issues"   # The name of the folder where the offloaded issues are stored
+
     MAX_SIZE = 10000
     SHORT_MESSAGE_SIZE = 1000
 
@@ -100,25 +106,86 @@ class Logger:
         if name is not None:
             self.set_name(name)
         self._default_args = {}
+        self._offload_file = None
+        self._offload_filename = None
+        self._offload_empty = True
+
         self._clear_logs()
         self.clear_issues()
 
     def clear_issues(self):
         self._issues = {}
         self._data_msg_count = defaultdict(int)
+        self._offload_file = None
+
+        # Remove the offloaded issues
+        if self._offload_filename:
+            try:
+                os.remove(self._offload_filename)
+            except OSError:
+                pass
+
+    def open_offload_file(self):
+        self._offload_filename = get_filename(get_unique_name(), self._ISSUES_FOLDER)
+        self._offload_file = open(self._offload_filename, 'w+')
+
+        self._offload_empty = True
+
+    def close_offload_file(self):
+        if self._offload_file:
+            self._offload_file.close()
 
     def add_issue(self, issue, level):
+        if not self._offload_file:
+            self.open_offload_file()
+
         id = issue.get_unique_id()
         if self._issues.get(id):
+            from gobcore.quality.issue import Issue
+
+            # Get the pointer to the issue in the offload file, seek the line and remove any comma or newline
+            issue_offset = self._issues.get(id)
+            self._offload_file.seek(issue_offset)
+
+            existing_issue_string = self._offload_file.readline().rstrip("\n")
+
             # Join this issue with an already existing issue for the same check, attribute and entity
-            self._issues[id].join_issue(issue)
+            existing_issue = Issue.from_json(existing_issue_string)
+            existing_issue.join_issue(issue)
+
+            # Return to the end of the file and write the new issue
+            self._offload_file.seek(0, io.SEEK_END)
+            self._issues[id] = self.write_issue(existing_issue)
         else:
-            # Add this issue as a new issue
-            self._issues[id] = issue
+            # Write this issue and save the byte offset to the issue
+            self._issues[id] = self.write_issue(issue)
             self._data_msg_count['data_' + level] += 1
 
+    def write_issue(self, issue):
+        if not self._offload_empty:
+            self._offload_file.write("\n")
+
+        # Store the position in the file before the issue and return it to store a pointer
+        issue_offset = self._offload_file.tell()
+
+        self._offload_file.write(issue.json)
+        self._offload_empty = False
+
+        # Return the current position in the file
+        return issue_offset
+
     def get_issues(self):
-        return list(self._issues.values())
+        if self._issues:
+            # First close the open file since no more issues will be added
+            self.close_offload_file()
+
+            with open(self._offload_filename, 'r') as offload_file:
+                issue_byte_positions = list(self._issues.values())
+                issue_byte_positions.sort()
+                for issue_position in issue_byte_positions:
+                    offload_file.seek(issue_position)
+                    issue = json.loads(offload_file.readline().rstrip("\n"))
+                    yield issue
 
     def _clear_logs(self):
         self.messages = {key: [] for key in Logger._SAVE_LOGS}

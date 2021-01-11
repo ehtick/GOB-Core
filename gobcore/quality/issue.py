@@ -1,12 +1,16 @@
 import datetime
 from dateutil import parser
+import json
 
+from gobcore.message_broker.config import IMPORT, RELATE, RELATE_CHECK
+from gobcore.message_broker.offline_contents import ContentsWriter
+from gobcore.message_broker.utils import to_json
 from gobcore.model import FIELD
+from gobcore.logging.logger import Logger, logger
 from gobcore.quality.config import QA_LEVEL, QA_CHECK
 from gobcore.quality.quality_update import QualityUpdate
-from gobcore.logging.logger import Logger, logger
+from gobcore.utils import ProgressTicker
 from gobcore.workflow.start_workflow import start_workflow
-from gobcore.message_broker.config import IMPORT, RELATE, RELATE_CHECK
 
 
 class IssueException(Exception):
@@ -70,6 +74,8 @@ class Issue():
         self.check = check
         self.check_id = check['id']
 
+        self.entity = entity
+
         # Entity id and sequence number
         self.entity_id_attribute = id_attribute or self._DEFAULT_ENTITY_ID
         self.entity_id = self._get_value(entity, self.entity_id_attribute)
@@ -105,7 +111,8 @@ class Issue():
     def join_issue(self, other_issue):
         if self.get_unique_id() != other_issue.get_unique_id():
             raise IssueException(f"Join issue requires same ID {self.get_unique_id} <> {other_issue.get_unique_id()}")
-        self._values.append(other_issue.value)
+        if other_issue.value not in self._values:
+            self._values.append(other_issue.value)
 
     @property
     def value(self):
@@ -179,6 +186,37 @@ class Issue():
             msg += f" {self.compared_to}"
         return msg
 
+    @property
+    def json(self) -> str:
+        """
+        Return a json representation of the issue to offload to file
+
+        :return:
+        """
+        # Only store the mimial required fields for the entity
+        json_entity = {
+            self.entity_id_attribute: self.entity_id,
+            FIELD.SEQNR: getattr(self, FIELD.SEQNR),
+            FIELD.START_VALIDITY: getattr(self, FIELD.START_VALIDITY),
+            FIELD.END_VALIDITY: getattr(self, FIELD.END_VALIDITY),
+            self.attribute: self.value
+        }
+
+        json_obj = {
+            "check": self.check,
+            "entity": json_entity,
+            "id_attribute": self.entity_id_attribute,
+            "attribute": self.attribute,
+            "compared_to": self.compared_to,
+            "compared_to_value": self.compared_to_value
+        }
+        return to_json(json_obj)
+
+    @classmethod
+    def from_json(cls, json_entity):
+        entity = json.loads(json_entity)
+        return cls(**entity)
+
     def log_args(self, **kwargs) -> dict:
         """
         Convert the issue into arguments that are suitable to add in a log message
@@ -242,8 +280,12 @@ def is_functional_process(process):
 def process_issues(msg):
     issues = logger.get_issues()
 
+    header = msg.get('header', {})
+
+    print(QualityUpdate.CATALOG)
+
     # Issues are processed as updates to the quality catalog
-    quality_update = QualityUpdate(issues)
+    quality_update = QualityUpdate()
 
     # Enrich bevinding with logger info
     quality_update.proces = logger.get_name()
@@ -253,7 +295,6 @@ def process_issues(msg):
         return
 
     # Enrich bevinding with msg info
-    header = msg.get('header', {})
     for attribute in ['source', 'application', 'catalogue', 'collection', 'attribute']:
         setattr(quality_update, attribute, header.get(f"original_{attribute}", header.get(attribute)))
 
@@ -273,13 +314,40 @@ def process_issues(msg):
             or quality_update.collection is None:
         return
 
-    # Start the workflow, allow retries when an identical workflow is already running for max_retry_time seconds
-    workflow = {
-        'workflow_name': "import",
-        'step_name': "update_model",
-        'retry_time': 10 * 60  # retry for max 10 minutes
-    }
-    wf_msg = quality_update.get_msg(msg)
-    start_workflow(workflow, wf_msg)
+    _start_issue_workflow(header, issues, quality_update)
 
     logger.clear_issues()
+
+
+def _start_issue_workflow(header, issues, quality_update):
+    catalogue = header.get('catalogue')
+    collection = header.get('collection')
+
+    with ContentsWriter() as writer, \
+            ProgressTicker(f"Process issues {catalogue} {collection}", 10000) as progress:
+
+        num_records = 0
+
+        for json_issue in issues:
+            progress.tick()
+            issue = Issue(**json_issue)
+            writer.write(quality_update.get_contents(issue))
+            num_records += 1
+
+        if num_records:
+            # Start workflow, allow retries when an identical workflow is already running for max_retry_time seconds
+            workflow = {
+                'workflow_name': "import",
+                'step_name': "update_model",
+                'retry_time': 10 * 60  # retry for max 10 minutes
+            }
+
+            wf_msg = {
+                'header': quality_update.get_header(header),
+                'contents_ref': writer.filename,
+                'summary': {
+                    'num_records': num_records
+                }
+            }
+
+            start_workflow(workflow, wf_msg)

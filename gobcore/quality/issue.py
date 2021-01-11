@@ -282,8 +282,6 @@ def process_issues(msg):
 
     header = msg.get('header', {})
 
-    print(QualityUpdate.CATALOG)
-
     # Issues are processed as updates to the quality catalog
     quality_update = QualityUpdate()
 

@@ -288,13 +288,9 @@ class TestLogger(TestCase):
         result = logger.write_issue(mock_issue)
 
         mock_file.tell.assert_called()
-        mock_file.write.assert_called_with('any json')
+        mock_file.write.assert_called_with('any json\n')
 
         self.assertEqual(result, 'any byte offset')
-
-        # The second time, also expect a newline to be written
-        logger.write_issue(mock_issue)
-        mock_file.write.assert_has_calls([call('\n'), call('any json')])
 
     @patch("gobcore.logging.logger.os")
     def test_clear_issues(self, mock_os):

@@ -108,7 +108,6 @@ class Logger:
         self._default_args = {}
         self._offload_file = None
         self._offload_filename = None
-        self._offload_empty = True
 
         self._clear_logs()
         self.clear_issues()
@@ -128,8 +127,6 @@ class Logger:
     def open_offload_file(self):
         self._offload_filename = get_filename(get_unique_name(), self._ISSUES_FOLDER)
         self._offload_file = open(self._offload_filename, 'w+')
-
-        self._offload_empty = True
 
     def close_offload_file(self):
         if self._offload_file:
@@ -162,14 +159,10 @@ class Logger:
             self._data_msg_count['data_' + level] += 1
 
     def write_issue(self, issue):
-        if not self._offload_empty:
-            self._offload_file.write("\n")
-
         # Store the position in the file before the issue and return it to store a pointer
         issue_offset = self._offload_file.tell()
 
-        self._offload_file.write(issue.json)
-        self._offload_empty = False
+        self._offload_file.write(issue.json + "\n")
 
         # Return the current position in the file
         return issue_offset

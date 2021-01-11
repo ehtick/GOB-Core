@@ -34,59 +34,76 @@ class QA_CHECK:
     }
 
     # Format requirements
+    Is_boolean = {
+        "type": "boolean",
+        "msg": "value should be a boolean",
+    }
     Format_N8 = {
+        "type": "regex",
         "pattern": r"^\d{8}$",
         "msg": "value should consist of 8 numeric characters",
     }
     Format_numeric = {
+        "type": "regex",
         "pattern": r"^\d+$",
         "msg": "value should be a valid positive integer",
     }
     Format_alphabetic = {
+        "type": "regex",
         "pattern": r"^[^0-9]+$",
         "msg": "value should only contain characters",
     }
     Format_ANN = {
+        "type": "regex",
         "pattern": r"^[a-zA-Z]{1}\d{2}$",
         "msg": "value should be 1 character and 2 digits",
     }
     Format_AANN = {
+        "type": "regex",
         "pattern": r"^[a-zA-Z]{2}\d{2}$",
         "msg": "value should be 2 characters and 2 digits",
     }
     Format_AAN_AANN = {
+        "type": "regex",
         "pattern": r"(.*)/([a-zA-Z]{2}\d{1,2}).(.*)",
         "msg": "value should start with anything, then have a '/', 2 characters,  \
         1 or 2 digits, a '.' and end with anything",
     }
-    Format_4_2_2_2_6_HEX = {
-        "pattern": r"^{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}$",
-        "msg": "value should be a 4-2-2-2-6 bytes hexidecimal value",
+    Format_4_2_2_2_6_HEX_SEQ = {
+        "type": "regex",
+        "pattern": r"^{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}.[0-9]+$",
+        "msg": "value should be a 4-2-2-2-6 bytes hexidecimal value with a sequence number",
     }
 
     # Value requirements
     Value_1_2_3 = {
+        "type": "regex",
         "pattern": r"^[1,2,3]$",
         "msg": "value should be one of [1,2,3]",
     }
     Value_wind_direction_NOZW = {
+        "type": "regex",
         "pattern": r"^(N|NO|O|ZO|Z|ZW|W|NW)$",
         "msg": "value should be one of [N,NO,O,ZO,Z,ZW,W,NW]",
     }
     Value_1_0 = {
+        "type": "regex",
         "pattern": r"^[1,0]$",
         "msg": "value should be one of 1 or 0",
     }
     Value_J_N = {
+        "type": "regex",
         "pattern": r"^[J,N]$",
         "msg": "value should be one of J or N",
     }
     Value_height_6_15 = {
-        "between": [-6, 15],
+        "type": "between",
+        "values": [-6, 15],
         "msg": "value should be a numeric value between -6 and 15",
     }
     Value_geometry_in_NL = {
-        "geometry": {
+        "type": "geometry",
+        "values": {
             'x': {
                 'min': _NL_X_MIN,
                 'max': _NL_X_MAX,
@@ -99,10 +116,12 @@ class QA_CHECK:
         "msg": f"value should be between {_NL_X_MIN}-{_NL_X_MAX} and {_NL_Y_MIN}-{_NL_Y_MAX}",
     }
     Value_not_empty = {
+        "type": "regex",
         "pattern": r"^.+$",
         "msg": "value should not be empty",
     }
     Value_brondocument_coding = {
+        "type": "regex",
         "pattern": r"^[a-zA-Z]{2}[0-9]{8}_[a-zA-Z]{2}[0-9]{2}[a-zA-Z]{2}\.[a-zA-Z]{3}",
         "msg": "brondocument does not match required coding",
     }

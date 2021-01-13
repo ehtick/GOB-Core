@@ -3547,5 +3547,174 @@
         }
       }
     }
+  },
+  "hr": {
+    "version": "0.1",
+    "abbreviation": "HR",
+    "description": "Het Handelsregister (HR) bevat gegevens over personen die deelnemen aan het economische en maatschappelijke verkeer.",
+    "collections": {
+      "maatschappelijke_activiteiten": {
+        "version": "0.1",
+        "abbreviation": "MAC",
+        "description": "De Maatschappelijke Activiteit is het totaal van alle activiteiten uitgeoefend door een Natuurlijk Persoon of een Niet-natuurlijk Persoon. Een Maatschappelijke Activiteit kan ook als Onderneming voorkomen.",
+        "entity_id": "kvknummer",
+        "attributes": {
+          "kvknummer": {
+            "type": "GOB.String",
+            "description": "Betreft het identificerende gegeven voor de Maatschappelijke Activiteit, het KvK-nummer."
+          },
+          "datum_aanvang_maatschappelijke_activiteit": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de Maatschappelijke Activiteit in de echte wereld is ontstaan."
+          },
+          "datum_einde_maatschappelijke_activiteit": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de Maatschappelijke Activiteit in de echte wereld is beëindigd."
+          },
+          "registratie_tijdstip_maatschappelijke_activiteit": {
+            "type": "GOB.DateTime",
+            "description": "Het tijdstip waarop de maatschappelijke activiteit bij de KvK in het handelsregistere is geregistreerd. Indien het registratietijdstip om (migratie)redenen niet bekend is wordt de waarde 'vastgesteldOnbekend' opgenomen."
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "De statutaire naam of eerste handelsnaam van de inschrijving."
+          },
+          "heeft_bezoekadres": {
+            "type": "GOB.Reference",
+            "ref": "hr:locaties",
+            "description": "Het geregistreerde bezoekadres behorende bij de maatschappelijke activiteit."
+          },
+          "heeft_postadres": {
+            "type": "GOB.Reference",
+            "ref": "hr:locaties",
+            "description": "Het geregistreerde postadres behorende bij de maatschappelijke activiteit."
+          },
+          "communicatienummer": {
+            "type": "GOB.JSON",
+            "description": "Communicatienummer is het telefoon- of faxnummer. Zowel het netnummer als het abonneenummer worden teruggegeven in het nummer. De internationale toegangscode van het land waarop het nummer (telefoon of fax) betrekking heeft staat in het veld toegangscode.",
+            "attributes": {
+              "toegangscode": {
+                "type": "GOB.Integer"
+              },
+              "nummer": {
+                "type": "GOB.String"
+              },
+              "soort": {
+                "type": "GOB.String",
+                "description": "Bevat de waarden Telefoonnummer en Faxnummer."
+              }
+            },
+            "has_multiple_values": true
+          },
+          "domeinnaam": {
+            "type": "GOB.JSON",
+            "description": "De domeinnaam is de naam waaronder de betrokkene zaken doet of informatie verschaft op het internet, het internetadres (URL).",
+            "attributes": {
+              "naam": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "email_adres": {
+            "type": "GOB.JSON",
+            "description": "Het e-mail adres dat de betrokkene open heeft gesteld voor communicatie.",
+            "attributes": {
+              "adres": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "non_mailing": {
+            "type": "GOB.Boolean",
+            "description": "Indicator die aangeeft of de inschrijving haar adresgegevens beschikbaar stelt voor mailing-doeleinden."
+          },
+          "incidenteel_uitlenen_arbeidskrachten": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie die aangeeft of de ondernemer tijdelijk arbeidskrachten ter beschikking stelt en dit niet onderdeel is van zijn 'reguliere' activiteiten."
+          },
+          "heeft_hoofdvestiging": {
+            "type": "GOB.Reference",
+            "ref": "hr:vestigingen",
+            "description": "De vestiging die als hoofdvestiging wordt gebruikt."
+          },
+          "heeft_sbi_activiteiten_voor_maatschappelijke_activiteit": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:sbi_activiteiten",
+            "description": "De omschrijving van de activiteiten die de maatschappelijke activiteit uitoefent."
+          },
+          "registratie_tijdstip_onderneming": {
+            "type": "GOB.DateTime",
+            "description": "Het tijdstip waarop de maatschappelijke activiteit bij de KvK in het handelsregistere is geregistreerd. Indien het registratietijdstip om (migratie)redenen niet bekend is wordt de waarde 'vastgesteldOnbekend' opgenomen."
+          },
+          "datum_aanvang_onderneming": {
+            "type": "GOB.Date",
+            "description": "De datum van aanvang van de Onderneming."
+          },
+          "datum_einde_onderneming": {
+            "type": "GOB.Date",
+            "description": "De datum van beëindiging van de Onderneming."
+          },
+          "is_overdracht_voortzetting_onderneming": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie of de Onderneming is voortgezet of is overgedragen. Nee betekent Overdracht, Ja betekent Voortzetting."
+          },
+          "datum_overdracht_voortzetting_onderneming": {
+            "type": "GOB.Date",
+            "description": "De datum waarop de onderneming is overgedragen of voortgezet."
+          },
+          "totaal_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het totaal aantal werkzame personen bij de onderneming "
+          },
+          "voltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal voltijd (meer dan 15 uur per week) werkzame personen bij de onderneming "
+          },
+          "deeltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal deeltijd (kleiner of gelijk aan 15 uur per week) werkzame personen bij de onderneming"
+          },
+          "heeft_sbi_activiteiten_voor_onderneming": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:sbi_activiteiten",
+            "description": "De omschrijving van de activiteiten die de onderneming uitoefent."
+          },
+          "wordt_uitgeoefend_in_commerciele_vestiging": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:vestigingen",
+            "description": "Een vestiging is gebouw of een complex van gebouwen waar duurzame uitoefening van activiteiten van een Onderneming of Rechtspersoon plaatsvindt."
+          },
+          "wordt_uitgeoefend_in_niet_commerciele_vestiging": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:vestigingen",
+            "description": "Een vestiging is gebouw of een complex van gebouwen waar duurzame uitoefening van activiteiten van een Onderneming of Rechtspersoon plaatsvindt."
+          },
+          "handelt_onder_handelsnamen": {
+            "type": "GOB.JSON",
+            "description": "Een handelsnaam is een naam waaronder een onderneming handelt. Een onderneming mag meerdere handelsnamen hebben. De handelsnamen van de onderneming zijn een opsomming van alle handelsnamen van alle vestigingen.",
+            "attributes": {
+              "omschrijving": {
+                "type": "GOB.String"
+              },
+              "tijdstip_registratie": {
+                "type": "GOB.Date"
+              },
+              "datum_aanvang_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "datum_einde_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "volgorde": {
+                "type": "GOB.Integer"
+              },
+              "has_multiple_values": true
+            }
+          }
+        }
+      }
+    }
   }
 }

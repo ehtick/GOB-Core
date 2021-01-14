@@ -1,7 +1,9 @@
 import jwt
 
+# Headers as set by OAuth2 Proxy
 ACCESS_TOKEN_HEADER = 'X-Forwarded-Access-Token'
 USER_EMAIL_HEADER = 'X-Forwarded-Email'
+USER_NAME_HEADER = 'X-Forwarded-Preferred-Username'
 
 
 def extract_roles(headers: dict):

@@ -158,8 +158,11 @@ class QA_CHECK:
     Value_gebruiksdoel_gezondheidszorgfunctie_should_match = {
         "msg": 'gebruiksdoel_gezondheidszorgfunctie should only be filled if gebruiksdoel is gezondheidszorgfunctie'
     }
-    Value_aantal_eenheden_complex_filled = {
-        "msg": 'aantal_eenheden_complex should only be filled if complex is in woonfunctie or gezondheidszorgfunctie'
+    Value_aantal_eenheden_complex_should_be_empty = {
+        "msg": 'aantal_eenheden_complex can not be filled if complex not in woonfunctie or gezondheidszorgfunctie'
+    }
+    Value_aantal_eenheden_complex_should_be_filled = {
+        "msg": 'aantal_eenheden_complex should be filled if complex is in woonfunctie or gezondheidszorgfunctie'
     }
 
 

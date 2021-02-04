@@ -1,9 +1,11 @@
+from unittest import TestCase
+
 import os
 from tempfile import TemporaryDirectory
-from unittest import TestCase
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from gobcore.datastore.bag_extract import BagExtractDatastore, GOBException, _extract_nested_zip
+from gobcore.enum import ImportMode
 
 
 class TestModuleFunctions(TestCase):
@@ -25,7 +27,13 @@ class TestBagExtractDatastore(TestCase):
     def get_test_object(self):
         with patch("gobcore.datastore.bag_extract.TemporaryDirectory") as mock_tmp_dir:
             connection_config = {"connection": "config"}
-            read_config = {"object_type": "OBJT", "xml_object": "Object", "mode": "full", "gemeentes": ["0456"]}
+            read_config = {
+                "object_type": "OBJT",
+                "xml_object": "Object",
+                "mode": ImportMode.FULL,
+                "gemeentes": ["0456"],
+                "download_location": "download location",
+            }
             ds = BagExtractDatastore(connection_config, read_config)
             ds.tmp_dir.name = "/tmp_dir_name"
             return ds
@@ -34,8 +42,9 @@ class TestBagExtractDatastore(TestCase):
         minimal_read_config = {
             'object_type': 'object type',
             'xml_object': 'xml object',
-            'mode': 'full',
+            'mode': ImportMode.FULL,
             'gemeentes': ['gemeentes'],
+            'download_location': 'location',
         }
         ds = BagExtractDatastore({}, minimal_read_config)
 
@@ -48,12 +57,12 @@ class TestBagExtractDatastore(TestCase):
 
         minimal_read_config['mode'] = 'invalid mode'
 
-        with self.assertRaisesRegexp(GOBException, f"Invalid mode: invalid mode"):
+        with self.assertRaises(AssertionError):
             ds = BagExtractDatastore({}, minimal_read_config)
 
     def test_init(self):
         ds = self.get_test_object()
-        self.assertEqual("full", ds.mode)
+        self.assertEqual(ImportMode.FULL, ds.mode)
         self.assertEqual("./sl:standBestand/sl:stand/sl-bag-extract:bagObject/Objecten:Object", ds.full_xml_path)
         self.assertEqual([
             "./ml:mutatieBericht/ml:mutatieGroep/ml:toevoeging/ml:wordt/mlm:bagObject/Objecten:Object",
@@ -62,7 +71,7 @@ class TestBagExtractDatastore(TestCase):
 
     @patch("gobcore.datastore.bag_extract.os.listdir")
     @patch("gobcore.datastore.bag_extract._extract_nested_zip")
-    def test_download_and_extract_full_file(self, mock_extract_zip, mock_listdir):
+    def test_extract_full_file(self, mock_extract_zip, mock_listdir):
         ds = self.get_test_object()
         mock_listdir.return_value = [
             "fileA0001.xml",
@@ -71,7 +80,7 @@ class TestBagExtractDatastore(TestCase):
         ]
 
         file_location = "thepath/to/BAGGEM1234L-12345678.zip"
-        res = ds._download_and_extract_full_file(file_location)
+        res = ds._extract_full_file(file_location)
 
         mock_extract_zip.assert_called_with(
             file_location, [
@@ -87,11 +96,11 @@ class TestBagExtractDatastore(TestCase):
 
         # Invalid filename
         with self.assertRaises(GOBException):
-            ds._download_and_extract_full_file("thepath/to/BAGGEM123L-148024.zip")
+            ds._extract_full_file("thepath/to/BAGGEM123L-148024.zip")
 
     @patch("gobcore.datastore.bag_extract.os.listdir")
     @patch("gobcore.datastore.bag_extract._extract_nested_zip")
-    def test_download_and_extract_mutations_file(self, mock_extract_zip, mock_listdir):
+    def test_extract_mutations_file(self, mock_extract_zip, mock_listdir):
         ds = self.get_test_object()
         mock_listdir.return_value = [
             "fileA0001.xml",
@@ -100,7 +109,7 @@ class TestBagExtractDatastore(TestCase):
         ]
 
         file_location = "thepath/to/BAGNLDM-12345678-12345679.zip"
-        res = ds._download_and_extract_mutations_file(file_location)
+        res = ds._extract_mutations_file(file_location)
 
         mock_extract_zip.assert_called_with(
             file_location, [
@@ -115,55 +124,37 @@ class TestBagExtractDatastore(TestCase):
 
         # Invalid filename
         with self.assertRaises(GOBException):
-            ds._download_and_extract_mutations_file("thepath/to/BAGNLDM-12345678-123.zip")
+            ds._extract_mutations_file("thepath/to/BAGNLDM-12345678-123.zip")
 
     def test_connect(self):
         ds = self.get_test_object()
         ds._download_file = MagicMock()
-        ds._download_and_extract_full_file = MagicMock()
-        ds._download_and_extract_mutations_file = MagicMock()
+        ds._extract_full_file = MagicMock()
+        ds._extract_mutations_file = MagicMock()
 
         ds.connect()
-        self.assertEqual(ds._download_and_extract_full_file.return_value, ds.files)
+        self.assertEqual(ds._extract_full_file.return_value, ds.files)
+        ds._download_file.assert_called_with(ds.read_config['download_location'])
+        ds._extract_full_file.assert_called_with(ds._download_file.return_value)
 
-        ds.mode = "mutations"
+        ds.mode = ImportMode.MUTATIONS
         ds.connect()
-        self.assertEqual(ds._download_and_extract_mutations_file.return_value, ds.files)
+        self.assertEqual(ds._extract_mutations_file.return_value, ds.files)
+        ds._extract_mutations_file.assert_called_with(ds._download_file.return_value)
 
     @patch("builtins.open")
     @patch("gobcore.datastore.bag_extract.os.getenv", lambda x: x)
-    @patch("gobcore.datastore.bag_extract.get_object")
-    @patch("gobcore.datastore.bag_extract.ObjectDatastore")
-    def test_download_file(self, mock_object_datastore, mock_get_object, mock_open):
+    @patch("gobcore.datastore.bag_extract.requests")
+    def test_download_file(self, mock_requests, mock_open):
         ds = self.get_test_object()
 
-        mock_object_datastore.return_value.query.return_value = iter(['some file'])
-
         self.assertEqual("/tmp_dir_name/BAGGEM0457L-15112020.zip",
-                         ds._download_file("tmp_weesp/BAGGEM0457L-15112020.zip"))
+                         ds._download_file("http://some.location.example.com/dir/BAGGEM0457L-15112020.zip"))
 
-        mock_object_datastore.assert_called_with({
-            'type': 'objectstore',
-            'VERSION': '2.0',
-            'AUTHURL': 'https://identity.stack.cloudvps.com/v2.0',
-            'TENANT_NAME': 'GOB_OBJECTSTORE_TENANT_NAME',
-            'TENANT_ID': 'GOB_OBJECTSTORE_TENANT_ID',
-            'USER': 'GOB_OBJECTSTORE_USER',
-            'PASSWORD': 'GOB_OBJECTSTORE_PASSWORD',
-            'REGION_NAME': 'NL'
-        }, {
-            "file_filter": "tmp_weesp/BAGGEM0457L-15112020.zip",
-            "container": "acceptatie",
-        })
-        mock_object_datastore.return_value.assert_has_calls([
-            call.connect(),
-            call.query(None),
-        ])
-
-        mock_get_object.assert_called_with(mock_object_datastore.return_value.connection, 'some file', 'acceptatie')
-
+        mock_requests.get.assert_called_with("http://some.location.example.com/dir/BAGGEM0457L-15112020.zip")
         mock_open.assert_called_with('/tmp_dir_name/BAGGEM0457L-15112020.zip', 'wb')
-        mock_open.return_value.__enter__.return_value.write.assert_called_with(mock_get_object.return_value)
+        mock_open.return_value.__enter__.return_value.write.assert_called_with(mock_requests.get.return_value.content)
+        mock_requests.get.return_value.raise_for_status.assert_called_once()
 
     @patch("gobcore.datastore.bag_extract.ogr.CreateGeometryFromGML")
     @patch("gobcore.datastore.bag_extract.ET")
@@ -186,8 +177,9 @@ class TestBagExtractDatastore(TestCase):
         read_config = {
             'object_type': 'VBO',
             'xml_object': 'Verblijfsobject',
-            'mode': 'full',
+            'mode': ImportMode.FULL,
             'gemeentes': ['0457'],
+            'download_location': 'the location',
         }
         ds = BagExtractDatastore({}, read_config)
         ds.files = [os.path.join(os.path.dirname(__file__), 'bag_extract_fixtures', 'full.xml')]
@@ -221,8 +213,9 @@ class TestBagExtractDatastore(TestCase):
         read_config = {
             'object_type': 'VBO',
             'xml_object': 'Verblijfsobject',
-            'mode': 'mutations',
+            'mode': ImportMode.MUTATIONS,
             'gemeentes': ['0457'],
+            'download_location': 'the location',
         }
         ds = BagExtractDatastore({}, read_config)
         ds.files = [os.path.join(os.path.dirname(__file__), 'bag_extract_fixtures', 'mutations.xml')]

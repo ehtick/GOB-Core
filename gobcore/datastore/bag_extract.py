@@ -1,17 +1,17 @@
+from collections import defaultdict
+
 import io
 import os
 import re
+import requests
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+from osgeo import ogr
 from tempfile import TemporaryDirectory
 from typing import List
 from zipfile import ZipFile
 
-from objectstore.objectstore import get_object
-from osgeo import ogr
-
 from gobcore.datastore.datastore import Datastore
-from gobcore.datastore.objectstore import ObjectDatastore
+from gobcore.enum import ImportMode
 from gobcore.exceptions import GOBException
 
 
@@ -51,9 +51,6 @@ def _extract_nested_zip(zip_file, nested_zip_files: List[str], destination_dir: 
 
 
 class BagExtractDatastore(Datastore):
-    MUTATIONS_MODE = "mutations"
-    FULL_MODE = "full"
-
     ns_pattern = re.compile(r'{.*}')
     namespaces = {
         # We could extract namespaces from the file, but this way we're sure they won't change in the source.
@@ -89,16 +86,14 @@ class BagExtractDatastore(Datastore):
         ]
 
         self.mode = self.read_config['mode']
+        assert isinstance(self.mode, ImportMode), "mode should be of type ImportMode"
 
     def _check_config(self):
-        for key in ('object_type', 'xml_object', 'mode', 'gemeentes'):
+        for key in ('object_type', 'xml_object', 'mode', 'gemeentes', 'download_location'):
             if not self.read_config.get(key):
                 raise GOBException(f"Missing {key} in read_config")
 
-        if self.read_config['mode'] not in (self.FULL_MODE, self.MUTATIONS_MODE):
-            raise GOBException(f"Invalid mode: {self.read_config['mode']}")
-
-    def _download_and_extract_full_file(self, file_location: str):
+    def _extract_full_file(self, file_location: str):
         filename = file_location.split('/')[-1]
         match = re.match(r'^BAGGEM(\d{4})L-(\d{8}).zip$', filename)
 
@@ -116,7 +111,7 @@ class BagExtractDatastore(Datastore):
         return [os.path.join(self.tmp_dir.name, f)
                 for f in sorted(os.listdir(self.tmp_dir.name)) if f.endswith('.xml')]
 
-    def _download_and_extract_mutations_file(self, file_location: str):
+    def _extract_mutations_file(self, file_location: str):
         filename = file_location.split('/')[-1]
         match = re.match(r'^BAGNLDM-(\d{8}-\d{8}).zip$', filename)
 
@@ -132,13 +127,12 @@ class BagExtractDatastore(Datastore):
                 for f in sorted(os.listdir(self.tmp_dir.name)) if f.endswith('.xml')]
 
     def connect(self):
+        file_location = self._download_file(self.read_config['download_location'])
 
-        if self.mode == self.FULL_MODE:
-            file_location = self._download_file('tmp_weesp/BAGGEM0457L-15112020.zip')
-            self.files = self._download_and_extract_full_file(file_location)
+        if self.mode == ImportMode.FULL:
+            self.files = self._extract_full_file(file_location)
         else:
-            file_location = self._download_file('tmp_weesp/BAGNLDM-31122020-01012021.zip')
-            self.files = self._download_and_extract_mutations_file(file_location)
+            self.files = self._extract_mutations_file(file_location)
 
     def disconnect(self):
         pass  # pragma: no cover
@@ -146,40 +140,16 @@ class BagExtractDatastore(Datastore):
     def _download_file(self, file_location: str):
         """Downloads source file and returns file location
 
-        TODO: This file is now temporarily downloaded from a fixed location from the object store. This file will later
-        come from a web source or something similar.
-
         :return:
         """
-
-        # ObjectDatastore is hardcoded for now, as Core does not have direct access to Config, this is the easy temp
-        # solution.
-        config = {
-            'type': 'objectstore',
-            "VERSION": '2.0',
-            "AUTHURL": 'https://identity.stack.cloudvps.com/v2.0',
-            "TENANT_NAME": os.getenv("GOB_OBJECTSTORE_TENANT_NAME"),
-            "TENANT_ID": os.getenv("GOB_OBJECTSTORE_TENANT_ID"),
-            "USER": os.getenv("GOB_OBJECTSTORE_USER"),
-            "PASSWORD": os.getenv("GOB_OBJECTSTORE_PASSWORD"),
-            "REGION_NAME": 'NL'
-        }
-
-        read_config = {
-            "file_filter": file_location,
-            "container": "acceptatie",
-        }
-
-        objectstore = ObjectDatastore(config, read_config)
-        objectstore.connect()
-
-        file = next(objectstore.query(None))
-        obj = get_object(objectstore.connection, file, read_config['container'])
-
         fname = file_location.split('/')[-1]
         download_location = os.path.join(self.tmp_dir.name, fname)
+
+        resp = requests.get(file_location)
+        resp.raise_for_status()
+
         with open(download_location, 'wb') as f:
-            f.write(obj)
+            f.write(resp.content)
 
         return download_location
 
@@ -292,7 +262,7 @@ class BagExtractDatastore(Datastore):
                     yield element
 
     def query(self, query):
-        get_elements_fn = self._get_elements_full if self.mode == self.FULL_MODE else self._get_elements_mutations
+        get_elements_fn = self._get_elements_full if self.mode == ImportMode.FULL else self._get_elements_mutations
 
         for file in self.files:
             tree = ET.parse(file)

@@ -36,6 +36,8 @@
                             <Objecten:heeftAlsHoofdadres>
                                 <Objecten-ref:NummeraanduidingRef domein="NL.IMBAG.Nummeraanduiding">
                                     0457200000199376
+                                    This object should be ignored, because there's a newer modification for this same
+                                    object.
                                 </Objecten-ref:NummeraanduidingRef>
                             </Objecten:heeftAlsHoofdadres>
                             <Objecten:voorkomen>
@@ -74,6 +76,104 @@
                     </mlm:bagObject>
                 </ml:wordt>
             </ml:toevoeging>
+        </ml:mutatieGroep>
+        <ml:mutatieGroep>
+            <ml:wijziging>
+                <ml:was>Left out on purpose, not important</ml:was>
+                <ml:wordt>
+                    <mlm:bagObject>
+                        <Objecten:Verblijfsobject>
+                            <Objecten:heeftAlsHoofdadres>
+                                <Objecten-ref:NummeraanduidingRef domein="NL.IMBAG.Nummeraanduiding">
+                                    0457200000199376
+                                    This object should be ignored, because there's a newer modification for this same
+                                    object.
+                                </Objecten-ref:NummeraanduidingRef>
+                            </Objecten:heeftAlsHoofdadres>
+                            <Objecten:voorkomen>
+                                <Historie:Voorkomen>
+                                    <Historie:voorkomenidentificatie>1</Historie:voorkomenidentificatie>
+                                    <Historie:beginGeldigheid>2010-09-28</Historie:beginGeldigheid>
+                                    <Historie:tijdstipRegistratie>2010-11-26T08:49:50.000
+                                    </Historie:tijdstipRegistratie>
+                                    <Historie:BeschikbaarLV>
+                                        <Historie:tijdstipRegistratieLV>
+                                            2010-11-26T09:01:30.485
+                                        </Historie:tijdstipRegistratieLV>
+                                    </Historie:BeschikbaarLV>
+                                </Historie:Voorkomen>
+                            </Objecten:voorkomen>
+                            <Objecten:identificatie domein="NL.IMBAG.Verblijfsobject">
+                                0457010000059153123123123
+                            </Objecten:identificatie>
+                            <Objecten:geometrie>
+                                <Objecten:punt>
+                                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" srsDimension="3">
+                                        <gml:pos>129955.346 481542.434 0.0</gml:pos>
+                                    </gml:Point>
+                                </Objecten:punt>
+                            </Objecten:geometrie>
+                            <Objecten:gebruiksdoel>kantoorfunctie</Objecten:gebruiksdoel>
+                            <Objecten:oppervlakte>45</Objecten:oppervlakte>
+                            <Objecten:status>Verblijfsobject in gebruik</Objecten:status>
+                            <Objecten:geconstateerd>N</Objecten:geconstateerd>
+                            <Objecten:documentdatum>2010-09-28</Objecten:documentdatum>
+                            <Objecten:documentnummer>Z.9704/D.6419</Objecten:documentnummer>
+                            <Objecten:maaktDeelUitVan>
+                                <Objecten-ref:PandRef domein="NL.IMBAG.Pand">0457100000056661</Objecten-ref:PandRef>
+                            </Objecten:maaktDeelUitVan>
+                        </Objecten:Verblijfsobject>
+                    </mlm:bagObject>
+                </ml:wordt>
+            </ml:wijziging>
+        </ml:mutatieGroep>
+        <ml:mutatieGroep>
+            <ml:wijziging>
+                <ml:was>Left out on purpose, not important</ml:was>
+                <ml:wordt>
+                    <mlm:bagObject>
+                        <Objecten:Verblijfsobject>
+                            <Objecten:heeftAlsHoofdadres>
+                                <Objecten-ref:NummeraanduidingRef domein="NL.IMBAG.Nummeraanduiding">
+                                    0457200000199376
+                                </Objecten-ref:NummeraanduidingRef>
+                            </Objecten:heeftAlsHoofdadres>
+                            <Objecten:voorkomen>
+                                <Historie:Voorkomen>
+                                    <Historie:voorkomenidentificatie>1</Historie:voorkomenidentificatie>
+                                    <Historie:beginGeldigheid>2010-09-28</Historie:beginGeldigheid>
+                                    <Historie:tijdstipRegistratie>2010-11-26T08:49:50.000
+                                    </Historie:tijdstipRegistratie>
+                                    <Historie:BeschikbaarLV>
+                                        <Historie:tijdstipRegistratieLV>
+                                            2010-11-26T09:01:30.485
+                                        </Historie:tijdstipRegistratieLV>
+                                    </Historie:BeschikbaarLV>
+                                </Historie:Voorkomen>
+                            </Objecten:voorkomen>
+                            <Objecten:identificatie domein="NL.IMBAG.Verblijfsobject">
+                                0457010000059153123123123
+                            </Objecten:identificatie>
+                            <Objecten:geometrie>
+                                <Objecten:punt>
+                                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" srsDimension="3">
+                                        <gml:pos>129955.346 481542.434 0.0</gml:pos>
+                                    </gml:Point>
+                                </Objecten:punt>
+                            </Objecten:geometrie>
+                            <Objecten:gebruiksdoel>kantoorfunctie</Objecten:gebruiksdoel>
+                            <Objecten:oppervlakte>45</Objecten:oppervlakte>
+                            <Objecten:status>Verblijfsobject in gebruik</Objecten:status>
+                            <Objecten:geconstateerd>N</Objecten:geconstateerd>
+                            <Objecten:documentdatum>2010-09-28</Objecten:documentdatum>
+                            <Objecten:documentnummer>Z.9704/D.6419</Objecten:documentnummer>
+                            <Objecten:maaktDeelUitVan>
+                                <Objecten-ref:PandRef domein="NL.IMBAG.Pand">0457100000056661</Objecten-ref:PandRef>
+                            </Objecten:maaktDeelUitVan>
+                        </Objecten:Verblijfsobject>
+                    </mlm:bagObject>
+                </ml:wordt>
+            </ml:wijziging>
         </ml:mutatieGroep>
         <ml:mutatieGroep>
             <ml:toevoeging>

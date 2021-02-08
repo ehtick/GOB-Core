@@ -81,6 +81,7 @@ class BagExtractDatastore(Datastore):
         xml_object = self.read_config.get('xml_object')
         self.full_xml_path = f"./sl:standBestand/sl:stand/sl-bag-extract:bagObject/Objecten:{xml_object}"
         self.mutation_xml_paths = [
+            # Ordering matters. First 'toevoeging', then 'wijziging'
             f"./ml:mutatieBericht/ml:mutatieGroep/ml:toevoeging/ml:wordt/mlm:bagObject/Objecten:{xml_object}",
             f"./ml:mutatieBericht/ml:mutatieGroep/ml:wijziging/ml:wordt/mlm:bagObject/Objecten:{xml_object}",
         ]
@@ -252,14 +253,29 @@ class BagExtractDatastore(Datastore):
 
     def _get_elements_mutations(self, xmlroot):
         gemeentes = self.read_config.get('gemeentes', [])
+
+        # Collect mutations in dict. Only keep last mutation for an object.
+        # This is why mutation_xml_paths should first visit additions, then modifications
+        mutations = {}
         for path in self.mutation_xml_paths:
 
             for element in xmlroot.iterfind(path, self.namespaces):
                 identificatie = element.find("./Objecten:identificatie", self.namespaces)
 
+                # Filter by gemeentecode prefix (first 4 digits)
                 if identificatie is not None and identificatie.text.strip()[:4] in gemeentes:
-                    # Filter only gemeentes we are interested in
-                    yield element
+                    volgnummer = element.find(
+                        "./Objecten:voorkomen/Historie:Voorkomen/Historie:voorkomenidentificatie",
+                        self.namespaces
+                    )
+
+                    object_id = identificatie.text.strip() \
+                        if volgnummer is None \
+                        else f"{identificatie.text.strip()}.{volgnummer.text.strip()}"
+                    mutations[object_id] = element
+
+        for mutation in mutations.values():
+            yield mutation
 
     def query(self, query):
         get_elements_fn = self._get_elements_full if self.mode == ImportMode.FULL else self._get_elements_mutations

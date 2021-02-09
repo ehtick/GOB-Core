@@ -143,6 +143,9 @@ class QA_CHECK:
     Value_1_1_reference = {
         "msg": 'value should be a one to one reference'
     }
+    Value_duplicates = {
+        "msg": "value contains duplicates",
+    }
     Value_aantal_bouwlagen_should_match = {
         "msg": 'aantal_bouwlagen does not match hoogste_bouwlaag and laagste_bouwlaag'
     }

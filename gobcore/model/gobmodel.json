@@ -3681,9 +3681,9 @@
               },
               "volgorde": {
                 "type": "GOB.Integer"
-              },
-              "has_multiple_values": true
-            }
+              }
+            },
+            "has_multiple_values": true
           }
         }
       }

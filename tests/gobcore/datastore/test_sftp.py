@@ -25,13 +25,18 @@ class TestSFTPDatastore(TestCase):
         mock_transport.connect.assert_called_with(username=connection_config['username'], password=connection_config['password'])
         
         mock_paramiko.SFTPClient.from_transport.assert_called_with(mock_transport)
+        self.assertEqual(mock_paramiko.SFTPClient.from_transport.return_value, store.connection)
+        self.assertEqual(mock_transport, store.transport)
 
     def test_disconnect(self):
         store = SFTPDatastore({})
         connection = MagicMock()
+        transport = MagicMock()
+        store.transport = transport
         store.connection = connection
         store.disconnect()
-        connection.close.assert_called_once()
+        transport.close.assert_called_once()
+        self.assertIsNone(store.transport)
         self.assertIsNone(store.connection)
         store.disconnect()
 

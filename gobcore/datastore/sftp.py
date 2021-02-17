@@ -19,14 +19,18 @@ class SFTPDatastore(Datastore, PutEnabledDatastore, ListEnabledDatastore, Delete
 
         :return:
         """
-        transport = paramiko.Transport((self.connection_config["host"], int(self.connection_config["port"])))
-        transport.connect(username=self.connection_config["username"], password=self.connection_config["password"])
+        self.transport = paramiko.Transport((self.connection_config["host"], int(self.connection_config["port"])))
+        self.transport.connect(
+            username=self.connection_config["username"],
+            password=self.connection_config["password"]
+        )
 
-        self.connection = paramiko.SFTPClient.from_transport(transport)
+        self.connection = paramiko.SFTPClient.from_transport(self.transport)
 
     def disconnect(self):
-        if self.connection:
-            self.connection.close()
+        if self.transport:
+            self.transport.close()
+            self.transport = None
             self.connection = None
 
     def query(self):

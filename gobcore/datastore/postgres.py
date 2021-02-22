@@ -28,6 +28,7 @@ class PostgresDatastore(SqlDatastore):
                 password=self.connection_config['password'],
                 host=self.connection_config['host'],
                 port=self.connection_config['port'],
+                sslmode='require',
             )
         except psycopg2.OperationalError as e:
             raise GOBException(f'Database connection for source {self.connection_config["name"]} {self.user} failed. '

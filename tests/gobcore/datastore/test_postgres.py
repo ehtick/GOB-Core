@@ -71,6 +71,7 @@ class TestPostgresDatastore(TestCase):
             password=config['password'],
             host=config['host'],
             port=config['port'],
+            sslmode='require',
         )
 
         del config['password']

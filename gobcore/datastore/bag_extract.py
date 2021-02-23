@@ -299,16 +299,15 @@ class BagExtractDatastore(Datastore):
 
             for element in xmlroot.iterfind(path, self.namespaces):
                 identificatie = element.find(f"./{self.id_path}", self.namespaces)
+                identificatie = identificatie.text.strip() if identificatie is not None else None
 
                 # Filter by id, or by gemeentecode prefix (first 4 digits)
-                if identificatie is not None and (
-                        identificatie in self.ids or identificatie.text.strip()[:4] in gemeentes
-                ):
+                if identificatie and (identificatie in self.ids or identificatie[:4] in gemeentes):
                     volgnummer = element.find(f"./{self.seqnr_path}", self.namespaces)
 
-                    object_id = identificatie.text.strip() \
+                    object_id = identificatie \
                         if volgnummer is None \
-                        else f"{identificatie.text.strip()}.{volgnummer.text.strip()}"
+                        else f"{identificatie}.{volgnummer.text.strip()}"
                     mutations[object_id] = element
 
         for mutation in mutations.values():

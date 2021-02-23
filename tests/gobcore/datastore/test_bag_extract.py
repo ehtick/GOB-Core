@@ -261,7 +261,7 @@ class TestBagExtractDatastore(TestCase):
         }
         ds = BagExtractDatastore({}, read_config)
         ds.files = [os.path.join(os.path.dirname(__file__), 'bag_extract_fixtures', 'mutations.xml')]
-        ds.ids = ['0458200000199376']
+        ds.ids = ['0458010000059153123123123']
         res = list(ds.query(None))
 
         expected = [{
@@ -271,7 +271,7 @@ class TestBagExtractDatastore(TestCase):
             'geconstateerd': 'N',
             'geometrie/punt': 'POINT (129955.346 481542.434)',
             'heeftAlsHoofdadres/NummeraanduidingRef': '0458200000199376',
-            'identificatie': '0457010000059153123123123',
+            'identificatie': '0458010000059153123123123',
             'maaktDeelUitVan/PandRef': '0457100000056661',
             'oppervlakte': '45',
             'status': 'Verblijfsobject in gebruik',

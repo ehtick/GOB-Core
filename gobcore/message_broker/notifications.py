@@ -14,7 +14,7 @@ NOTIFICATION_KEY = 'notification'
 NOTIFICATION_TYPE = 'type'
 NOTIFICATION_CONTENTS = 'contents'
 # Notification messages copy a selection of the original header fields
-NOTIFICATION_HEADER_FIELDS = ['source', 'catalogue', 'collection', 'application', 'entity', 'version', 'process_id']
+NOTIFICATION_HEADER_FIELDS = ['source', 'catalog', 'collection', 'application', 'version', 'process_id']
 
 
 def listen_to_notifications(id, notification_type=None):
@@ -140,11 +140,11 @@ class ExportTestNotification():
 
     type = "export_test"
 
-    def __init__(self, catalogue, collection, product, header=None):
+    def __init__(self, catalog, collection, product, header=None):
         self.header = header
 
         self.contents = {
-            'catalogue': catalogue,
+            'catalog': catalog,
             'collection': collection,
             'product': product,
         }

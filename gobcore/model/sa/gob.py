@@ -20,7 +20,7 @@ from gobcore.sources import GOBSources
 from gobcore.typesystem import get_gob_type, is_gob_geo_type, is_gob_json_type
 
 TABLE_TYPE_RELATION = 'relation_table'
-TABLE_TYPE_ENTITY = 'entity_table'
+TABLE_TYPE_COLLECTION = 'collection_table'
 
 Base = None
 
@@ -156,11 +156,11 @@ def _derive_models():
             #     "attribute_name": {
             #         "type": "GOB type name, e.g. GOB.String",
             #         "description": "attribute description",
-            #         "ref: "collection_name:entity_name, e.g. meetbouten:meetbouten"
+            #         "ref: "catalog_name:collection_name, e.g. meetbouten:meetbouten"
             #     }, ...
             # }
 
-            # the GOB model for the specified entity
+            # the GOB model for the specified collection
             table_name = model.get_table_name(catalog_name, collection_name)
             models[table_name] = columns_to_model(catalog_name, table_name, collection['all_fields'],
                                                   has_states=collection.get('has_states', False))
@@ -185,10 +185,11 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
         (FIELD.EXPIRATION_DATE,),
         (FIELD.APPLICATION,),
         (FIELD.SOURCE_ID,),  # for application of events
+        (FIELD.ID, FIELD.SEQNR),
         (FIELD.LAST_EVENT,)
     ]
 
-    entity_table_indexes = [
+    collection_table_indexes = [
         (FIELD.ID, FIELD.SEQNR),
     ]
 
@@ -205,8 +206,8 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
 
     create_indexes = default_indexes
 
-    if table_type == TABLE_TYPE_ENTITY:
-        create_indexes += entity_table_indexes
+    if table_type == TABLE_TYPE_COLLECTION:
+        create_indexes += collection_table_indexes
     elif table_type == TABLE_TYPE_RELATION:
         create_indexes += relation_table_indexes
 
@@ -294,7 +295,7 @@ def _derive_indexes() -> dict:
 
     for catalog_name, catalog in model.get_catalogs().items():
         for collection_name, collection in model.get_collections(catalog_name).items():
-            entity = collection['all_fields']
+            all_collection_fields = collection['all_fields']
             table_name = model.get_table_name(catalog_name, collection_name)
             is_relation_table = table_name.startswith('rel_')
 
@@ -306,8 +307,8 @@ def _derive_indexes() -> dict:
 
             # Generate indexes on default columns
             for idx_name, columns in _default_indexes_for_columns(
-                    list(entity.keys()),
-                    TABLE_TYPE_RELATION if is_relation_table else TABLE_TYPE_ENTITY
+                    list(all_collection_fields.keys()),
+                    TABLE_TYPE_RELATION if is_relation_table else TABLE_TYPE_COLLECTION
             ).items():
                 indexes[_hashed_index_name(prefix, idx_name)] = {
                     "columns": columns,

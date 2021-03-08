@@ -3,9 +3,9 @@
     "description": "Start application of events that have not yet been applied",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": false,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "entity",
@@ -19,9 +19,9 @@
     "description": "Start an import job for a collection",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "collection",
@@ -42,10 +42,10 @@
     "workflow": "import"
   },
   "prepare": {
-    "description": "Start a prepare job for a catalogue",
+    "description": "Start a prepare job for a catalog",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
         "description": "The name of the data catalog (example: \"brk\")"
       }
@@ -56,9 +56,9 @@
     "description": "Start an export job for a collection",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "collection",
@@ -88,12 +88,12 @@
     "workflow": "export"
   },
   "relate": {
-    "description": "Build relations for a catalogue",
+    "description": "Build relations for a catalog",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "collection",
@@ -115,12 +115,12 @@
     "workflow": "relate"
   },
   "export_test": {
-    "description": "Test of exports for a catalogue",
+    "description": "Test of exports for a catalog",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": "true",
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       }
     ],
     "workflow": "export_test"
@@ -135,9 +135,9 @@
     "workflow": "data_consistency_test",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "collection",
@@ -157,13 +157,13 @@
     "args": []
   },
   "distribute": {
-    "description": "Distribute a catalogue or collection",
+    "description": "Distribute a catalog or collection",
     "workflow": "distribute",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "fileset",
@@ -173,13 +173,13 @@
     ]
   },
   "kafka_produce": {
-    "description": "Send last Kafka events for catalogue/collection",
+    "description": "Send last Kafka events for catalog/collection",
     "workflow": "kafka_produce",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"meetbouten\")"
+        "description": "The name of the data catalog (example: \"meetbouten\")"
       },
       {
         "name": "collection",

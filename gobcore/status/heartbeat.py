@@ -89,7 +89,7 @@ class Heartbeat():
         :return: a string with message info
         """
         # Info about message being processed
-        msg_info = [f"{key}: {header.get(key)}" for key in ['catalogue', 'collection', 'application', 'source']]
+        msg_info = [f"{key}: {header.get(key)}" for key in ['catalog', 'collection', 'application', 'source']]
 
         # Info about host that processes the message
         host_info = [f"{key}: {value}" for key, value in get_host_info().items()]

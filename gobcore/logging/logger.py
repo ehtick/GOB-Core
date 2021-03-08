@@ -39,7 +39,7 @@ class RequestsHandler(logging.Handler):
             "formatted_msg": self.format(record),
         }
 
-        optional_attrs = ["process_id", "id", "source", "application", "destination", "catalogue", "entity", "data",
+        optional_attrs = ["process_id", "id", "source", "application", "destination", "catalog", "collection", "data",
                           "jobid", "stepid"]
         for optional_attr in optional_attrs:
             log_msg[optional_attr] = getattr(record, optional_attr, None)
@@ -273,8 +273,8 @@ class Logger:
             'source': header.get('source'),
             'destination': header.get('destination'),
             'application': header.get('application'),
-            'catalogue': header.get('catalogue'),
-            'entity': header.get('entity', header.get('collection')),
+            'catalog': header.get('catalog'),
+            'collection': header.get('collection'),
             'jobid': header.get('jobid'),
             'stepid': header.get('stepid')
         })

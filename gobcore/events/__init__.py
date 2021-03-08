@@ -154,11 +154,11 @@ def database_to_gobevent(event) -> ImportEvent:
         data = json.loads(event.contents)
 
     # Get the model version to check if the event should be migrated to the correct version
-    model_version = GOBModel().get_collection(event.catalogue, event.entity)['version']
+    model_version = GOBModel().get_collection(event.catalog, event.collection)['version']
 
     if model_version != event.version:
         # Event should be migrated to the correct GOBModel version
-        data = GOBMigrations().migrate_event_data(event, data, event.catalogue, event.entity, model_version)
+        data = GOBMigrations().migrate_event_data(event, data, event.catalog, event.collection, model_version)
 
     event_msg = {
         "event": event.action,
@@ -170,8 +170,8 @@ def database_to_gobevent(event) -> ImportEvent:
         "source": event.source,
         "application": event.application,
         "id_column": data.get("id_column"),
-        "catalogue": event.catalogue,
-        "entity": event.entity,
+        "catalog": event.catalog,
+        "collection": event.collection,
         "version": event.version,
         "timestamp": event.timestamp
     }

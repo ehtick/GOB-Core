@@ -30,7 +30,7 @@ This name is quite often identical to “identification” but this is not requi
 This is just a convention within the collection/entities in GOB Model.
 
 In order to refer to entities by their functional ID a universal attribute “_id” is available.
-For every entity in GOB the _id attrubute functionally identifies the entity.
+For every entity in GOB the _id attribute functionally identifies the entity.
 
 ### Entity_source_id (_entity_source_id)
 Events in GOB are applied to entities.

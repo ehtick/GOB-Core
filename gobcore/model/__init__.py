@@ -13,26 +13,30 @@ from gobcore.model.schema import load_schema, SchemaException
 EVENTS_DESCRIPTION = {
     "eventid": "Unique identification of the event, numbered sequentially",
     "timestamp": "Datetime when the event as created",
-    "catalogue": "The catalogue in which the entity resides",
-    "entity": "The entity to which the event need to be applied",
-    "version": "The version of the entity model",
+    "catalog": "The catalog in which the collection resides",
+    "collection": "The collection to which the event need to be applied",
+    FIELD.ID: "The identification of the entity, corresponds with the entity_id and _id in the collection",
+    FIELD.SEQNR: "The identification of the entity, corresponds with the entity_id and _id in the collection",
+    FIELD.VERSION: "The version of the collection model",
     "action": "Add, change, delete or confirm",
-    "source": "The functional source of the entity, e.g. AMSBI",
-    "application": "The technical source of the entity, e.g. DIVA",
-    "source_id": "The id of the entity in the source",
+    FIELD.SOURCE: "The functional source of the entity, e.g. AMSBI",
+    FIELD.APPLICATION: "The technical source of the entity, e.g. DIVA",
+    FIELD.SOURCE_ID: "The id of the entity in the source",
     "contents": "A json object that holds the contents for the action, the full entity for an Add"
 }
 
 EVENTS = {
     "eventid": "GOB.PKInteger",
     "timestamp": "GOB.DateTime",
-    "catalogue": "GOB.String",
-    "entity": "GOB.String",
-    "version": "GOB.String",
+    "catalog": "GOB.String",
+    "collection": "GOB.String",
+    FIELD.ID: "GOB.String",
+    FIELD.SEQNR: "GOB.Integer",
+    FIELD.VERSION: "GOB.String",
     "action": "GOB.String",
-    "source": "GOB.String",
-    "application": "GOB.String",
-    "source_id": "GOB.String",
+    FIELD.SOURCE: "GOB.String",
+    FIELD.APPLICATION: "GOB.String",
+    FIELD.SOURCE_ID: "GOB.String",
     "contents": "GOB.JSON"
 }
 
@@ -62,11 +66,11 @@ class GOBModel():
         with open(path) as file:
             data = json.load(file)
 
-        if os.getenv('DISABLE_TEST_CATALOGUE', False):
-            # Default is to include the test catalogue
-            # By setting the DISABLE_TEST_CATALOGUE environment variable
-            # the test catalogue can be removed
-            del data["test_catalogue"]
+        if os.getenv('DISABLE_TEST_CATALOG', False):
+            # Default is to include the test catalog
+            # By setting the DISABLE_TEST_CATALOG environment variable
+            # the test catalog can be removed
+            del data["test_catalog"]
 
         GOBModel._data = data
         self._load_schemas()
@@ -83,13 +87,13 @@ class GOBModel():
         for catalog_name, catalog in self._data.items():
             catalog['name'] = catalog_name
 
-            for entity_name, model in catalog['collections'].items():
-                model['name'] = entity_name
+            for collection_name, model in catalog['collections'].items():
+                model['name'] = collection_name
                 model['references'] = self._extract_references(model['attributes'])
                 model['very_many_references'] = self._extract_very_many_references(model['attributes'])
 
                 model_attributes = model['attributes']
-                state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
+                state_attributes = STATE_FIELDS if self.has_states(catalog_name, collection_name) else {}
                 all_attributes = {
                     **state_attributes,
                     **model_attributes
@@ -111,13 +115,13 @@ class GOBModel():
         :return: None
         """
         for catalog_name, catalog in self._data.items():
-            for entity_name, model in catalog['collections'].items():
+            for collection_name, model in catalog['collections'].items():
                 if model.get('schema') is not None:
                     try:
-                        model['attributes'] = load_schema(model['schema'], catalog_name, entity_name)
+                        model['attributes'] = load_schema(model['schema'], catalog_name, collection_name)
                     except SchemaException as e:
                         # Use a fallback scenario as long as the schemas are still in development
-                        print(f"ERROR: failed to load schema {model['schema']} for {catalog_name}:{entity_name}")
+                        print(f"ERROR: failed to load schema {model['schema']} for {catalog_name}:{collection_name}")
                         model['attributes'] = model["_attributes"]
 
     def _extract_references(self, attributes):
@@ -221,7 +225,7 @@ class GOBModel():
         """
         source_id_field = input_spec['source']['entity_id']
         source_id = str(entity[source_id_field])
-        if self.has_states(input_spec['catalogue'], input_spec['entity']):
+        if self.has_states(input_spec['catalog'], input_spec['collection']):
             # Volgnummer could be a different field in the source entity than FIELD.SEQNR
             try:
                 seqnr_field = input_spec['gob_mapping'][FIELD.SEQNR]['source_mapping']

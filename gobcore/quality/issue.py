@@ -293,7 +293,7 @@ def process_issues(msg):
         return
 
     # Enrich bevinding with msg info
-    for attribute in ['source', 'application', 'catalogue', 'collection', 'attribute']:
+    for attribute in ['source', 'application', 'catalog', 'collection', 'attribute']:
         setattr(quality_update, attribute, header.get(f"original_{attribute}", header.get(attribute)))
 
     # Only log quality for functional steps
@@ -308,7 +308,7 @@ def process_issues(msg):
     # Don't Quality check yourself
     # Don't check jobs where no collection is present
     if quality_update.application == 'GOBPrepare' \
-            or quality_update.catalogue == QualityUpdate.CATALOG \
+            or quality_update.catalog == QualityUpdate.CATALOG \
             or quality_update.collection is None:
         return
 
@@ -318,11 +318,11 @@ def process_issues(msg):
 
 
 def _start_issue_workflow(header, issues, quality_update):
-    catalogue = header.get('catalogue')
+    catalog = header.get('catalog')
     collection = header.get('collection')
 
     with ContentsWriter() as writer, \
-            ProgressTicker(f"Process issues {catalogue} {collection}", 10000) as progress:
+            ProgressTicker(f"Process issues {catalog} {collection}", 10000) as progress:
 
         num_records = 0
 

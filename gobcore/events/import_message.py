@@ -25,12 +25,12 @@ class MessageMetaData():
         return self._header['timestamp']
 
     @property
-    def catalogue(self):
-        return self._header['catalogue']
+    def catalog(self):
+        return self._header['catalog']
 
     @property
-    def entity(self):
-        return self._header['entity']
+    def collection(self):
+        return self._header['collection']
 
     @property
     def version(self):
@@ -50,8 +50,8 @@ class MessageMetaData():
             "source": self.source,
             "application": self.application,
             "timestamp": self.timestamp,
-            "catalogue": self.catalogue,
-            "entity": self.entity,
+            "catalog": self.catalog,
+            "collection": self.collection,
             "version": self.version,
             "process_id": self.process_id,
             "model": self.model

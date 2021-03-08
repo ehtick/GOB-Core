@@ -53,12 +53,12 @@ class ImportEvent(metaclass=ABCMeta):
         return self.name
 
     @property
-    def catalogue(self):
-        return self._metadata.catalogue
+    def catalog(self):
+        return self._metadata.catalog
 
     @property
-    def entity(self):
-        return self._metadata.entity
+    def collection(self):
+        return self._metadata.collection
 
     @property
     def source(self):
@@ -70,7 +70,7 @@ class ImportEvent(metaclass=ABCMeta):
         self._metadata = metadata
         self.last_event = self._data.pop("_last_event", None)
 
-        self._model = self.gob_model.get_collection(self._metadata.catalogue, self._metadata.entity)
+        self._model = self.gob_model.get_collection(self._metadata.catalog, self._metadata.collection)
 
     def apply_to(self, entity):
         """Sets the attributes in data on the entity (expands `data['mutations'] first)
@@ -106,7 +106,7 @@ class ADD(ImportEvent):
     Example:
     {
         ADD
-        entity: meetbout
+        collection: meetbout
         source: meetboutengis
         source_id: 12881429
         data: {
@@ -151,7 +151,7 @@ class MODIFY(ImportEvent):
     Example:
     {
         MODIFY
-        entity: meetbouten
+        collection: meetbouten
         source: meetboutengis
         source_id: 12881429
         data: {
@@ -212,7 +212,7 @@ class DELETE(ImportEvent):
     Example:
     {
         DELETE
-        entity: meetbouten
+        collection: meetbouten
         source: meetboutengis
         source_id: 12881429
         data: {}
@@ -232,7 +232,7 @@ class CONFIRM(ImportEvent):
     Example:
     {
         CONFIRM
-        entity: meetbouten
+        collection: meetbouten
         source: meetboutengis
         source_id: 12881429
         data: {}
@@ -252,7 +252,7 @@ class BULKCONFIRM(ImportEvent):
     Example:
     {
         BULKCONFIRM
-        entity: meetbouten
+        collection: meetbouten
         source: meetboutengis
         source_id: None
         data: {

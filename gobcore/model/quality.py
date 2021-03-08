@@ -1,7 +1,7 @@
 QUALITY_CATALOG = "qa"
 
 
-def _get_qa(catalog, collection):
+def _get_qa_collection(catalog, collection):
     return {
         "version": "0.1",
         "abbreviation": _get_qa_abbreviation(catalog, collection),
@@ -55,7 +55,8 @@ def _get_qa(catalog, collection):
     }
 
 
-def get_entity_name(catalog_name, collection_name):
+def get_qa_collection_name(catalog_name, collection_name):
+    # The qa_collection_name is a combination of the catalog and collection the issue belongs to
     return f"{catalog_name}_{collection_name}"
 
 
@@ -64,7 +65,7 @@ def _get_qa_abbreviation(catalog, collection):
 
 
 def get_quality_assurances(model):
-    quality_assurance = {
+    quality_assurance_catalog = {
         "description": "Kwaliteits gegevens over GOB data.",
         "version": "0.1",
         "abbreviation": "QA",
@@ -72,7 +73,7 @@ def get_quality_assurances(model):
     }
     for catalog_name, catalog in model._data.items():
         for collection_name, collection in catalog['collections'].items():
-            entity = get_entity_name(catalog_name, collection_name)
-            qa = _get_qa(catalog, collection)
-            quality_assurance['collections'][entity] = qa
-    return quality_assurance
+            qa_collection_name = get_qa_collection_name(catalog_name, collection_name)
+            qa_collection = _get_qa_collection(catalog, collection)
+            quality_assurance_catalog['collections'][qa_collection_name] = qa_collection
+    return quality_assurance_catalog

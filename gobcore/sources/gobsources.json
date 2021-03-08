@@ -1,7 +1,7 @@
 {
   "ADD": {
-    "test_catalogue": {
-      "test_entity": {
+    "test_catalog": {
+      "test_collection": {
         "reference": {
           "method": "equals",
           "destination_attribute": "string"
@@ -10,8 +10,8 @@
     }
   },
   "MODIFY1": {
-    "test_catalogue": {
-      "test_entity": {
+    "test_catalog": {
+      "test_collection": {
         "reference": {
           "method": "equals",
           "destination_attribute": "string"
@@ -20,8 +20,8 @@
     }
   },
   "DELETE_ALL": {
-    "test_catalogue": {
-      "test_entity": {
+    "test_catalog": {
+      "test_collection": {
         "reference": {
           "method": "equals",
           "destination_attribute": "string"
@@ -30,8 +30,8 @@
     }
   },
   "REL": {
-    "test_catalogue": {
-      "rel_test_entity_a": {
+    "test_catalog": {
+      "rel_test_collection_a": {
         "ref_to_c": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -49,7 +49,7 @@
           "destination_attribute": "identificatie"
         }
       },
-      "rel_test_entity_b": {
+      "rel_test_collection_b": {
         "ref_to_c": {
           "method": "equals",
           "destination_attribute": "identificatie"
@@ -76,7 +76,7 @@
     }
   },
   "MAsrcA1": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -104,7 +104,7 @@
     }
   },
   "MAsrcB1": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",
@@ -118,7 +118,7 @@
     }
   },
   "MAsrcA2": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -146,7 +146,7 @@
     }
   },
   "MAsrcB2": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",
@@ -160,7 +160,7 @@
     }
   },
   "MAsrcA3": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -188,7 +188,7 @@
     }
   },
   "MAsrcB3": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",
@@ -202,7 +202,7 @@
     }
   },
   "MAsrcA4": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -230,7 +230,7 @@
     }
   },
   "MAsrcB4": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",
@@ -244,7 +244,7 @@
     }
   },
   "MAsrcA5": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -272,7 +272,7 @@
     }
   },
   "MAsrcB5": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",
@@ -286,7 +286,7 @@
     }
   },
   "MAsrcA6": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_src": {
         "reference": {
           "method": "equals",
@@ -314,7 +314,7 @@
     }
   },
   "MAsrcB6": {
-    "test_catalogue": {
+    "test_catalog": {
       "rel_multiple_allowed_multisource_src": {
         "reference": {
           "method": "equals",

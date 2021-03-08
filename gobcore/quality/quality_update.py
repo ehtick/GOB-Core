@@ -1,7 +1,7 @@
 import datetime
 
 from gobcore.model import FIELD
-from gobcore.model.quality import QUALITY_CATALOG, get_entity_name
+from gobcore.model.quality import QUALITY_CATALOG, get_qa_collection_name
 
 
 class QualityUpdate():
@@ -11,8 +11,8 @@ class QualityUpdate():
     def __init__(self):
         self.source = None
         self.application = None
-        self.catalogue = None
-        self.collection = None
+        self.catalog_name = None
+        self.collection_name = None
         self.attribute = None
         self.proces = None
 
@@ -42,9 +42,8 @@ class QualityUpdate():
 
     def get_header(self, msg_header):
         header = {
-            'catalogue': QUALITY_CATALOG,
-            'entity': get_entity_name(self.catalogue, self.collection),
-            'collection': get_entity_name(self.catalogue, self.collection),
+            'catalog': QUALITY_CATALOG,
+            'collection': get_qa_collection_name(self.catalog_name, self.collection_name),
             'source': self.get_source(),
             'application': self.application,
             'process_id': msg_header.get('process_id'),

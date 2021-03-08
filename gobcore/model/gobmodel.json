@@ -1,12 +1,12 @@
 {
-  "test_catalogue": {
+  "test_catalog": {
     "version": "0.1",
     "abbreviation": "TST",
-    "description": "Test catalogue.",
+    "description": "Test catalog.",
     "collections": {
-      "test_entity": {
+      "test_collection": {
         "version": "0.1",
-        "abbreviation": "TSE",
+        "abbreviation": "TSC",
         "entity_id": "string",
         "attributes": {
           "string": {
@@ -63,12 +63,12 @@
           "reference": {
             "type": "GOB.Reference",
             "description": "Reference value.",
-            "ref": "test_catalogue:test_entity_ref"
+            "ref": "test_catalog:test_collection_ref"
           },
           "manyreference": {
             "type": "GOB.ManyReference",
             "description": "Many Reference value.",
-            "ref": "test_catalogue:test_entity_ref"
+            "ref": "test_catalog:test_collection_ref"
           },
           "polygon": {
             "type": "GOB.Geo.Polygon",
@@ -83,10 +83,10 @@
           "filters": []
         }
       },
-      "test_entity_ref": {
+      "test_collection_ref": {
         "version": "0.1",
         "entity_id": "string",
-        "abbreviation": "TER",
+        "abbreviation": "TCR",
         "attributes": {
           "string": {
             "type": "GOB.String",
@@ -94,10 +94,10 @@
           }
         }
       },
-      "test_entity_autoid": {
+      "test_collection_autoid": {
         "version": "0.1",
         "entity_id": "identificatie",
-        "abbreviation": "TEA",
+        "abbreviation": "TCA",
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
@@ -113,10 +113,10 @@
           }
         }
       },
-      "test_entity_autoid_states": {
+      "test_collection_autoid_states": {
         "version": "0.1",
         "entity_id": "identificatie",
-        "abbreviation": "TEA",
+        "abbreviation": "TCS",
         "has_states": true,
         "attributes": {
           "identificatie": {
@@ -141,9 +141,9 @@
           }
         }
       },
-      "rel_test_entity_a": {
+      "rel_test_collection_a": {
         "version": "0.1",
-        "description": "Entity to test relations. Has states.",
+        "description": "Collection to test relations. Has states.",
         "abbreviation": "RTA",
         "entity_id": "identificatie",
         "has_states": true,
@@ -167,28 +167,28 @@
           "ref_to_c": {
             "type": "GOB.Reference",
             "description": "Reference to RTC",
-            "ref": "test_catalogue:rel_test_entity_c"
+            "ref": "test_catalog:rel_test_collection_c"
           },
           "manyref_to_c": {
             "type": "GOB.ManyReference",
             "description": "ManyReference to RTC",
-            "ref": "test_catalogue:rel_test_entity_c"
+            "ref": "test_catalog:rel_test_collection_c"
           },
           "ref_to_d": {
             "type": "GOB.Reference",
             "description": "Reference to RTD",
-            "ref": "test_catalogue:rel_test_entity_d"
+            "ref": "test_catalog:rel_test_collection_d"
           },
           "manyref_to_d": {
             "type": "GOB.ManyReference",
             "description": "ManyReference to RTD",
-            "ref": "test_catalogue:rel_test_entity_d"
+            "ref": "test_catalog:rel_test_collection_d"
           }
         }
       },
-      "rel_test_entity_b": {
+      "rel_test_collection_b": {
         "version": "0.1",
-        "description": "Entity to test relations. No states.",
+        "description": "Collection to test relations. No states.",
         "abbreviation": "RTB",
         "entity_id": "identificatie",
         "attributes": {
@@ -203,28 +203,28 @@
           "ref_to_c": {
             "type": "GOB.Reference",
             "description": "Reference to RTC",
-            "ref": "test_catalogue:rel_test_entity_c"
+            "ref": "test_catalog:rel_test_collection_c"
           },
           "manyref_to_c": {
             "type": "GOB.ManyReference",
             "description": "ManyReference to RTC",
-            "ref": "test_catalogue:rel_test_entity_c"
+            "ref": "test_catalog:rel_test_collection_c"
           },
           "ref_to_d": {
             "type": "GOB.Reference",
             "description": "Reference to RTD",
-            "ref": "test_catalogue:rel_test_entity_d"
+            "ref": "test_catalog:rel_test_collection_d"
           },
           "manyref_to_d": {
             "type": "GOB.ManyReference",
             "description": "ManyReference to RTD",
-            "ref": "test_catalogue:rel_test_entity_d"
+            "ref": "test_catalog:rel_test_collection_d"
           }
         }
       },
-      "rel_test_entity_c": {
+      "rel_test_collection_c": {
         "version": "0.1",
-        "description": "Entity to test relations. Has states.",
+        "description": "Collection to test relations. Has states.",
         "abbreviation": "RTC",
         "entity_id": "identificatie",
         "has_states": true,
@@ -247,9 +247,9 @@
           }
         }
       },
-      "rel_test_entity_d": {
+      "rel_test_collection_d": {
         "version": "0.1",
-        "description": "Entity to test relations. No states.",
+        "description": "Collection to test relations. No states.",
         "abbreviation": "RTD",
         "entity_id": "identificatie",
         "attributes": {
@@ -265,7 +265,7 @@
       },
       "rel_collapsed_a": {
         "version": "0.1",
-        "description": "Entity to test collapsed state relations",
+        "description": "Collection to test collapsed state relations",
         "abbreviation": "COLA",
         "entity_id": "identificatie",
         "has_states": true,
@@ -289,13 +289,13 @@
           "reference": {
             "type": "GOB.Reference",
             "description": "The reference that is tested",
-            "ref": "test_catalogue:rel_collapsed_b"
+            "ref": "test_catalog:rel_collapsed_b"
           }
         }
       },
       "rel_collapsed_b": {
         "version": "0.1",
-        "description": "Entity to test collapsed state relations",
+        "description": "Collection to test collapsed state relations",
         "abbreviation": "COLB",
         "entity_id": "identificatie",
         "has_states": true,
@@ -320,7 +320,7 @@
       },
       "rel_multiple_allowed_src": {
         "version": "0.1",
-        "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+        "description": "Collection to test relations with multiple possible destination objects per bronwaarde",
         "abbreviation": "MA1",
         "entity_id": "identificatie",
         "has_states": true,
@@ -344,18 +344,18 @@
           "reference": {
             "type": "GOB.Reference",
             "description": "A single reference to dst",
-            "ref": "test_catalogue:rel_multiple_allowed_dst"
+            "ref": "test_catalog:rel_multiple_allowed_dst"
           },
           "manyreference": {
             "type": "GOB.ManyReference",
             "description": "A many reference to dst",
-            "ref": "test_catalogue:rel_multiple_allowed_dst"
+            "ref": "test_catalog:rel_multiple_allowed_dst"
           }
         }
       },
       "rel_multiple_allowed_multisource_src": {
         "version": "0.1",
-        "description": "Entity to test relations with multiple possible destination objects per bronwaarde for only one source",
+        "description": "Collection to test relations with multiple possible destination objects per bronwaarde for only one source",
         "abbreviation": "MA2",
         "entity_id": "identificatie",
         "has_states": true,
@@ -379,18 +379,18 @@
           "reference": {
             "type": "GOB.Reference",
             "description": "A single reference to dst",
-            "ref": "test_catalogue:rel_multiple_allowed_dst"
+            "ref": "test_catalog:rel_multiple_allowed_dst"
           },
           "manyreference": {
             "type": "GOB.ManyReference",
             "description": "A many reference to dst",
-            "ref": "test_catalogue:rel_multiple_allowed_dst"
+            "ref": "test_catalog:rel_multiple_allowed_dst"
           }
         }
       },
       "rel_multiple_allowed_dst": {
         "version": "0.1",
-        "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+        "description": "Collection to test relations with multiple possible destination objects per bronwaarde",
         "abbreviation": "MA3",
         "entity_id": "identificatie",
         "has_states": true,
@@ -444,7 +444,7 @@
           "secure_reference": {
             "type": "GOB.Reference",
             "description": "Secure reference.",
-            "ref": "test_catalogue:test_entity",
+            "ref": "test_catalog:test_collection",
             "secure": {
               "bronwaarde": {
                 "type": "GOB.SecureString",

@@ -1066,5 +1066,19 @@
         }
       }
     }
+  },
+  "KvkDataService": {
+    "hr": {
+      "maatschappelijkeactiviteiten": {
+        "heeft_bezoekadres": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_postadres": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      }
+    }
   }
 }

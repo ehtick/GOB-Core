@@ -3686,6 +3686,107 @@
             "has_multiple_values": true
           }
         }
+      },
+      "locaties": {
+        "version": "0.1",
+        "abbreviation": "LOC",
+        "description": "Een Locatie is een aanwijsbare plek op aarde.",
+        "has_states": true,
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Attribuut om deze locatie uniek te identificeren. TODO: uitzoeken hoe we dat kunnen."
+          },
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de locatie bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de locatie is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de locatie is beëindigd."
+          },
+          "afgeschermd": {
+            "type": "GOB.Boolean",
+            "description": "Geeft aan of het adres afgeschermd is of niet."
+          },
+          "toevoeging_adres": {
+            "type": "GOB.String",
+            "description": "Vrije tekst om een Adres nader aan te kunnen duiden. Het gaat hier bijvoorbeeld om bedrijfsverzamelgebouwen waarbij meerdere vestigingen op hetzelfde adres zitten en waarbij onderscheid gemaakt kan worden door een extra omschrijving van de locatie. Ook een locatieOmschrijving en aanduidingBijHuisnummer uit de BRP wordt hiermee doorgegeven."
+          },
+          "volledig_adres": {
+            "type": "GOB.String",
+            "description": "Samengesteld adres dat wordt afgeleid van de overige adresgegevens."
+          },
+          "heeft_nummeraanduiding": {
+            "type": "GOB.Reference",
+            "description": "Met welk adres heeft de locatie een relatie.",
+            "ref": "bag:nummeraanduidingen"
+          },
+          "heeft_verblijfsobject": {
+            "type": "GOB.Reference",
+            "description": "Met welke verblijfsobject heeft de locatie een relatie.",
+            "ref": "bag:verblijfsobjecten"
+          },
+          "heeft_ligplaats": {
+            "type": "GOB.Reference",
+            "description": "Met welke ligplaats heeft de locatie een relatie.",
+            "ref": "bag:ligplaatsen"
+          },
+          "heeft_standplaats": {
+            "type": "GOB.Reference",
+            "description": "Met welke standplaats heeft de locatie een relatie.",
+            "ref": "bag:standplaatsen"
+          },
+          "straatnaam": {
+            "type": "GOB.String",
+            "description": "De straat van het binnenlandse adres."
+          },
+          "huisnummer": {
+            "type": "GOB.Integer",
+            "description": "Het huisnummer van het adres."
+          },
+          "huisletter": {
+            "type": "GOB.String",
+            "description": "De huisletter van het binnenlandse adres die die door de gemeente is toegekend aan het huisnummer."
+          },
+          "huisnummer_toevoeging": {
+            "type": "GOB.String",
+            "description": "Een toevoeging van het huisnummer van het binnenlandse adres."
+          },
+          "postbusnummer": {
+            "type": "GOB.String",
+            "description": "Het nummer van de postbus behorende bij het binnenlandse adres."
+          },
+          "postcode": {
+            "type": "GOB.String",
+            "description": "De postcode van het binnenlandse adres, waarbij minimaal de vier cijfers bekend zijn."
+          },
+          "plaats": {
+            "type": "GOB.String",
+            "description": "De plaatsaanduiding van het binnenlandse adres. Dit komt overeen met het gemeentedeel in de basisregistratie personen."
+          },
+          "straat_huisnummer_buitenland": {
+            "type": "GOB.String",
+            "description": "Het straat/huisnummer is een combinatie van de straat en het huisnummer van het buitenlandse adres."
+          },
+          "postcode_plaats_buitenland": {
+            "type": "GOB.String",
+            "description": "De postcode/woonplaats is de combinatie van een eventuele postcode en woonplaats van het buitenlandse adres."
+          },
+          "regio_buitenland": {
+            "type": "GOB.String",
+            "description": "Regio is een deel van het land (streek, provincie, etc.) van het buitenlandse adres."
+          },
+          "land_buitenland": {
+            "type": "GOB.String",
+            "description": "De naam van het land waar het adres zich bevindt."
+          }
+        }
       }
     }
   }

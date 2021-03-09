@@ -1175,7 +1175,7 @@
     "description": "De lijst met kenmerken bestaat uit kenmerken die landelijk zijn vastgesteld, en uit kenmerken die als extra gegevens (de BAG+ gegevens) voor de procesvoering van de gemeente Amsterdam worden bijgehouden.",
     "collections": {
       "woonplaatsen": {
-        "version": "0.2",
+        "version": "0.3",
         "abbreviation": "WPS",
         "entity_id": "identificatie",
         "has_states": true,
@@ -1356,7 +1356,7 @@
         }
       },
       "ligplaatsen": {
-        "version": "0.3",
+        "version": "0.4",
         "abbreviation": "LPS",
         "entity_id": "identificatie",
         "has_states": true,

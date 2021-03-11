@@ -1077,6 +1077,28 @@
         "heeft_postadres": {
           "method": "equals",
           "destination_attribute": "identificatie"
+        },
+        "wordt_uitgeoefend_in_commerciele_vestiging": {
+          "method": "equals",
+          "destination_attribute": "vestigingsnummer"
+        },
+        "wordt_uitgeoefend_in_niet_commerciele_vestiging": {
+          "method": "equals",
+          "destination_attribute": "vestigingsnummer"
+        }
+      },
+      "vestigingen": {
+        "is_overgegaan_in_vestiging": {
+          "method": "equals",
+          "destination_attribute": "vestigingsnummer"
+        },
+        "heeft_als_postadres": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_als_bezoekadres": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
         }
       }
     }

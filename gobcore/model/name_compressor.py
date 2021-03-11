@@ -7,6 +7,8 @@ _CONVERSIONS = {
     "heeft_betrekking_op": "hft_btrk_p",
     "is_onderdeel_van": "ondrdl_vn",
     "aangeduid_door": "angdd_dr",
+    "wordt_uitgeoefend_in": "uitgoef_in",
+    "commerciele_vestiging": "comm_vstgng",
 }
 
 

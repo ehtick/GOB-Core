@@ -3787,6 +3787,157 @@
             "description": "De naam van het land waar het adres zich bevindt."
           }
         }
+      },
+      "vestigingen": {
+        "version": "0.1",
+        "abbreviation": "VES",
+        "description": "Een Vestiging is gebouw of een complex van gebouwen waar duurzame uitoefening van activiteiten van een Onderneming of Rechtspersoon plaatsvindt.",
+        "entity_id": "vestigingsnummer",
+        "attributes": {
+          "vestigingsnummer": {
+            "type": "GOB.String",
+            "description": "Betreft het identificerende gegeven voor de vestiging."
+          },
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de vestiging bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is beëindigd."
+          },
+          "datum_voortzetting": {
+            "type": "GOB.Date",
+            "description": "Datum voortzetting van de vestiging."
+          },
+          "is_commerciele_vestiging": {
+            "type": "GOB.Boolean",
+            "description": "Geeft aan of dit een commerciële vestigign betreft. Als false, dan een niet-commerciële vestiging."
+          },
+          "eerste_handelsnaam": {
+            "type": "GOB.String",
+            "description": "De eerste-handelsnaam betreft een samengesteld veld over de vestiging. Als het een niet-commerciële vestiging betreft is dit de naam, als het een commerciele vestiging betreft is dit de eerste handelsnaam."
+          },
+          "heeft_als_postadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde postadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "heeft_als_bezoekadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde bezoekadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "communicatienummer": {
+            "type": "GOB.JSON",
+            "description": "Communicatienummer is het telefoon- of faxnummer. Zowel het netnummer als het abonneenummer worden teruggegeven in het nummer. De internationale toegangscode van het land waarop het nummer (telefoon of fax) betrekking heeft staat in het veld toegangscode.",
+            "attributes": {
+              "toegangscode": {
+                "type": "GOB.Integer"
+              },
+              "nummer": {
+                "type": "GOB.String"
+              },
+              "soort": {
+                "type": "GOB.String",
+                "description": "Bevat de waarden Telefoonnummer of Faxnummer."
+              }
+            },
+            "has_multiple_values": true
+          },
+          "domeinnaam": {
+            "type": "GOB.JSON",
+            "description": "De domeinnaam is de naam waaronder de betrokkene zaken doet of informatie verschaft op het internet, het internetadres (URL).",
+            "attributes": {
+              "naam": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "email_adres": {
+            "type": "GOB.JSON",
+            "description": "Het e-mail adres dat de betrokkene open heeft gesteld voor communicatie.",
+            "attributes": {
+              "adres": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "De naam van de niet-commerciële vestiging."
+          },
+          "verkorte_naam": {
+            "type": "GOB.String",
+            "description": "De administratieve naam van de niet-commerciële vestiging in het handelsregister indien de naam langer is dan 45 karakters."
+          },
+          "ook_genoemd": {
+            "type": "GOB.String",
+            "description": "Een andere naam waaronder de vereniging stichtingen en vereniging van eigenaars ook bekend is."
+          },
+          "handelt_onder_handelsnamen": {
+            "type": "GOB.JSON",
+            "description": "Een handelsnaam is een naam waaronder de commerciële vestiging handelt. Een vestiging mag meerdere handelsnamen hebben.",
+            "attributes": {
+              "omschrijving": {
+                "type": "GOB.String"
+              },
+              "tijdstip_registratie": {
+                "type": "GOB.Date"
+              },
+              "datum_aanvang_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "datum_einde_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "volgorde": {
+                "type": "GOB.Integer"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "totaal_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het totaal aantal werkzame personen bij de onderneming "
+          },
+          "voltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal voltijd (meer dan 15 uur per week) werkzame personen bij de onderneming "
+          },
+          "deeltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal deeltijd (kleiner of gelijk aan 15 uur per week) werkzame personen bij de onderneming"
+          },
+          "importeert": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie of de commerciële activiteit Import betreft."
+          },
+          "exporteert": {
+            "type": "GOB.String",
+            "description": "Indicatie of de commerciële activiteit Export betreft."
+          },
+          "activiteiten_omschrijving": {
+            "type": "GOB.String",
+            "description": "De omschrijving van de activiteiten die de vestiging uitoefent. De beschrijving bevat de nadere aanduiding van de commerciële activiteiten of de nadere aanduiding van de niet-commerciële activiteiten."
+          },
+          "heeft_sbi_activiteiten": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:sbiactiviteiten",
+            "description": "SBI Activiteiten die bij deze commerciële of niet commerciële vestiging horen."
+          },
+          "is_overgegaan_in_vestiging": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:vestigingen",
+            "description": "Dit legt de relatie van de afgesloten vestiging met de samengevoegde vestiging."
+          }
+        }
       }
     }
   }

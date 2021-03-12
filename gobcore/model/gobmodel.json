@@ -3787,6 +3787,667 @@
             "description": "De naam van het land waar het adres zich bevindt."
           }
         }
+      },
+      "sbiactiviteiten": {
+        "version": "0.1",
+        "abbreviation": "ACT",
+        "description": "De SBI-activiteit bevat de SBI-code en bijbehorende omschrijving.",
+        "entity_id": "identificatie",
+        "attributes": {
+          "identificatie": {
+            "type": "GOB.String",
+            "description": "Attribuut om deze sbi_activiteit uniek te identificeren, samengesteld van SBI_code en kvknummer."
+          },
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de sbi_activiteit bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de sbi_activiteit is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de sbi_activiteit is beëindigd."
+          },
+          "code": {
+            "type": "GOB.String",
+            "description": "De codering van de activiteit con­form de SBI2008."
+          },
+          "omschrijving": {
+            "type": "GOB.String",
+            "description": "De omschrijving behorende bij de SBI-code."
+          },
+          "is_hoofdactiviteit": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie die aangeeft welk van de activiteiten de hoofdactiviteit is."
+          }
+        }
+      },
+      "vestigingen": {
+        "version": "0.1",
+        "abbreviation": "VES",
+        "description": "Een Vestiging is gebouw of een complex van gebouwen waar duurzame uitoefening van activiteiten van een Onderneming of Rechtspersoon plaatsvindt.",
+        "entity_id": "vestigingsnummer",
+        "attributes": {
+          "vestigingsnummer": {
+            "type": "GOB.String",
+            "description": "Betreft het identificerende gegeven voor de vestiging."
+          },
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de vestiging bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is beëindigd."
+          },
+          "datum_voortzetting": {
+            "type": "GOB.Date",
+            "description": "Datum voortzetting van de vestiging."
+          },
+          "is_commerciele_vestiging": {
+            "type": "GOB.Boolean",
+            "description": "Geeft aan of dit een commerciële vestigign betreft. Als false, dan een niet-commerciële vestiging."
+          },
+          "eerste_handelsnaam": {
+            "type": "GOB.String",
+            "description": "De eerste-handelsnaam betreft een samengesteld veld over de vestiging. Als het een niet-commerciële vestiging betreft is dit de naam, als het een commerciele vestiging betreft is dit de eerste handelsnaam."
+          },
+          "heeft_als_postadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde postadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "heeft_als_bezoekadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde bezoekadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "communicatienummer": {
+            "type": "GOB.JSON",
+            "description": "Communicatienummer is het telefoon- of faxnummer. Zowel het netnummer als het abonneenummer worden teruggegeven in het nummer. De internationale toegangscode van het land waarop het nummer (telefoon of fax) betrekking heeft staat in het veld toegangscode.",
+            "attributes": {
+              "toegangscode": {
+                "type": "GOB.Integer"
+              },
+              "nummer": {
+                "type": "GOB.String"
+              },
+              "soort": {
+                "type": "GOB.String",
+                "description": "Bevat de waarden Telefoonnummer of Faxnummer."
+              }
+            },
+            "has_multiple_values": true
+          },
+          "domeinnaam": {
+            "type": "GOB.JSON",
+            "description": "De domeinnaam is de naam waaronder de betrokkene zaken doet of informatie verschaft op het internet, het internetadres (URL).",
+            "attributes": {
+              "naam": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "email_adres": {
+            "type": "GOB.JSON",
+            "description": "Het e-mail adres dat de betrokkene open heeft gesteld voor communicatie.",
+            "attributes": {
+              "adres": {
+                "type": "GOB.String"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "De naam van de niet-commerciële vestiging."
+          },
+          "verkorte_naam": {
+            "type": "GOB.String",
+            "description": "De administratieve naam van de niet-commerciële vestiging in het handelsregister indien de naam langer is dan 45 karakters."
+          },
+          "ook_genoemd": {
+            "type": "GOB.String",
+            "description": "Een andere naam waaronder de vereniging stichtingen en vereniging van eigenaars ook bekend is."
+          },
+          "handelt_onder_handelsnamen": {
+            "type": "GOB.JSON",
+            "description": "Een handelsnaam is een naam waaronder de commerciële vestiging handelt. Een vestiging mag meerdere handelsnamen hebben.",
+            "attributes": {
+              "omschrijving": {
+                "type": "GOB.String"
+              },
+              "tijdstip_registratie": {
+                "type": "GOB.Date"
+              },
+              "datum_aanvang_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "datum_einde_handelsnaam": {
+                "type": "GOB.Date"
+              },
+              "volgorde": {
+                "type": "GOB.Integer"
+              }
+            },
+            "has_multiple_values": true
+          },
+          "totaal_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het totaal aantal werkzame personen bij de onderneming "
+          },
+          "voltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal voltijd (meer dan 15 uur per week) werkzame personen bij de onderneming "
+          },
+          "deeltijd_werkzame_personen": {
+            "type": "GOB.Integer",
+            "description": "Het aantal deeltijd (kleiner of gelijk aan 15 uur per week) werkzame personen bij de onderneming"
+          },
+          "importeert": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie of de commerciële activiteit Import betreft."
+          },
+          "exporteert": {
+            "type": "GOB.String",
+            "description": "Indicatie of de commerciële activiteit Export betreft."
+          },
+          "activiteiten_omschrijving": {
+            "type": "GOB.String",
+            "description": "De omschrijving van de activiteiten die de vestiging uitoefent. De beschrijving bevat de nadere aanduiding van de commerciële activiteiten of de nadere aanduiding van de niet-commerciële activiteiten."
+          },
+          "heeft_sbi_activiteiten": {
+            "type": "GOB.ManyReference",
+            "ref": "hr.sbiactiviteiten",
+            "description": "SBI Activiteiten die bij deze commerciële of niet commerciële vestiging horen."
+          },
+          "is_overgegaan_in_vestiging": {
+            "type": "GOB.ManyReference",
+            "ref": "hr:vestigingen",
+            "description": "Dit legt de relatie van de afgesloten vestiging met de samengevoegde vestiging."
+          }
+        }
+      },
+      "personen": {
+        "version": "0.1",
+        "abbreviation": "PRS",
+        "description": "Een Persoon is een ieder die rechten en plichten kan hebben. Persoon wordt gebruikt als overkoepelend begrip (een verzamelnaam voor NatuurlijkPersoon, NietNatuurlijkPersoon en NaamPersoon) om er over te kunnen communiceren.",
+        "entity_id": "<geen idee>",
+        "attributes": {
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de persoon bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de persoon is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de persoon is beëindigd."
+          },
+          "persoon_rechtsvorm": {
+            "type": "GOB.String",
+            "description": "Rechtsvorm van de persoon."
+          },
+          "uitgebreide_rechtsvorm": {
+            "type": "GOB.String",
+            "description": "Rechtsvorm (conform BW) van inschrijving aangevuld met informatie over structuur, rechtsbevoegdheid etc."
+          },
+          "volledige_naam": {
+            "type": "GOB.String",
+            "description": "Volledige naam van de persoon."
+          },
+          "heeft_als_postadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde postadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "heeft_als_bezoekadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde bezoekadres behorende bij de vestiging.",
+            "ref": "hr:locaties"
+          },
+          "heeft_bijzondere_rechtstoestand": {
+            "type": "GOB.Reference",
+            "description": "Een bijzondere rechtstoestand is een toestand waarbij de persoon zijn/haar financiële verplichten niet meer na kan komen. Een andere term die vaak gebruikt wordt voor de bijzondere rechtstoestand is insolventie.",
+            "ref": "hr:bijzondererechtstoestanden"
+          },
+          "beperking_in_rechtshandeling": {
+            "type": "GOB.String",
+            "description": "De beperking in rechtshandeling. Waarden kunnen zijn: Provisioneel bewind, Onder curatele gesteld, Onder bewind gesteld."
+          },
+          "datum_aanvang_beperking_rechtshandeling": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de beperking is ingegaan."
+          },
+          "datum_einde_beperking_rechtshandeling": {
+            "type": "GOB.String",
+            "description": "De datum waarop de beperking is beëindigd."
+          },
+          "is_natuurlijk_persoon": {
+            "type": "GOB.Reference",
+            "description": "Een natuurlijk persoon is een mens.",
+            "ref": "hr:natuurlijkepersonen"
+          },
+          "is_niet_natuurlijk_persoon": {
+            "type": "GOB.Reference",
+            "description": "Een Niet-natuurlijk persoon is een Persoon met rechten en plichten die geen Natuurlijk persoon is.",
+            "ref": "hr:nietnatuurlijkepersonen"
+          },
+          "is_naam_persoon": {
+            "type": "GOB.Reference",
+            "description": "Een NaamPersoon bevat de naam van een Natuurlijk persoon of Niet-natuurlijk persoon die niet inschrijfplichtig is, maar wel een functie vervult in het handelsregister.",
+            "ref": "hr:naampersonen"
+          },
+          "is_eigenaar_van_maatschappelijke_activiteit": {
+            "type": "GOB.Reference",
+            "description": "Een maatschappelijke activiteit is de activiteit van een Natuurlijk persoon of een Niet-natuurlijk persoon.",
+            "ref": "hr:natuurlijkepersonen"
+          },
+          "heeft_functievervulling": {
+            "type": "GOB.Reference",
+            "description": "Een Functievervulling is een vervulling door een Persoon van een functie voor een Persoon.",
+            "ref": "hr:functievervullingen"
+          },
+          "is_verenigd_naar": {
+            "type": "GOB.Reference",
+            "description": "De relatie naar de persoon waar deze persoon naar verenigd is.",
+            "ref": "hr:personen"
+          }
+        }
+      },
+      "bijzondererechtstoestanden": {
+        "version": "0.1",
+        "abbreviation": "RTD",
+        "description": "Een Persoon is een ieder die rechten en plichten kan hebben. Persoon wordt gebruikt als overkoepelend begrip (een verzamelnaam voor NatuurlijkPersoon, NietNatuurlijkPersoon en NaamPersoon) om er over te kunnen communiceren.",
+        "entity_id": "<geen idee>",
+        "attributes": {
+          "tijdstip_registratie": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de vestiging bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is ontstaan."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de vestiging is beëindigd."
+          },
+          "reden_einde": {
+            "type": "GOB.JSON",
+            "description": "De reden waarom de insolventie van de natuurlijk persoon is beëindigd.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
+          },
+          "in_faillisement": {
+            "type": "GOB.Boolean",
+            "description": "Faillissement is een gerechtelijk beslag op en in de regel executie van het gehele vermogen van de schuldenaar ten behoeve van zijn gezamenlijke schuldeisers."
+          },
+          "in_schuldsanering": {
+            "type": "GOB.Boolean",
+            "description": "Schuldsanering zorgt ervoor dat de schuldenaar na verloop van zekere tijd bevrijd wordt van zijn schuldenlast, omdat de vorderingen van zijn schuldeisers niet langer afdwingbaar zijn. Een schuldsanering is alleen van toepassing op een natuurlijk persoon."
+          },
+          "surseance_van_betaling": {
+            "type": "GOB.JSON",
+            "description": "Uitstel van betaling geldt vanaf het moment dat de rechter voorlopig uitstel van betaling heeft verleend tot het moment dat de (voorlopige of definitieve).",
+            "attributes": {
+              "in_surseance_van_betaling": {
+                "type": "GOB.Boolean"
+              },
+              "status": {
+                "type": "GOB.String",
+                "description": "De sta­tus waar­in de sur­se­an­ce ver­keert, dit kan voor­lo­pig of de­fi­ni­tief zijn."
+              },
+              "duur": {
+                "type": "GOB.String",
+                "description": "De duur van de pe­ri­o­de (in maan­den) waar­voor sur­se­an­ce van be­ta­ling geldt."
+              },
+              "is_verlengd": {
+                "type": "GOB.Boolean",
+                "description": "Indicatie of de duur van surseance van betaling is verlengd."
+              }
+            }
+          }
+        }
+      },
+      "naampersonen": {
+        "version": "0.1",
+        "abbreviation": "NMP",
+        "description": "Een NaamPersoon bevat de naam van een Natuurlijk persoon of Niet-natuurlijk persoon die niet inschrijfplichtig is, maar wel een functie vervult in het handelsregister.",
+        "entity_id": "<geen idee>",
+        "attributes": {
+          "naam": {
+            "type": "GOB.String",
+            "description": "De naam van de persoon."
+          },
+          "telefoon_naam_persoon": {
+            "type": "GOB.JSON",
+            "description": "Telefoon gegevens specifiek voor de NaamPersoon wanneer dit een curator, bewindvoerder of rechtercommissaris betreft.",
+            "attributes": {
+              "nummer": {
+                "type": "GOB.Integer",
+                "description": "Telefoonnummer is het telefoonnummer zonder opmaak. Zowel het netnummer als het abonneennummer worden teruggegeven in het telefoonnummer."
+              },
+              "toegangscode": {
+                "type": "GOB.Integer",
+                "description": "De internationale toegangscode van het land waarop het nummer (telefoon of fax) betrekking heeft.."
+              }
+            }
+          },
+          "heeft_als_bezoekadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde bezoekadres behorende bij de NaamPersoon.",
+            "ref": "hr:locaties"
+          }
+        }
+      },
+      "natuurlijkepersonen": {
+        "version": "0.1",
+        "abbreviation": "NPS",
+        "description": "Een Natuurlijk persoon is een mens.",
+        "entity_id": "<geen idee>",
+        "attributes": {
+          "heeft_bsn_voor": {
+            "type": "GOB.Reference",
+            "ref": "brp:personen",
+            "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
+            "secure": {
+              "bronwaarde": {
+                "type": "GOB.SecureString",
+                "level": 4
+              }
+            }
+          },
+          "geslachtsnaam": {
+            "type": "GOB.String",
+            "description": "De naam van de persoon."
+          },
+          "voorvoegselGeslachtsnaam": {
+            "type": "GOB.SecureString",
+            "description": "De geslachtsnaam van de Natuurlijk persoon.",
+            "level": 4
+          },
+          "voornamen": {
+            "type": "GOB.SecureString",
+            "description": "De voornamen van de Natuurlijk persoon.",
+            "level": 4
+          },
+          "geslachtsaanduiding": {
+            "type": "GOB.JSON",
+            "description": "De geslachtsaanduiding van de Natuurlijk persoon conform de standaarden van de BRP.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
+          },
+          "geboortedatum": {
+            "type": "GOB.SecureDate",
+            "description": "De geboortedatum van de Natuurlijk persoon. Deze datum kan onvolledig zijn (alleen jaar, of alleen jaar en maand bekend).",
+            "level": 4
+          },
+          "geboorteplaats": {
+            "type": "GOB.SecureString",
+            "description": "De plaats waar de bertreffende Natuurlijk persoon is geboren.",
+            "level": 4
+          },
+          "geboorteland": {
+            "type": "GOB.SecureString",
+            "description": "Het land waar de Natuurlijk persoon is geboren.",
+            "level": 4
+          },
+          "overlijdensdatum": {
+            "type": "GOB.Date",
+            "description": "De overlijdensdatum van de Natuurlijk persoon. Deze datum kan onvolledig zijn (alleen jaar, of alleen jaar en maand bekend).",
+            "level": 4
+          },
+          "aanduiding_naamgebruik": {
+            "type": "GOB.JSON",
+            "description": "Gegevens over de wijze van aanschrijving.",
+            "attributes": {
+              "code": {
+                "type": "GOB.String"
+              },
+              "omschrijving": {
+                "type": "GOB.String"
+              }
+            }
+          },
+          "geslachtsnaam_partner": {
+            "type": "GOB.SecureString",
+            "description": "De geslachtsnaam van de partner. Dit veld is gevuld indiend aanduiding naamgebruik ongelijk is aan 'Eigen geslachtsnaam'.",
+            "level": 4
+          },
+          "voorvoegsel_geslachtsnaam_partner": {
+            "type": "GOB.SecureString",
+            "description": "Het voorvoegsel van de partner. Dit veld is gevuld indiend aanduiding naamgebruik ongelijk is aan 'Eigen geslachtsnaam'.",
+            "level": 4
+          },
+          "heeft_woonadres": {
+            "type": "GOB.Reference",
+            "description": "Het adres van de Natuurlijke persoon.",
+            "ref": "hr:locaties"
+          }
+        }
+      },
+      "nietnatuurlijkepersonen": {
+        "version": "0.1",
+        "abbreviation": "NNP",
+        "description": "Een Niet natuurlijk persoon is een persoon met rechten en plichten die geen Natuurlijk persoon is.",
+        "entity_id": "rsin",
+        "attributes": {
+          "rsin": {
+            "type": "GOB.String",
+            "description": "Het door een kamer toegekend uniek nummer voor de niet natuurlijk persoon."
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "De naam van de rechtspersoon."
+          },
+          "datum_aanvang": {
+            "type": "GOB.Date",
+            "description": "De datum van aanvang van de niet natuurlijk persoon."
+          },
+          "datum_einde": {
+            "type": "GOB.Date",
+            "description": "De datum van beëindiging van de niet natuurlijk persoon."
+          },
+          "datum_uitschrijving": {
+            "type": "GOB.Date",
+            "description": "De datum van uitschrijving van de niet natuurlijk persoon."
+          },
+          "ook_genoemd": {
+            "type": "GOB.String",
+            "description": "Een andere naam waaronder de vereniging, stichtingen en vereniging van eigenaars ook bekend is."
+          },
+          "verkorte_naam": {
+            "type": "GOB.String",
+            "description": "De administratieve naam in het handelsregister indien de naam langer is dan 45 karakters"
+          },
+          "datum_aanvang_ontbinding": {
+            "type": "GOB.Date",
+            "description": "De datum van aanvang van de ontbinding."
+          },
+          "datum_einde_ontbinding": {
+            "type": "GOB.Date",
+            "description": "De datum van het einde van de ontbinding."
+          },
+          "aanleiding_ontbinding": {
+            "type": "GOB.String",
+            "description": "Nadere specificatie wat de aanleiding van de ontbinding is geweest."
+          },
+          "is_liquidatie": {
+            "type": "GOB.Boolean",
+            "description": "Geeft aan of dit een liquidatie betreft. Bij een vereffening is er sprake van dat de rechtspersoon of het samenwerkingsverband activiteiten ontplooit om zich op te heffen. De schulden worden afgewikkeld en een eventueel saldo wordt verdeeld onder de rechthebbenden."
+          },
+          "datum_aanvang_liquidatie": {
+            "type": "GOB.Date",
+            "description": "De datum van aanvang van de liquidatie."
+          },
+          "datum_einde_liquidatie": {
+            "type": "GOB.Date",
+            "description": "De datum van het einde van de liquidatie."
+          },
+          "beschrijving_buitenlandse_rechtstoestand": {
+            "type": "GOB.String",
+            "description": "De beschrijving van de buitenlandse uitspraak. De inhoud van de uitspraak is niet van te voren gedefinieerd. De inhoud van de uitspraak is door de kamermedewerker vrij in te vullen."
+          },
+          "is_dochter_van": {
+            "type": "GOB.Reference",
+            "description": "Niet natuurlijk persoon is dochter van gerelateerd niet natuurlijk persoon.",
+            "ref": "hr:nietnatuurlijkepersonen"
+          },
+          "betreft_binnenlandse_nietnatuurlijk_persoon": {
+            "type": "GOB.Reference",
+            "description": "Een binnenlandse niet natuurlijk persoon is een niet natuurlijk persoon die bestaat naar Nederlands recht.",
+            "ref": "hr:binnenlandsenietnatuurlijkepersonen"
+          },
+          "betreft_buitenlandse_vennootschap": {
+            "type": "GOB.Reference",
+            "description": "Een buitenlandse vennootschap is opgericht naar buitenlands recht.",
+            "ref": "hr:buitenlandsevennootschappen"
+          }
+        }
+      },
+      "buitenlandsevennootschappen": {
+        "version": "0.1",
+        "abbreviation": "BRV",
+        "description": "Een buitenlandse vennootschap is opgericht naar buitenlands recht.",
+        "entity_id": "<nog onbekend>",
+        "attributes": {
+          "tijdstip_registratie_buitenlandse_registratie_gegevens": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de buitenlandse registratie gegevens bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang_buitenlandse_registratie_gegevens": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de buitenlandse registratie gegevens is ontstaan."
+          },
+          "datum_einde_buitenlandse_registratie_gegevens": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de buitenlandse registratie gegevens is beëindigd."
+          },
+          "inschrijfnummer": {
+            "type": "GOB.String",
+            "description": "Het nummer waaronder de rechtspersoon is ingeschreven in het buitenlandse register."
+          },
+          "land": {
+            "type": "GOB.String",
+            "description": "Het land waar het register zich bevindt en waar de rechtspersoon zich bevindt."
+          },
+          "naam": {
+            "type": "GOB.String",
+            "description": "Het naam van het buitenlands register."
+          },
+          "plaats": {
+            "type": "GOB.String",
+            "description": "de plaats van het register in het buitenland."
+          },
+          "buitenlandse_registratie": {
+            "type": "GOB.String",
+            "description": "De gegevens van de buitenlandse registratie."
+          },
+          "tijdstip_registratie_buitenlandse_vennootschap_gegevens": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de buitenlandse vennootschap gegevens bij de KvK in het handelsregister is geregistreerd."
+          },
+          "datum_aanvang_buitenlandse_vennootschap_gegevens": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de buitenlandse vennootschap gegevens is ontstaan."
+          },
+          "datum_einde_buitenlandse_vennootschap_gegevens": {
+            "type": "GOB.Date",
+            "description": "De datum waarbij de buitenlandse vennootschap gegevens is beëindigd."
+          },
+          "datum_akte_oprichting": {
+            "type": "GOB.Date",
+            "description": "De datum waarop de akte van oprichting is gemaakt. Dit kan een incomplete datum betreffen."
+          },
+          "datum_eerste_inschrijving_buitenland": {
+            "type": "GOB.Date",
+            "description": "De datum waarop de eerste inschrijving in het buitenland heeft plaatsgevonden. Dit kan een incomplete datum betreffen."
+          },
+          "datum_formeel_buitenland_sinds": {
+            "type": "GOB.String",
+            "description": "De datum waarop de vennootschap als formeel buitenlandse vennootschap is aangemerkt. Dit kan een incomplete datum betreffen. Een formeel buitenlandse vennootschap is een vennootschap van buiten de Europees Economische Ruimte, die zijn werkzaamheden geheel of nagenoeg geheel in Nederland uitvoert zonder een reële band te hebben met de staat waarbinnen het recht geldt waarnaar hij is opgericht."
+          },
+          "heeft_hoofdvestiging_buiten_nederland": {
+            "type": "GOB.Boolean",
+            "description": "Indicatie of de hoofdvestiging van de onderneming buiten Nederland is gevestigd."
+          },
+          "omschrijving_rechtsvorm": {
+            "type": "GOB.String",
+            "description": "De omschrijving van de rechtsvorm zoals deze in het land van inschrijving bekend is."
+          },
+          "rechtsvormcategorie": {
+            "type": "GOB.String",
+            "description": "De Nederlandse rechtsvormcategorie van de buitenlandse vennootschap."
+          },
+          "zetel": {
+            "type": "GOB.String",
+            "description": "De zetel is de plaats waar een rechtspersoon volgens de statuten gevestigd is, dit kan een andere zijn als de plaats waar de werkzaamheden daadwerkelijk worden uitgevoerd."
+          },
+          "geplaatst_kapitaal": {
+            "type": "GOB.JSON",
+            "description": "Het geplaatste aandelenkapitaal is het (recht op) kapitaal dat door de onderneming is uitgegeven en dat door aandeelhouders aan de onderneming is verschaft.",
+            "attributes": {
+              "valuta": {
+                "type": "GOB.String"
+              },
+              "waarde": {
+                "type": "GOB.Integer"
+              }
+            }
+          },
+          "land_van_oprichting": {
+            "type": "GOB.String",
+            "description": "Het land waarin de buitenlandse rechtspersoon of vennootschap is opgericht."
+          },
+          "land_van_vestiging": {
+            "type": "GOB.String",
+            "description": "Het land waarin de buitenlandse rechtspersoon of vennootschap is gevestigd."
+          },
+          "heeft_als_postadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde postadres behorende bij de buitenlandse vennootschap.",
+            "ref": "hr:locaties"
+          },
+          "heeft_als_bezoekadres": {
+            "type": "GOB.Reference",
+            "description": "Het geregistreerde bezoekadres behorende bij de buitenlandse vennootschap.",
+            "ref": "hr:locaties"
+          }
+        }
+      },
+      "binnenlandsenietnatuurlijkepersonen": {
+        "version": "0.1",
+        "abbreviation": "BRV",
+        "description": "Een binnenlandse niet natuurlijk persoon is een niet natuurlijk persoon die bestaat naar Nederlands recht..",
+        "entity_id": "<nog onbekend>",
+        "attributes": {
+          "tijdstip_registratie_buitenlandse_registratie_gegevens": {
+            "type": "GOB.DateTime",
+            "description": "De datum waarop de buitenlandse registratie gegevens bij de KvK in het handelsregister is geregistreerd."
+          }
+        }
       }
     }
   }

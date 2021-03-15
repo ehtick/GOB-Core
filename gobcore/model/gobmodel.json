@@ -3696,7 +3696,7 @@
         "attributes": {
           "identificatie": {
             "type": "GOB.String",
-            "description": "Attribuut om deze locatie uniek te identificeren. TODO: uitzoeken hoe we dat kunnen."
+            "description": "Attribuut om deze locatie uniek te identificeren."
           },
           "tijdstip_registratie": {
             "type": "GOB.DateTime",
@@ -3816,7 +3816,7 @@
           },
           "is_commerciele_vestiging": {
             "type": "GOB.Boolean",
-            "description": "Geeft aan of dit een commerciële vestigign betreft. Als false, dan een niet-commerciële vestiging."
+            "description": "Geeft aan of dit een commerciële vestiging betreft. Als false, dan een niet-commerciële vestiging."
           },
           "eerste_handelsnaam": {
             "type": "GOB.String",

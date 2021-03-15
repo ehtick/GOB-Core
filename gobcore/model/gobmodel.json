@@ -3859,7 +3859,7 @@
             },
             "has_multiple_values": true
           },
-          "email_adres": {
+          "emailadres": {
             "type": "GOB.JSON",
             "description": "Het e-mail adres dat de betrokkene open heeft gesteld voor communicatie.",
             "attributes": {

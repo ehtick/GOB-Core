@@ -1100,6 +1100,24 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         }
+      },
+      "locaties": {
+        "heeft_nummeraanduiding": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_verblijfsobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_ligplaats": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "heeft_standplaats": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
       }
     }
   }

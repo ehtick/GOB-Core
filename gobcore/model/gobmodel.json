@@ -3920,7 +3920,7 @@
             "description": "Indicatie of de commerciële activiteit Import betreft."
           },
           "exporteert": {
-            "type": "GOB.String",
+            "type": "GOB.Boolean",
             "description": "Indicatie of de commerciële activiteit Export betreft."
           },
           "activiteiten_omschrijving": {

@@ -123,14 +123,6 @@
             "type": "GOB.String",
             "description": "Object identificatie"
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "code": {
             "type": "GOB.String",
             "description": "Object code"
@@ -155,14 +147,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Object identificatie"
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
           },
           "ref_to_c": {
             "type": "GOB.Reference",
@@ -236,14 +220,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Object identificatie"
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
           }
         }
       },
@@ -278,14 +254,6 @@
             "type": "GOB.String",
             "description": "Object identificatie"
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "reference": {
             "type": "GOB.Reference",
             "description": "The reference that is tested",
@@ -307,14 +275,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Object identificatie"
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
           }
         }
       },
@@ -332,14 +292,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Object identificatie"
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
           },
           "reference": {
             "type": "GOB.Reference",
@@ -368,14 +320,6 @@
             "type": "GOB.String",
             "description": "Object identificatie"
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "reference": {
             "type": "GOB.Reference",
             "description": "A single reference to dst",
@@ -402,14 +346,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Object identificatie"
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het object is komen te vervallen."
           },
           "referenced_attribute": {
             "type": "GOB.String",
@@ -888,14 +824,6 @@
             "type": "GOB.String",
             "description": "Officiële code van het object."
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "ligt_in_buurt": {
             "type": "GOB.Reference",
             "description": "De buurt waar het bouwblok in ligt.",
@@ -924,14 +852,6 @@
           "code": {
             "type": "GOB.String",
             "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -984,14 +904,6 @@
             "type": "GOB.String",
             "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
@@ -1038,14 +950,6 @@
             "type": "GOB.String",
             "description": "De code van het object."
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
@@ -1089,14 +993,6 @@
             "type": "GOB.String",
             "description": "De code van het object."
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
-          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
@@ -1139,14 +1035,6 @@
           "code": {
             "type": "GOB.String",
             "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is gecreëerd."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De datum waarop het object is komen te vervallen."
           },
           "documentdatum": {
             "type": "GOB.Date",
@@ -1199,14 +1087,6 @@
           "geconstateerd": {
             "type": "GOB.String",
             "description": "Dit geeft aan dat een WOONPLAATS in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een WOONPLAATS."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een WOONPLAATS."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1296,14 +1176,6 @@
           "geometrie": {
             "type": "GOB.Geo.Geometry",
             "description": "Vorm en ligging van de standplaats in het Nationale Rijksdriehoekstelsel."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een STANDPLAATS."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een STANDPLAATS."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1395,14 +1267,6 @@
             "type": "GOB.Geo.Geometry",
             "description": "Vorm en ligging van de ligplaats in het Nationale Rijksdriehoekstelsel."
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De begindatum van een periode waarin een of meer gegevens die worden bijgehouden over een ligplaats een wijziging hebben ondergaan."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van een periode waarin een of meer gegevens die worden bijgehouden over een ligplaats een wijziging hebben ondergaan."
-          },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
             "ref": "bag:onderzoeken",
@@ -1482,14 +1346,6 @@
                 "type": "GOB.String"
               }
             }
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een OPENBARE RUIMTE."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een OPENBARE RUIMTE."
           },
           "geconstateerd": {
             "type": "GOB.Boolean",
@@ -1594,14 +1450,6 @@
             "type": "GOB.Reference",
             "ref": "bag:woonplaatsen",
             "description": "De woonplaats (landelijke identificatie) waarin de nummeraanduiding ligt."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een NUMMERAANDUIDING."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een NUMMERAANDUIDING."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1764,14 +1612,6 @@
             "type": "GOB.ManyReference",
             "ref": "bag:panden",
             "description": "De unieke landelijke aanduidingen van de panden waarvan het verblijfsobject onderdeel uitmaakt."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een VERBLIJFSOBJECT."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een VERBLIJFSOBJECT."
           },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
@@ -1953,14 +1793,6 @@
               }
             }
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De ingangsdatum van de geldigheid van een bepaalde combinatie van gegevens over een PAND."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De einddatum van de geldigheid van een bepaalde combinatie van gegevens over een PAND."
-          },
           "heeft_onderzoeken": {
             "type": "GOB.ManyReference",
             "ref": "bag:onderzoeken",
@@ -2123,14 +1955,6 @@
             "type": "GOB.String",
             "description": "Indicatie of het kenmerk wel of niet in onderzoek staat."
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het kenmerk of de relatie van een object bij de bronhouder in onderzoek is geplaatst."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": "De datum waarop het onderzoek naar het kenmerk of de relatie van een object door de bronhouder is afgerond."
-          },
           "documentdatum": {
             "type": "GOB.Date",
             "description": "De datum waarop het document, waarin de grondslag van het onderzoek wordt vastgelegd, is vastgesteld."
@@ -2166,14 +1990,6 @@
             "type": "GOB.String",
             "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Datum waar op het object bij de bronhouder is ontstaan."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Datum waarop het object bij de bronhouder niet meer geldig is."
-          },
           "relatieve_hoogteligging": {
             "type": "GOB.Integer",
             "description": "-2, -1, 0, 1, 2, 3 Aanduiding voor de relatieve hoogte van het object ten opzichte van het maaiveld."
@@ -2193,14 +2009,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Datum waar op het object bij de bronhouder is ontstaan."
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Datum waarop het object bij de bronhouder niet meer geldig is."
           },
           "relatieve_hoogteligging": {
             "type": "GOB.Integer",
@@ -2370,14 +2178,6 @@
             "type": "GOB.DateTime",
             "description": "De datum waarop de geleverde toestand van het kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
-          },
           "in_onderzoek": {
             "type": "GOB.String",
             "description": "Als dit veld is gevuld geeft dit de omschrijving waarom dit gegeven in onderzoek staat (art. 7n en 7r Kadasterwet)."
@@ -2412,14 +2212,6 @@
           "identificatie": {
             "type": "GOB.String",
             "description": "De Kadaster identificatie is een door het Kadaster toegekende landelijk uniek nummer aan dit zakelijk recht binnen de kadastrale registratie."
-          },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
           },
           "belast_zakelijkerechten": {
             "type": "GOB.ManyReference",
@@ -2952,14 +2744,6 @@
             "type": "GOB.String",
             "description": "Neuron ID"
           },
-          "begin_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
-          },
-          "eind_geldigheid": {
-            "type": "GOB.DateTime",
-            "description": ""
-          },
           "identificatie": {
             "type": "GOB.String",
             "description": "Het door het Kadaster toegekende landelijk unieke nummer aan deze aantekening."
@@ -3438,14 +3222,6 @@
               }
             }
           },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De begindatum van een periode waarin één of meer gegevens die worden bijgehouden over een WOZ-object, een wijziging hebben ondergaan"
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "De einddatum van een periode waarin één of meer gegevens die worden bijgehouden over een WOZ-object, een wijziging hebben ondergaan"
-          },
           "bevat_kadastraalobject": {
             "type": "GOB.ManyReference",
             "description": "Relatie naar kadastraal object",
@@ -3487,14 +3263,6 @@
                 "type": "GOB.String"
               }
             }
-          },
-          "begin_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Een aanduiding op welk tijdstip het object is ontstaan"
-          },
-          "eind_geldigheid": {
-            "type": "GOB.Date",
-            "description": "Een aanduiding op welk tijdstip het object is beëindigd"
           },
           "is_verbonden_met_verblijfsobject": {
             "type": "GOB.Reference",

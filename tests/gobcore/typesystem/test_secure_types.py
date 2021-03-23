@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 import mock
 
-from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate
+from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate, SecureIncompleteDate
 from gobcore.typesystem.gob_types import JSON, String
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
@@ -77,6 +77,18 @@ class TestSecureDateTime(unittest.TestCase):
         res = secure.get_typed_value('value')
         self.assertEqual(res, mock_datetime.from_value.return_value.to_value)
         mock_datetime.from_value.assert_called_with('value')
+
+
+class TestSecureIncompleteDate(unittest.TestCase):
+
+    @mock.patch("gobcore.typesystem.gob_secure_types.IncompleteDate")
+    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    def test_get_typed_value(self, mock_incomplete_date):
+        secure = SecureIncompleteDate("val")
+        res = secure.get_typed_value("value")
+        self.assertEqual(res, mock_incomplete_date.from_value.return_value.to_value)
+        mock_incomplete_date.from_value.assert_called_with('value')
+
 
 class TestSecureJSON(unittest.TestCase):
 

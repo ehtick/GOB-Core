@@ -77,6 +77,10 @@
           "geometry": {
             "type": "GOB.Geo.Geometry",
             "description": "Geometry value."
+          },
+          "incomplete_date": {
+            "type": "GOB.IncompleteDate",
+            "description": "Incomplete date value"
           }
         },
         "api": {

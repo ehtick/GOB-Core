@@ -1,4 +1,4 @@
-from gobcore.typesystem.gob_types import String, Decimal, DateTime, Date
+from gobcore.typesystem.gob_types import String, Decimal, DateTime, Date, IncompleteDate
 from gobcore.secure.crypto import is_encrypted, encrypt, decrypt, read_unprotect, is_protected
 
 
@@ -106,3 +106,11 @@ class SecureDateTime(Secure):
     def get_typed_value(self, value):
         # Behave like its BaseType...
         return DateTime.from_value(value).to_value
+
+
+class SecureIncompleteDate(Secure):
+    name = "SecureIncompleteDate"
+    BaseType = IncompleteDate
+
+    def get_typed_value(self, value):
+        return IncompleteDate.from_value(value).to_value

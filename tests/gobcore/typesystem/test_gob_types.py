@@ -1,4 +1,5 @@
 import random
+import json
 import unittest
 from unittest import mock
 from datetime import datetime, date
@@ -311,6 +312,37 @@ class TestGobTypes(unittest.TestCase):
         self.assertTrue(GobType.from_value(v1) != GobType.from_value(None))
         self.assertTrue(GobType.from_value(None) != GobType.from_value(v1))
 
+    def test_incomplete_date(self):
+        GobType = get_gob_type("GOB.IncompleteDate")
+        self.assertEqual(GobType.name, "IncompleteDate")
+
+        def test_result(t, year, month, day, formatted):
+            self.assertEqual(year, t.year)
+            self.assertEqual(month, t.month)
+            self.assertEqual(day, t.day)
+            self.assertEqual(json.dumps({'year': year, 'month': month, 'day': day, 'formatted': formatted}, sort_keys=True), t._string)
+
+        t = GobType.from_value("2020-03-21")
+        test_result(t, 2020, 3, 21, '2020-03-21')
+        t = GobType.from_value({'year': 2020, 'month': 3, 'day': 21})
+        test_result(t, 2020, 3, 21, '2020-03-21')
+
+        t = GobType.from_value("2020-03-00")
+        test_result(t, 2020, 3, None, '2020-03-00')
+        t = GobType.from_value({'year': 2020, 'month': None, 'day': 21})
+        test_result(t, 2020, None, 21, '2020-00-21')
+        t = GobType.from_value(json.dumps({'year': 2020, 'month': None, 'day': 21}))
+        test_result(t, 2020, None, 21, '2020-00-21')
+
+        with self.assertRaises(GOBTypeException):
+            GobType.from_value(json.dumps({'year': 2020, 'month': None, 'day': 21})[:-2])
+
+        with self.assertRaises(GOBTypeException):
+            GobType.from_value({'year': 2020})
+
+        with self.assertRaises(GOBTypeException):
+            GobType.from_value('2020-invalid')
+
     def test_None_to_db(self):
         from gobcore.typesystem import gob_types, gob_geotypes
         GOB = gob_types
@@ -336,6 +368,7 @@ class TestGobTypes(unittest.TestCase):
             "GOB.Reference",
             "GOB.ManyReference",
             "GOB.VeryManyReference",
+            "GOB.IncompleteDate",
         ]
         non_json_types = [t for t in _gob_types.keys() if t not in json_types]
 

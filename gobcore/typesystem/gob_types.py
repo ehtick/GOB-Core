@@ -18,7 +18,9 @@ from abc import ABCMeta, abstractmethod
 import datetime
 import json
 import numbers
+import re
 from math import isnan
+from typing import Tuple, Optional
 
 import sqlalchemy
 
@@ -514,7 +516,7 @@ class JSON(GOBType):
 
 class Reference(JSON):
     name = "Reference"
-    exclude_keys = (FIELD.REFERENCE_ID, FIELD.SEQNR)
+    exclude_keys = (FIELD.REFERENCE_ID, FIELD.SEQNR)  # Legacy. Old way of storing relations.
 
     def __eq__(self, other):
         """Internal representation is string, that is what we compare
@@ -556,3 +558,65 @@ class ManyReference(Reference):
 
 class VeryManyReference(ManyReference):
     name = "VeryManyReference"
+
+
+class IncompleteDate(JSON):
+    name = "IncompleteDate"
+    pattern = r"^(\d{4})-(\d{2})-(\d{2})$"
+
+    def __init__(self, value):
+        """Value can be of type str or dict.
+        If value is str, value is expected to be of the form yyyy-mm-dd, where the yyyy, mm and dd parts can consist of
+        only 0's, meaning that part is unknown.
+        If value is of type dict, keys 'year', 'month' and 'day' are expected to be present (but may be null).
+        Dict may also be encoded as a JSON string.
+
+        For example:
+        2021-03-22 (complete date)
+        2021-03-00 (day unknown)
+        2021-00-00 (month and day unknown)
+
+        :param value:
+        """
+
+        if isinstance(value, str) and re.match(self.pattern, value):
+            self.year, self.month, self.day = self.__init_from_str(value)
+        else:
+            if isinstance(value, str):
+                try:
+                    value = json.loads(value)
+                except json.JSONDecodeError:
+                    raise GOBTypeException(f"Could not decode value '{value}'")
+
+            assert isinstance(value, dict), "Value should be of type dict"
+            self.year, self.month, self.day = self.__init_from_dict(value)
+
+        super().__init__(json.dumps({
+            'year': self.year,
+            'month': self.month,
+            'day': self.day,
+            'formatted': self._formatted,
+        }))
+
+    def __init_from_dict(self, value) -> Tuple[Optional[int], Optional[int], Optional[int]]:
+        if not all([v in value for v in ['year', 'month', 'day']]):
+            raise GOBTypeException(f"Cannot interpret value '{json.dumps(value)}' as IncompleteDate. "
+                                   f"Expecting keys 'year', 'month' and 'day'.")
+
+        return value.get('year'), value.get('month'), value.get('day')
+
+    def __init_from_str(self, value: str) -> Tuple[int, int, int]:
+        m = re.match(self.pattern, value)
+        assert m, f"Value '{value}' cannot be interpreted as IncompleteDate"  # Already checked in constructor.
+
+        return (int(m.group(1)) if m.group(1) != '0000' else None,
+                int(m.group(2)) if m.group(2) != '00' else None,
+                int(m.group(3)) if m.group(3) != '00' else None)
+
+    @classmethod
+    def from_value(cls, value, **kwargs):
+        return cls(value)
+
+    @property
+    def _formatted(self):
+        return f"{self.year or 0:04}-{self.month or 0:02}-{self.day or 0:02}"

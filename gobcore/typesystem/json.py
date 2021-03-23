@@ -34,5 +34,4 @@ class GobTypeJSONEncoder(json.JSONEncoder):
                 # Add missing microseconds
                 value += '.000000'
             return value
-
         return super().default(obj)

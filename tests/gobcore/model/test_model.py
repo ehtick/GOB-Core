@@ -58,8 +58,8 @@ class TestModel(unittest.TestCase):
             'idfield': 'idvalue'
         }
         spec = {
-            'catalogue': 'meetbouten',
-            'entity': 'meetbouten',
+            'catalog': 'meetbouten',
+            'collection': 'meetbouten',
             'source': {
                 'entity_id': 'idfield'
             }
@@ -75,8 +75,8 @@ class TestModel(unittest.TestCase):
             'volgnummer': '1'
         }
         spec = {
-            'catalogue': 'meetbouten',
-            'entity': 'meetbouten',
+            'catalog': 'meetbouten',
+            'collection': 'meetbouten',
             'source': {
                 'entity_id': 'idfield'
             }
@@ -93,8 +93,8 @@ class TestModel(unittest.TestCase):
             'nummervolg': '1'
         }
         spec = {
-            'catalogue': 'meetbouten',
-            'entity': 'meetbouten',
+            'catalog': 'meetbouten',
+            'collection': 'meetbouten',
             'source': {
                 'entity_id': 'idfield'
             },
@@ -224,20 +224,20 @@ class TestModel(unittest.TestCase):
         model.split_ref.assert_called_with(ref)
         self.assertEqual(model.split_ref.return_value, result)
 
-    @patch("gobcore.model.os.getenv", lambda x, _: x == 'DISABLE_TEST_CATALOGUE')
+    @patch("gobcore.model.os.getenv", lambda x, _: x == 'DISABLE_TEST_CATALOG')
     def test_test_catalog_deleted(self):
         # Reinitialise
         GOBModel._data = None
 
         model = GOBModel()
-        self.assertFalse('test_catalogue' in model._data)
+        self.assertFalse('test_catalog' in model._data)
 
         # Cleanup
         GOBModel._data = None
 
     def test_test_catalog_present(self):
         model = GOBModel()
-        self.assertTrue('test_catalogue' in model._data)
+        self.assertTrue('test_catalog' in model._data)
 
     @patch('gobcore.model.load_schema')
     def test_load_schemas(self, mock_load_schema):
@@ -357,7 +357,7 @@ class TestModel(unittest.TestCase):
             model.get_catalog_from_abbr('nonexistent')
 
     def test_collections_no_underscore(self):
-        ignore_catalogs = {'test_catalogue', 'qa', 'rel'}
+        ignore_catalogs = {'test_catalog', 'qa', 'rel'}
         catalogs = [cat for cat in self.model.get_catalog_names() if cat not in ignore_catalogs]
 
         for cat in catalogs:
@@ -365,7 +365,7 @@ class TestModel(unittest.TestCase):
                 self.assertNotIn('_', collection)
 
     def test_reference_no_underscore(self):
-        ignore_catalogs = {'test_catalogue', 'qa', 'rel'}
+        ignore_catalogs = {'test_catalog', 'qa', 'rel'}
         catalogs = [cat for cat in self.model.get_catalog_names() if cat not in ignore_catalogs]
 
         for cat in catalogs:

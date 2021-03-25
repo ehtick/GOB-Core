@@ -273,7 +273,7 @@ class TestIssue(TestCase):
                 'source': 'any source',
                 'application': 'any application',
                 'process_id': 'the original process id',
-                'catalogue': 'any catalogue',
+                'catalog': 'any catalog',
                 'collection': 'any collection',
                 'attribute': 'any attribute',
                 'other': 'any other',
@@ -297,14 +297,14 @@ class TestIssue(TestCase):
         # Always skip any issues of the QA catalog itself
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = True
-        msg['header']['catalogue'] = 'qa'
+        msg['header']['catalog'] = 'qa'
         process_issues(msg)
         mock_start_issue_workflow.assert_not_called()
 
         # Skip GOBPrepare
         mock_logger.get_issues.return_value = [mock_issue]
         mock_is_functional.return_value = True
-        msg['header']['catalogue'] = 'any catalogue'
+        msg['header']['catalog'] = 'any catalog'
         msg['header']['application'] = 'GOBPrepare'
         process_issues(msg)
         mock_start_issue_workflow.assert_not_called()
@@ -360,7 +360,7 @@ class TestIssue(TestCase):
     @patch("gobcore.quality.issue.ProgressTicker", MagicMock())
     def test_start_issue_workflow(self, mock_start_workflow, mock_issue):
         header = {
-            'catalogue': 'qa',
+            'catalog': 'qa',
             'collection': 'any collection',
         }
         issues = [{'id': 'issue 1'}, {'id': 'issue 2'}]

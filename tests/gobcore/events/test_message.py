@@ -13,7 +13,7 @@ class TestEvents(unittest.TestCase):
         metadata = fixtures.get_metadata_fixture()
 
         header = metadata.as_header
-        keys = ['source', 'timestamp', 'entity', 'version', 'process_id', 'model', 'application']
+        keys = ['source', 'timestamp', 'collection', 'version', 'process_id', 'model', 'application']
         for key in keys:
             self.assertIn(key, header)
 

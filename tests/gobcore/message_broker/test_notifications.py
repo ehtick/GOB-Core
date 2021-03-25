@@ -142,7 +142,7 @@ class TestExportTestNotification(TestCase):
             'type': 'export_test',
             'header': {'some': 'header'},
             'contents': {
-                'catalogue': 'SOME CAT',
+                'catalog': 'SOME CAT',
                 'collection': 'SOME COLL',
                 'product': 'SOME PRODUCT',
             }
@@ -150,6 +150,6 @@ class TestExportTestNotification(TestCase):
         notification = get_notification(msg)
         self.assertIsInstance(notification, ExportTestNotification)
         self.assertEqual({'some': 'header'}, notification.header)
-        self.assertEqual('SOME CAT', notification.contents.get('catalogue'))
+        self.assertEqual('SOME CAT', notification.contents.get('catalog'))
         self.assertEqual('SOME COLL', notification.contents.get('collection'))
         self.assertEqual('SOME PRODUCT', notification.contents.get('product'))

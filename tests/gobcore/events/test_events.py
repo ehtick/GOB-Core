@@ -96,9 +96,9 @@ class TestEvents(unittest.TestCase):
 
         mock_event = {
             'version': '0.1',
-            'catalogue': 'test_catalogue',
+            'catalog': 'test_catalog',
             'application': 'TEST',
-            'entity': 'test_entity',
+            'collection': 'test_entity',
             'timestamp': None,
             'source': 'test',
             'action': 'ADD',
@@ -142,9 +142,9 @@ class TestEvents(unittest.TestCase):
 
         mock_event = {
             'version': '0.1',
-            'catalogue': 'test_catalogue',
+            'catalog': 'test_catalog',
             'application': 'TEST',
-            'entity': 'test_entity',
+            'collection': 'test_entity',
             'timestamp': None,
             'source': 'test',
             'action': 'ADD',
@@ -173,7 +173,7 @@ class TestEvents(unittest.TestCase):
 
         database_to_gobevent(event)
 
-        mock_migrations().migrate_event_data.assert_called_with(event, data, event.catalogue, event.entity,
+        mock_migrations().migrate_event_data.assert_called_with(event, data, event.catalog, event.collection,
                                                                 target_version)
 
         mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)

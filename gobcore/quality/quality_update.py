@@ -6,13 +6,11 @@ from gobcore.model.quality import QUALITY_CATALOG, get_qa_collection_name
 
 class QualityUpdate():
 
-    CATALOG = QUALITY_CATALOG
-
     def __init__(self):
         self.source = None
         self.application = None
-        self.catalog_name = None
-        self.collection_name = None
+        self.catalog = None
+        self.collection = None
         self.attribute = None
         self.proces = None
 
@@ -43,7 +41,7 @@ class QualityUpdate():
     def get_header(self, msg_header):
         header = {
             'catalog': QUALITY_CATALOG,
-            'collection': get_qa_collection_name(self.catalog_name, self.collection_name),
+            'collection': get_qa_collection_name(self.catalog, self.collection),
             'source': self.get_source(),
             'application': self.application,
             'process_id': msg_header.get('process_id'),

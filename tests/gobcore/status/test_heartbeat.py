@@ -111,12 +111,12 @@ class TestHeartbeat(unittest.TestCase):
         queue = "any queue"
         status = "any status"
         header = {
-            'catalogue': "any catalogue"
+            'catalog': "any catalog"
         }
         msg = Heartbeat._progress_log_msg("any queue", "any status", header)
         self.assertTrue(queue in msg)
         self.assertTrue(status in msg)
         self.assertTrue("address: " in msg)
         self.assertTrue("dns: " in msg)
-        self.assertTrue(header['catalogue'] in msg)
+        self.assertTrue(header['catalog'] in msg)
         self.assertTrue("collection: None" in msg)

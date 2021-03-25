@@ -18,18 +18,18 @@ class TestQualityUpdate(TestCase):
         header = {
             'source': 'any source',
             'application': 'any application',
-            'catalogue': 'any catalogue',
+            'catalog': 'any catalog',
             'collection': 'any collection',
             'attribute': 'any attribute',
             'mode': 'any mode',
         }
 
         # Enrich bevinding with msg info
-        for attribute in ['source', 'application', 'catalogue', 'collection', 'attribute']:
+        for attribute in ['source', 'application', 'catalog', 'collection', 'attribute']:
             setattr(qa, attribute, header.get(f"original_{attribute}", header.get(attribute)))
 
         self.assertEqual("any source_any application_any attribute", qa.get_source())
 
         qa_header = qa.get_header(header)
-        self.assertEqual(qa_header['catalogue'], 'qa')
-        self.assertEqual(qa_header['collection'], 'any catalogue_any collection')
+        self.assertEqual(qa_header['catalog'], 'qa')
+        self.assertEqual(qa_header['collection'], 'any catalog_any collection')

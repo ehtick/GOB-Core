@@ -130,8 +130,8 @@ class TestLogger(TestCase):
                 'source': 'any source',
                 'destination': 'any destination',
                 'application': 'any application',
-                'catalogue': 'any catalogue',
-                'entity': 'any entity',
+                'catalog': 'any catalog',
+                'collection': 'any collection',
                 'jobid': None,
                 'stepid': None
             },
@@ -152,8 +152,8 @@ class TestLogger(TestCase):
         self.assertEqual(args["process_id"], msg["header"]["process_id"])
         self.assertEqual(args["source"], msg["header"]["source"])
         self.assertEqual(args["application"], msg["header"]["application"])
-        self.assertEqual(args["catalogue"], msg["header"]["catalogue"])
-        self.assertEqual(args["entity"], msg["header"]["entity"])
+        self.assertEqual(args["catalog"], msg["header"]["catalog"])
+        self.assertEqual(args["collection"], msg["header"]["collection"])
 
         RequestsHandler.LOG_PUBLISHER.publish.reset_mock()
 
@@ -187,8 +187,8 @@ class TestLogger(TestCase):
                 'process_id': 'any process_id',
                 'source': 'any source',
                 'application': 'any application',
-                'catalogue': 'any catalogue',
-                'collection': 'any entity'
+                'catalog': 'any catalog',
+                'collection': 'any collection'
             },
             "some": "other"
         }
@@ -199,7 +199,7 @@ class TestLogger(TestCase):
         level, args = RequestsHandler.LOG_PUBLISHER.publish.call_args[0]
         self.assertEqual(args["name"], logger._name)
         # Test collection fallback
-        self.assertEqual(args["entity"], msg['header']['collection'])
+        self.assertEqual(args["collection"], msg['header']['collection'])
         self.assertEqual(logger.get_name(), args["name"])
         self.assertEqual(logger.get_attribute('source'), 'any source')
 

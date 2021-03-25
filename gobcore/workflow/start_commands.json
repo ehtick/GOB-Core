@@ -19,9 +19,9 @@
     "description": "Start a bag extract for a collection",
     "args": [
       {
-        "name": "catalogue",
+        "name": "catalog",
         "required": true,
-        "description": "The name of the data catalogue (example: \"bag\")"
+        "description": "The name of the data catalog (example: \"bag\")"
       },
       {
         "name": "collection",

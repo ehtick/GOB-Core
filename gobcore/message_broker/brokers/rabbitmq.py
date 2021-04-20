@@ -111,7 +111,7 @@ class BrokerManager():
             routing_key=key
         )
 
-    def create_queue_with_bindings(self, exchange, queue, keys):
+    def create_queue_with_binding(self, exchange, queue, keys):
         self._create_queue(queue=queue, durable=True)
         for key in keys:
             self._bind_queue(exchange=exchange, queue=queue, key=key)
@@ -123,7 +123,7 @@ class BrokerManager():
 
         for exchange, queues in queue_configuration.items():
             for queue, keys in queues.items():
-                self.create_queue_with_bindings(exchange, queue, keys)
+                self.create_queue_with_binding(exchange, queue, keys)
 
     def create_all(self):
         print('* Creating vhost')

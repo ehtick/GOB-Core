@@ -26,9 +26,9 @@ def manager_ctx(f):
 
 
 @manager_ctx
-def create_queue_with_bindings(exchange: str, queue: str, keys: List[str], manager):
+def create_queue_with_binding(exchange: str, queue: str, keys: List[str], manager):
     print(f'Create queue with bindings for {MESSAGE_BROKER}')
-    manager.create_queue_with_bindings(exchange, queue, keys)
+    manager.create_queue_with_binding(exchange, queue, keys)
 
 
 @manager_ctx

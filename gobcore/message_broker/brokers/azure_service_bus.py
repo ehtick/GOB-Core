@@ -75,7 +75,7 @@ class BrokerManager():
         rules = ' OR '.join([self._get_filter(key) for key in keys])
         return SqlRuleFilter(f"{rules} ")
 
-    def create_queue_with_bindings(self, exchange, queue, keys):
+    def create_queue_with_binding(self, exchange, queue, keys):
         try:
             self._connection.create_subscription(exchange, queue)
         except ResourceExistsError:
@@ -101,7 +101,7 @@ class BrokerManager():
             queues = self._get_subscriptions(exchange)
             for queue, keys in QUEUE_CONFIGURATION[exchange].items():
                 if queue not in queues:
-                    self.create_queue_with_bindings(exchange=exchange, queue=queue, keys=keys)
+                    self.create_queue_with_binding(exchange=exchange, queue=queue, keys=keys)
 
     def _delete_queue(self, topic, subscription):
         self._connection.delete_subscription(topic, subscription)

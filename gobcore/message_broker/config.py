@@ -13,6 +13,8 @@ import pika
 import logging
 from pathlib import Path
 
+from .brokers.config import MESSAGE_BROKER_TYPE_DEFAULT
+
 pika_logger = logging.getLogger("pika")
 pika_logger.propagate = False
 pika_logger.setLevel(logging.ERROR)
@@ -28,11 +30,27 @@ def _build_queuename(*args):
 
 GOB_SHARED_DIR = os.getenv("GOB_SHARED_DIR", Path.home().joinpath("gob-volume"))
 
+MESSAGE_BROKER_TYPE = os.getenv('MESSAGE_BROKER_TYPE', MESSAGE_BROKER_TYPE_DEFAULT)
+MESSAGE_BROKER_PROVIDER = os.getenv("MESSAGE_BROKER_TYPE", "rabbitmq")
 MESSAGE_BROKER = os.getenv("MESSAGE_BROKER_ADDRESS", "localhost")
 MESSAGE_BROKER_PORT = os.getenv("MESSAGE_BROKER_PORT", 15672)
 MESSAGE_BROKER_VHOST = os.getenv("MESSAGE_BROKER_VHOST", "gob")
 MESSAGE_BROKER_USER = os.getenv("MESSAGE_BROKER_USERNAME", "guest")
 MESSAGE_BROKER_PASSWORD = os.getenv("MESSAGE_BROKER_PASSWORD", "guest")
+
+
+# class PikaBroker():
+#
+#     def __init__(self):
+#         self.conn_params = pika.ConnectionParameters(
+#             host=MESSAGE_BROKER,
+#             virtual_host=MESSAGE_BROKER_VHOST,
+#             credentials=pika.PlainCredentials(username=MESSAGE_BROKER_USER,
+#                                               password=MESSAGE_BROKER_PASSWORD),
+#             heartbeat_interval=1200,
+#             blocked_connection_timeout=600
+#         )
+
 
 CONNECTION_PARAMS = pika.ConnectionParameters(
     host=MESSAGE_BROKER,

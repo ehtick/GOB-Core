@@ -1,8 +1,6 @@
-import pika
-
-from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.utils import to_json
-from gobcore.message_broker.initialise_queues import _create_exchange, _create_queue, _bind_queue
+
+from gobcore.message_broker.brokers.broker import get_manager, get_async_connection
 
 # Use a dedicated exchange for notifications
 NOTIFY_EXCHANGE = "gob.notify"
@@ -162,24 +160,15 @@ def _send_notification(exchange, notification_type, msg):
     :param msg:
     :return:
     """
-    with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
-        channel = connection.channel()
-
-        # Create exchange if it does not yet exist
-        _create_exchange(channel=channel, exchange=exchange, durable=True)
-
+    manager_class = get_manager()
+    with manager_class() as manager:
+        manager.create_exchange(exchange)
+    with get_async_connection() as conn:
         # Convert the message to json
         json_msg = to_json(msg)
 
         # Send the message as a non-persistent message on the queue
-        channel.basic_publish(
-            exchange=exchange,
-            routing_key=notification_type,
-            properties=pika.BasicProperties(
-                delivery_mode=2  # Make messages persistent
-            ),
-            body=json_msg
-        )
+        conn.publish(exchange=exchange, routing_keys=notification_type, body=json_msg)
 
 
 def _listen_to_notifications(exchange, queue, notification_type=None):
@@ -190,12 +179,8 @@ def _listen_to_notifications(exchange, queue, notification_type=None):
     :param queue:
     :return:
     """
-    with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
-        channel = connection.channel()
-
+    with get_manager() as conn:
         # Create exchange and queue if they do not yet exist
-        _create_exchange(channel=channel, exchange=exchange, durable=True)
-        _create_queue(channel=channel, queue=queue, durable=True)
-        # Bind to the queue and listen to messages of the specifief type
-        _bind_queue(channel=channel, exchange=exchange, queue=queue, key=notification_type or '')
+        conn.create_exchange(exchange=exchange, durable=True)
+        conn.create_queue_with_binding(exchange, queue, keys=[notification_type])
     return queue

@@ -9,6 +9,7 @@ setup(
     author_email='',
     license='MPL-2.0',
     install_requires=[
+        'azure-servicebus==7.1.1',
         'GDAL==2.4.4',
         'cryptography==3.3.2',
         'cx-Oracle==7.3.0',

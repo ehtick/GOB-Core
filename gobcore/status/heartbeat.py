@@ -47,6 +47,7 @@ class Heartbeat():
     exchange = STATUS_EXCHANGE
     heartbeat_key = HEARTBEAT_KEY
     progress_key = PROGRESS_KEY
+    terminated = False
 
     @classmethod
     def progress(cls, connection, service, msg, status, info_msg=None):
@@ -122,6 +123,9 @@ class Heartbeat():
             threading.enumerate()
         ))
 
+    def terminate(self):
+        self.terminated = True
+
     def send(self):
         """Send a heartbeat signal
 
@@ -148,8 +152,15 @@ class Heartbeat():
             ],
             "timestamp": datetime.datetime.utcnow().isoformat()
         }
-
-        self._connection.publish(self._exchange, self._heartbeat_key, status_msg)
-
+        try:
+            self._connection.publish(self._exchange, self._heartbeat_key, status_msg)
+        except Exception:
+            # Cannot publish on terminated connections
+            # One remark is that we also cannot publish the ERROR message
+            if not self.terminated:
+                raise
         # Report visual progress
-        print("OK" if is_alive else "ERROR", flush=True)
+        if self.terminated:
+            print('Terminated....', flush=True)
+        else:
+            print("OK" if is_alive else "ERROR", flush=True)

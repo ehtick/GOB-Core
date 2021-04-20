@@ -1,5 +1,6 @@
 import decimal
 import json
+import threading
 
 from gobcore.message_broker.offline_contents import load_message
 from gobcore.typesystem.json import GobTypeJSONEncoder
@@ -27,3 +28,20 @@ def get_message_from_body(body, params):
         msg = body
 
     return msg, offload_id
+
+
+class StoppableThread(threading.Thread):
+    def __init__(self, target, args, **kwargs):
+        threading.Thread.__init__(self, target=target, args=args, **kwargs)
+        self._target = target
+        self._args = args
+        self._stop_event = threading.Event()
+
+    def stopped(self):
+        return self._stop_event.isSet()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def run(self):
+        self._target(self.stopped, *self._args)

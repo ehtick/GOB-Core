@@ -1,17 +1,20 @@
 from unittest import TestCase
 from mock import patch
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock
 
-from gobcore.message_broker.notifications import listen_to_notifications,\
-    contains_notification,\
-    send_notification,\
-    add_notification,\
-    get_notification,\
-    EventNotification,\
-    _send_notification,\
-    _listen_to_notifications,\
-    DumpNotification,\
-    ExportTestNotification
+from gobcore.message_broker.notifications import (
+    listen_to_notifications,
+    contains_notification,
+    send_notification,
+    add_notification,
+    get_notification,
+    EventNotification,
+    DumpNotification,
+    _send_notification,
+    _listen_to_notifications,
+    ExportTestNotification,
+)
+
 
 @patch("gobcore.message_broker.notifications.NOTIFY_EXCHANGE", 'notification exchange')
 @patch("gobcore.message_broker.notifications.NOTIFY_BASE_QUEUE", 'base queue')
@@ -47,14 +50,15 @@ class TestNotifications(TestCase):
         mock_send_notification.assert_not_called()
 
         send_notification({'header': {'a': 1, 'c': 3}, 'notification key': {'type': "any type", 'x': 1, 'y': 2}})
-        mock_send_notification.assert_called_with('notification exchange',
-                                                  notification_type='any type',
-                                                  msg={
-                                                   'header': {'a': 1, 'b': None},
-                                                   'type': "any type",
-                                                   'x': 1,
-                                                   'y': 2
-                                               })
+        mock_send_notification.assert_called_with(
+            'notification exchange',
+            notification_type='any type',
+            msg={
+                'header': {'a': 1, 'b': None},
+                'type': "any type",
+                'x': 1,
+                'y': 2
+                })
 
     def test_add_notification(self):
         notification = EventNotification('any applied', 'any last_event')
@@ -83,37 +87,28 @@ class TestNotifications(TestCase):
         self.assertEqual(result.header, 'any header')
         self.assertEqual(result.contents, {'applied': 'any applied', 'last_event': 'any last_event'})
 
-    @patch("gobcore.message_broker.notifications.pika.BasicProperties")
-    @patch("gobcore.message_broker.notifications.pika.BlockingConnection")
-    @patch("gobcore.message_broker.notifications._create_exchange")
-    def test_send_broadcast(self, mock_create_exchange, mock_blocking_connection, mock_basic_properties):
+    @patch("gobcore.message_broker.notifications.get_async_connection")
+    @patch("gobcore.message_broker.notifications.get_manager")
+    def test__send_notification(self, mock_get_manager, mock_get_async_connection):
         mock_connection = MagicMock()
-        mock_channel = MagicMock()
-        mock_blocking_connection.return_value.__enter__.return_value = mock_connection
-        mock_connection.channel.return_value = mock_channel
+        mock_manager = MagicMock()
+        mock_get_async_connection.return_value.__enter__.return_value = mock_connection
+        mock_get_manager.return_value.__enter__.return_value = mock_manager
         _send_notification('any exchange', 'any type', {})
-        mock_create_exchange.assert_called_with(channel=mock_channel, exchange='any exchange', durable=True)
-        mock_channel.basic_publish.assert_called_with(
-            body='{}',
+        mock_manager.create_exchange.assert_called_with('any exchange')
+        mock_connection.publish.assert_called_with(
+            msg={},
             exchange='any exchange',
-            properties=mock_basic_properties(
-                delivery_mode=2  # Make messages persistent
-            ),
-            routing_key='any type')
+            key='any type')
 
-    @patch("gobcore.message_broker.notifications.pika.BlockingConnection")
-    @patch("gobcore.message_broker.notifications._create_exchange")
-    @patch("gobcore.message_broker.notifications._create_queue")
-    @patch("gobcore.message_broker.notifications._bind_queue")
-    def test_listen_to_broadcasts(self, mock_bind_queue, mock_create_queue, mock_create_exchange, mock_blocking_connection):
-        mock_connection = MagicMock()
-        mock_channel = MagicMock()
-        mock_blocking_connection.return_value.__enter__.return_value = mock_connection
-        mock_connection.channel.return_value = mock_channel
-        result = _listen_to_notifications('any exchange', 'any queue')
-        mock_create_exchange.assert_called_with(channel=mock_channel, exchange='any exchange', durable=True)
-        mock_create_queue.assert_called_with(channel=mock_channel, queue='any queue', durable=True)
-        mock_bind_queue.assert_called_with(channel=mock_channel, exchange='any exchange', queue='any queue', key='')
+    @patch("gobcore.message_broker.notifications.get_manager")
+    def test__listen_to_notificiations(self, mock_get_manager):
+        mock_manager = MagicMock()
+        mock_get_manager.return_value.__enter__.return_value = mock_manager
+        result = _listen_to_notifications('any exchange', 'any queue', 'any notification')
+        mock_manager.create_exchange.assert_called_with(exchange='any exchange', durable=True)
+        mock_manager.create_queue_with_binding.assert_called_with(
+            exchange='any exchange', queue='any queue', keys=['any notification'])
         self.assertEqual(result, 'any queue')
 
 

@@ -1,10 +1,10 @@
 import pytest
 from decimal import Decimal
 from math import inf, nan
-from json.decoder import JSONDecodeError
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
-from gobcore.message_broker.utils import to_json, from_json, get_message_from_body
+from gobcore.message_broker.utils import to_json, from_json, get_message_from_body, StoppableThread
+
 
 @pytest.mark.parametrize(
     "obj, expected, success",
@@ -50,13 +50,15 @@ def test_from_json(obj, expected):
     "obj, msg, offload_id, params, load_message_called",
     [
         (b'{"abc": {"xyz": "bar"}}', {"abc": {"xyz": "bar"}}, None, {"load_message": False}, False),
-        (b'{"foo": ["baz", null, 1.0, 2]}', {"foo": ["baz", None, Decimal('1.0'), 2]}, None, {"load_message": False}, False),
+        (b'{"foo": ["baz", null, 1.0, 2]}', {
+            "foo": ["baz", None, Decimal('1.0'), 2]}, None, {"load_message": False}, False),
         (b'{"num": 3.14}', {"num": Decimal('3.14')}, None, {"load_message": False}, False),
         (b'{"num": 12.56789}', {"num": Decimal('12.56789')}, None, {"load_message": False}, False),
         (b'{}', {}, None, {"load_message": False}, False),
         (b'[]', [], None, {"load_message": False}, False),
         ('{"abc": {"xyz": "bar"}}', {"abc": {"xyz": "bar"}}, None, {"load_message": False}, False),
-        ('{"foo": ["baz", null, 1.0, 2]}', {"foo": ["baz", None, Decimal('1.0'), 2]}, None, {"load_message": False}, False),
+        ('{"foo": ["baz", null, 1.0, 2]}', {
+            "foo": ["baz", None, Decimal('1.0'), 2]}, None, {"load_message": False}, False),
         ('{"num": 3.14}', {"num": Decimal('3.14')}, None, {"load_message": False}, False),
         ('{"num": 12.56789}', {"num": Decimal('12.56789')}, None, {"load_message": False}, False),
         ('{}', {}, None, {"load_message": False}, False),
@@ -73,3 +75,14 @@ def test_get_message_from_body(mock_load_message, obj, msg, offload_id, params, 
     assert get_message_from_body(obj, params) == (msg, offload_id)
     if load_message_called:
         mock_load_message.assert_called_with(msg, from_json, params)
+
+
+def test_stoppable_thread():
+    func = MagicMock()
+    func.return_value = 'return value'
+    t = StoppableThread(func, args=('any args',), name='any name')
+    assert t.stopped() is False
+    t.stop()
+    assert t.stopped() is True
+    t.run()
+    func.assert_called_with(t.stopped, 'any args')

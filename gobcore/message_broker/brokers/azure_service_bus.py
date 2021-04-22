@@ -22,9 +22,16 @@ def progress(*args):
     :param args: args that will be printed
     :return: None
     """
-    import threading
-    print(f"[{threading.get_ident()}][asb] Progress", *args)
+    # import threading
+    # print(f"[{threading.get_ident()}][asb] Progress", *args)
     pass
+
+
+def _continue_exists(func, *args, **kwargs):
+    try:
+        return func(*args, **kwargs)
+    except ResourceExistsError:
+        pass
 
 
 class BrokerManager():
@@ -59,7 +66,7 @@ class BrokerManager():
     def _get_subscriptions(self, exchange: str):
         return [s.name for s in self._connection.list_subscriptions(exchange)]
 
-    def create_exchange(self, exchange, durable):
+    def create_exchange(self, exchange, _durable):
         try:
             self._connection.create_topic(exchange)
         except ResourceExistsError:
@@ -76,21 +83,15 @@ class BrokerManager():
         return SqlRuleFilter(f"{rules} ")
 
     def create_queue_with_binding(self, exchange, queue, keys):
-        try:
-            self._connection.create_subscription(exchange, queue)
-        except ResourceExistsError:
-            pass
+        _continue_exists(self._connection.create_subscription, exchange, queue)
 
         # Filters use SQL like syntax,
         # Filter names cannot have asterix or dashes in the name
         keys = [key for key in keys if key != EVERYTHING_KEY]
         if keys:
-            self._connection.delete_rule(exchange, queue, '$Default')
+            _continue_exists(self._connection.delete_rule, exchange, queue, '$Default')
             filter_args = self.get_filter_args(keys)
-            try:
-                self._connection.create_rule(exchange, queue, 'gob.filter', filter=filter_args)
-            except ResourceExistsError:
-                pass
+            _continue_exists(self._connection.create_rule, exchange, queue, 'gob.filter', filter=filter_args)
 
     def _initialize_queues(self):
         # First create all exchanges (some exchanges may not be included in queue_configuration below)
@@ -117,7 +118,6 @@ class BrokerManager():
         print('* Exchanges and queues initialized')
 
     def destroy_all(self):
-        # First create all exchanges (some exchanges may not be included in queue_configuration below)
         exchanges = self._get_topics()
         for exchange in set(exchanges).intersection(set(QUEUE_CONFIGURATION.keys())):
             self._delete_topic(exchange)
@@ -182,7 +182,7 @@ class AsyncConnection(object):
         self._client = ServiceBusClient(self._address, self._credential)
         progress('Connected to Azure Service bus', self._address)
 
-    def publish(self, exchange, key, msg: bytes):
+    def publish(self, exchange: str, key: str, msg: dict):
         '''
            Publish a message to exchange = (topic) with Label = key
         '''

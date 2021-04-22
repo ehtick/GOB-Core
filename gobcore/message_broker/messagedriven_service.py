@@ -160,7 +160,7 @@ class MessagedrivenService:
             # id = ', '.join([queue for queue in queues])
 
             # Repeat forever
-            while self.keep_running and connection.is_alive() and not stop_check():
+            while connection.is_alive() and not stop_check():
                 time.sleep(self.check_connection)
 
             [q.stop() for q in queue_threads]
@@ -190,7 +190,6 @@ class MessagedrivenService:
             heartbeat = Heartbeat(connection, self.name)
 
             n = 0
-
             try:
                 while self.keep_running and connection.is_alive():
                     time.sleep(self.check_connection)

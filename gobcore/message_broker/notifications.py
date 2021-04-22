@@ -1,5 +1,3 @@
-from gobcore.message_broker.utils import to_json
-
 from gobcore.message_broker.brokers.broker import get_manager, get_async_connection
 
 # Use a dedicated exchange for notifications
@@ -160,15 +158,11 @@ def _send_notification(exchange, notification_type, msg):
     :param msg:
     :return:
     """
-    manager_class = get_manager()
-    with manager_class() as manager:
+    with get_manager() as manager:
         manager.create_exchange(exchange)
     with get_async_connection() as conn:
-        # Convert the message to json
-        json_msg = to_json(msg)
-
         # Send the message as a non-persistent message on the queue
-        conn.publish(exchange=exchange, routing_keys=notification_type, body=json_msg)
+        conn.publish(exchange=exchange, key=notification_type, msg=msg)
 
 
 def _listen_to_notifications(exchange, queue, notification_type=None):
@@ -182,5 +176,6 @@ def _listen_to_notifications(exchange, queue, notification_type=None):
     with get_manager() as conn:
         # Create exchange and queue if they do not yet exist
         conn.create_exchange(exchange=exchange, durable=True)
-        conn.create_queue_with_binding(exchange, queue, keys=[notification_type])
+        keys = [notification_type] if notification_type else []
+        conn.create_queue_with_binding(exchange=exchange, queue=queue, keys=keys)
     return queue

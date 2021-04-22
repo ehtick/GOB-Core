@@ -78,8 +78,8 @@ class GEOType(GOBType):
     def to_value(self):
         return self._string
 
-    @classmethod
-    def from_value(cls, value, **kwargs):  # noqa: C901
+    @classmethod  # noqa: C901
+    def from_value(cls, value, **kwargs):
         """
         Instantiates the GOBGeoType, with either a database value, a geojson or WKT string
         """

@@ -1,6 +1,7 @@
 import json
 import traceback
 import os
+import datetime
 
 
 from azure.servicebus.management import ServiceBusAdministrationClient, SqlRuleFilter
@@ -14,6 +15,7 @@ from gobcore.message_broker.config import (
     EVERYTHING_KEY
 )
 from gobcore.message_broker.utils import to_json, get_message_from_body, StoppableThread
+from gobcore.message_broker.brokers.broker_class import BrokerManager, Connection, AsyncConnection
 
 
 def progress(*args):
@@ -34,7 +36,7 @@ def _continue_exists(func, *args, **kwargs):
         pass
 
 
-class BrokerManager():
+class AzureBrokerManager(BrokerManager):
 
     def __init__(self):
         self._connection = None
@@ -50,9 +52,6 @@ class BrokerManager():
     def __exit__(self, *args):
         if self._connection:
             self._connection.close()
-
-    def get_queues(self):
-        return [queue_properties.name for queue_properties in self._connection.list_queues()]
 
     def _create_vhost(vhost):
         '''
@@ -98,7 +97,7 @@ class BrokerManager():
         exchanges = self._get_topics()
         for exchange in QUEUE_CONFIGURATION.keys():
             if exchange not in exchanges:
-                self.create_exchange(exchange=exchange, durable=True)
+                self.create_exchange(exchange, True)
             queues = self._get_subscriptions(exchange)
             for queue, keys in QUEUE_CONFIGURATION[exchange].items():
                 if queue not in queues:
@@ -121,12 +120,66 @@ class BrokerManager():
         exchanges = self._get_topics()
         for exchange in set(exchanges).intersection(set(QUEUE_CONFIGURATION.keys())):
             self._delete_topic(exchange)
-            # queues = self._get_subscriptions(exchange)
-            # for queue in set(queues).intersection(set(QUEUE_CONFIGURATION[exchange].items())):
-            #    self._delete_queu(exchange=exchange, queue=queue)
+            print(f' * Deleted exchange {exchange}')
+            # No need to cleanup suscriptions, are binded to tpoic and removed when topic is deleted
 
 
-class AsyncConnection(object):
+class AzureConnection(Connection):
+
+    def __init__(self, params=None):
+        """Create a new Connection
+
+        :param address: The RabbitMQ address
+        """
+        self._client = None
+        super().__init__(self)
+
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, *args):
+        self.disconnect()
+
+    def connect(self):
+        credential = ServiceBusSharedKeyCredential(
+            policy=MESSAGE_BROKER_USER, key=MESSAGE_BROKER_PASSWORD)
+        address = MESSAGE_BROKER
+        self._client = ServiceBusClient(address, credential)
+
+    def publish(self, exchange: str, key: str, msg: dict, ttl_msec: int=0):
+        with self._client:
+            sender = self._client.get_topic_sender(topic_name=exchange)
+
+            msg = offload_message(msg, to_json)
+            message = ServiceBusMessage(json.dumps(msg))
+            message.label = key
+            sender.send_messages(message)
+
+    def publish_delayed(self, exchange: str, key: str, queue: str, msg: dict, delay_msec: int=0):
+        with self._client:
+            sender = self._client.get_topic_sender(topic_name=exchange)
+
+            msg = offload_message(msg, to_json)
+            scheduled_time_utc = datetime.datetime.utcnow() + datetime.timedelta(milliseconds=delay_msec)
+            message = ServiceBusMessage(json.dumps(msg))
+            message.label = key
+            sender.schedule_messages(message, scheduled_time_utc)
+
+    def disconnect(self):
+        """Disconnect from RabbitMQ
+
+        Close the connection
+        Stop any running eventloop
+
+        :return: None
+        """
+        if self._client:
+            self._client.close()
+        self._client = None
+
+
+class AzureAsyncConnection(AsyncConnection):
     """This is an asynchronous RabbitMQ connection.
 
     It handles unexpected conditions when interacting with RabbitMQ
@@ -271,10 +324,6 @@ class AsyncConnection(object):
                     receiver.complete_message(msg)
         return messages
 
-    def receive_msg(self, queue):
-        messages = self.receive_msgs(queue, max_message_count=1)
-        return messages[0] if messages else None
-
     def disconnect(self):
         progress(f"Disconnect")
 
@@ -285,32 +334,4 @@ class AsyncConnection(object):
         progress(f"Disconnect Joined")
 
 
-if __name__ == '__main__':  # noqa: C901
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--flush', help='flush the given queue')
-    parser.add_argument('--publish', help='publish to a topic,key')
-    parser.add_argument('--no-create', dest='create', action='store_false')
-    parser.add_argument('--create', dest='create', action='store_true')
-    parser.add_argument('--destroy', dest='destroy', action='store_true')
-    parser.add_argument('--no-destroy', dest='destroy', action='store_false')
-    args = parser.parse_args()
-    with BrokerManager() as bm:
-        print(' [*] Destroy/create queues')
-        if args.destroy:
-            bm.destroy_all()
-            bm.create_all()
-        elif args.create:
-            print(' [*] Create queues if not existing')
-            bm.create_all()
-    if args.flush:
-        print(f'[*] flushing {args.flush}')
-        with AsyncConnection() as conn:
-            for msg in conn.receive_msgs(args.flush):
-                print(json.loads(msg))
-    if args.publish:
-        print(f'[*] publish {args.publish}')
-        message = {"test": "message"}
-        with AsyncConnection() as conn:
-            exchange, key = args.publish.split(',')
-            conn.publish(exchange=exchange, key=key, msg=message)
+azure_connectors = (BrokerManager, AzureConnection, AzureAsyncConnection)

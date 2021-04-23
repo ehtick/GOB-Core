@@ -1,7 +1,6 @@
-from gobcore.message_broker.async_message_broker import AsyncConnection
-from gobcore.message_broker.config import CONNECTION_PARAMS
+from gobcore.message_broker.brokers.broker import get_connection
 
 
 def publish(exchange, key, msg):
-    with AsyncConnection(CONNECTION_PARAMS) as connection:
+    with get_connection() as connection:
         connection.publish(exchange, key, msg)

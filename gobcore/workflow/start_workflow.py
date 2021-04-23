@@ -1,7 +1,5 @@
-import json
-import pika
-
-from gobcore.message_broker.config import CONNECTION_PARAMS, WORKFLOW_EXCHANGE, WORKFLOW_QUEUE, WORKFLOW_REQUEST_KEY
+from gobcore.message_broker.brokers.broker import get_connection
+from gobcore.message_broker.config import WORKFLOW_EXCHANGE, WORKFLOW_QUEUE, WORKFLOW_REQUEST_KEY
 
 
 def start_workflow(workflow, arguments):
@@ -27,21 +25,17 @@ def start_workflow(workflow, arguments):
     if contents_ref:
         msg['contents_ref'] = contents_ref
 
-    with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
-        channel = connection.channel()
-
-        # Convert the message to json
-        json_msg = json.dumps(msg)
-
+    with get_connection() as conn:
         # Publish a workflow-request message on the workflow-exchange for the given workflow
-        channel.basic_publish(
+        conn.publish(
             exchange=WORKFLOW_EXCHANGE,
-            routing_key=WORKFLOW_REQUEST_KEY,
-            properties=pika.BasicProperties(
-                delivery_mode=2  # Make messages persistent
-            ),
-            body=json_msg
+            key=WORKFLOW_REQUEST_KEY,
+            msg=msg,
         )
+
+
+SINGLE_RETRY_TIME = 1 * 60  # Retry every 1 minute
+RETRY_TIME_KEY = 'retry_time'
 
 
 def retry_workflow(msg):
@@ -54,47 +48,27 @@ def retry_workflow(msg):
     :param msg: workflow message
     :return:
     """
-    SINGLE_RETRY_TIME = 1 * 60  # Retry every 1 minute
-    RETRY_TIME = 'retry_time'
-
     workflow = msg['workflow']
 
     # Check if any retry time is left
-    remaining_retry_time = workflow.get(RETRY_TIME, 0)
+    remaining_retry_time = workflow.get(RETRY_TIME_KEY, 0)
     if remaining_retry_time <= 0:
         # No time left, do not send the workflow message
         return False
 
     # reduce remaining retry time
     remaining_retry_time -= SINGLE_RETRY_TIME
-    workflow[RETRY_TIME] = remaining_retry_time
+    workflow[RETRY_TIME_KEY] = remaining_retry_time
 
     # Log retry
     print(f"Retry workflow, {remaining_retry_time} time left", workflow)
 
-    with pika.BlockingConnection(CONNECTION_PARAMS) as connection:
-        # Create a delay queue if it does not yet exist (idempotent action)
-        delay_queue = f"{WORKFLOW_QUEUE}_delay"
-        delay_channel = connection.channel()
-        delay_channel.queue_declare(queue=delay_queue,
-                                    durable=True,
-                                    arguments={
-                                        'x-dead-letter-exchange': WORKFLOW_EXCHANGE,
-                                        'x-dead-letter-routing-key': WORKFLOW_REQUEST_KEY
-                                    })
-
-        # Convert the message to json
-        json_msg = json.dumps(msg)
-
-        # Publish a delayed workflow-request message
-        delay_channel.basic_publish(
-            exchange='',
-            routing_key=delay_queue,
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # Make messages persistent
-                expiration=str(SINGLE_RETRY_TIME * 1000)  # msecs
-            ),
-            body=json_msg
-        )
-
+    with get_connection() as conn:
+        delay_ms = SINGLE_RETRY_TIME * 1000
+        conn.publish_delayed(
+            exchange=WORKFLOW_EXCHANGE,
+            key=WORKFLOW_REQUEST_KEY,
+            queue=WORKFLOW_QUEUE,
+            msg=msg,
+            delay_msec=delay_ms)
     return True

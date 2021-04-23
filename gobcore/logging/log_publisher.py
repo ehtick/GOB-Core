@@ -8,8 +8,7 @@ A LogPublisher publishes log message on the message broker.
 import threading
 import time
 
-from gobcore.message_broker.message_broker import Connection
-from gobcore.message_broker.config import CONNECTION_PARAMS
+from gobcore.message_broker.brokers.broker import get_connection
 from gobcore.message_broker.config import LOG_EXCHANGE, AUDIT_LOG_EXCHANGE, ISSUE_EXCHANGE, REQUEST
 
 
@@ -20,9 +19,8 @@ class LogPublisher():
     _auto_disconnect_thread = None
     _auto_disconnect_timeout = 0
 
-    def __init__(self, connection_params=CONNECTION_PARAMS, exchange=LOG_EXCHANGE):
+    def __init__(self, exchange=LOG_EXCHANGE):
         # Register the connection params and log queue
-        self._connection_params = connection_params
         self._exchange = exchange
 
     def publish(self, key, msg):
@@ -37,7 +35,7 @@ class LogPublisher():
         self._auto_disconnect_timeout = timeout
         if self._connection is None:
             # Start a connection if no connection is active
-            self._connection = Connection(self._connection_params)
+            self._connection = get_connection()
             self._connection.connect()
             # Start auto disconnect thread
             if self._auto_disconnect_thread is not None:
@@ -66,9 +64,8 @@ class AuditLogPublisher(LogPublisher):
     REQUEST_KEY = 'request'
     RESPONSE_KEY = 'response'
 
-    def __init__(self, connection_params=None):
-        connection_params = connection_params or CONNECTION_PARAMS
-        super().__init__(connection_params, AUDIT_LOG_EXCHANGE)
+    def __init__(self):
+        super().__init__(AUDIT_LOG_EXCHANGE)
 
     def publish_request(self, msg):
         self.publish(self.REQUEST_KEY, msg)
@@ -79,9 +76,8 @@ class AuditLogPublisher(LogPublisher):
 
 class IssuePublisher(LogPublisher):
 
-    def __init__(self, connection_params=None):
-        connection_params = connection_params or CONNECTION_PARAMS
-        super().__init__(connection_params, ISSUE_EXCHANGE)
+    def __init__(self):
+        super().__init__(ISSUE_EXCHANGE)
 
     def publish(self, msg):
         super().publish(REQUEST, msg)

@@ -9,7 +9,6 @@ Two main queues are defined:
 
 """
 import os
-import pika
 import logging
 from pathlib import Path
 
@@ -38,28 +37,6 @@ MESSAGE_BROKER_VHOST = os.getenv("MESSAGE_BROKER_VHOST", "gob")
 MESSAGE_BROKER_USER = os.getenv("MESSAGE_BROKER_USERNAME", "guest")
 MESSAGE_BROKER_PASSWORD = os.getenv("MESSAGE_BROKER_PASSWORD", "guest")
 
-
-# class PikaBroker():
-#
-#     def __init__(self):
-#         self.conn_params = pika.ConnectionParameters(
-#             host=MESSAGE_BROKER,
-#             virtual_host=MESSAGE_BROKER_VHOST,
-#             credentials=pika.PlainCredentials(username=MESSAGE_BROKER_USER,
-#                                               password=MESSAGE_BROKER_PASSWORD),
-#             heartbeat_interval=1200,
-#             blocked_connection_timeout=600
-#         )
-
-
-CONNECTION_PARAMS = pika.ConnectionParameters(
-    host=MESSAGE_BROKER,
-    virtual_host=MESSAGE_BROKER_VHOST,
-    credentials=pika.PlainCredentials(username=MESSAGE_BROKER_USER,
-                                      password=MESSAGE_BROKER_PASSWORD),
-    heartbeat_interval=1200,
-    blocked_connection_timeout=600
-)
 
 WORKFLOW_EXCHANGE = "gob.workflow"
 LOG_EXCHANGE = "gob.log"

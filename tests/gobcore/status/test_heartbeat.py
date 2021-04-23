@@ -40,22 +40,16 @@ def generate_threads(*specs):
 
 class TestHeartbeat(unittest.TestCase):
 
-    @mock.patch("gobcore.message_broker.message_broker.Connection.connect")
-    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
     @mock.patch("atexit.register")
-    def test_constructor(self, mocked_atexit_register, mocked_publish, mocked_connect):
+    def test_constructor(self, mocked_atexit_register):
         connection = MockHeartbeatConnection()
-        _heartbeat = Heartbeat(connection, "Myname")
-        mocked_connect.assert_not_called()
+        Heartbeat(connection, "Myname")
         mocked_atexit_register.assert_called()
         self.assertIsNotNone(connection.msg)
 
-    @mock.patch("gobcore.message_broker.message_broker.Connection.connect")
-    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
-    def test_send(self, mocked_publish, mocked_connect):
+    def test_send(self):
         connection = MockHeartbeatConnection()
         heartbeat = Heartbeat(connection, "Myname")
-        mocked_publish.reset_mock()
 
         heartbeat.send()
         self.assertIsNotNone(connection.msg)

@@ -1,45 +1,39 @@
 from unittest import TestCase
-from unittest.mock import patch, MagicMock, ANY
+from unittest.mock import patch, MagicMock
 
-from gobcore.workflow.start_workflow import start_workflow, retry_workflow
+from gobcore.workflow.start_workflow import start_workflow, retry_workflow, SINGLE_RETRY_TIME, RETRY_TIME_KEY
+
 
 @patch("gobcore.workflow.start_workflow.WORKFLOW_EXCHANGE", 'workflow exchange')
+@patch("gobcore.workflow.start_workflow.WORKFLOW_QUEUE", 'workflow queue')
 @patch("gobcore.workflow.start_workflow.WORKFLOW_REQUEST_KEY", 'workflow request key')
 class TestStartWorkflow(TestCase):
 
-    @patch("gobcore.workflow.start_workflow.pika.BasicProperties")
-    @patch("gobcore.workflow.start_workflow.pika.BlockingConnection")
-    def test_start_workflow(self, mock_blocking_connection, mock_basic_properties):
+    @patch("gobcore.workflow.start_workflow.get_connection")
+    def test_start_workflow(self, mock_get_connection):
         mock_connection = MagicMock()
-        mock_channel = MagicMock()
-        mock_blocking_connection.return_value.__enter__.return_value = mock_connection
-        mock_connection.channel.return_value = mock_channel
+        mock_get_connection.return_value.__enter__.return_value = mock_connection
         start_workflow('any workflow', {'arguments': 'any arguments'})
-        mock_channel.basic_publish.assert_called_with(
-            body='{"header": {"arguments": "any arguments"}, "contents": {}, "workflow": "any workflow"}',
+        mock_connection.publish.assert_called_with(
             exchange='workflow exchange',
-            properties=mock_basic_properties(
-                delivery_mode=2  # Make messages persistent
-            ),
-            routing_key='workflow request key')
-
+            key='workflow request key',
+            msg={"header": {"arguments": "any arguments"}, "contents": {}, "workflow": "any workflow"},
+        )
         start_workflow('any workflow', {'arguments': 'any arguments', 'contents_ref': 'contents ref'})
-        mock_channel.basic_publish.assert_called_with(
-            body='{"header": {"arguments": "any arguments", "contents_ref": "contents ref"}, "contents": {}, "workflow": "any workflow", "contents_ref": "contents ref"}',
+        mock_connection.publish.assert_called_with(
             exchange='workflow exchange',
-            properties=mock_basic_properties(
-                delivery_mode=2  # Make messages persistent
-            ),
-            routing_key='workflow request key')
+            key='workflow request key',
+            msg={
+                "header": {
+                    "arguments": "any arguments", "contents_ref": "contents ref"},
+                "contents": {}, "workflow": "any workflow", "contents_ref": "contents ref"
+            }
+        )
 
-    @patch("gobcore.workflow.start_workflow.pika.BasicProperties")
-    @patch("gobcore.workflow.start_workflow.pika.BlockingConnection")
-    def test_retry_workflow(self, mock_blocking_connection, mock_basic_properties):
+    @patch("gobcore.workflow.start_workflow.get_connection")
+    def test_retry_workflow(self, mock_get_connection):
         mock_connection = MagicMock()
-        mock_channel = MagicMock()
-        mock_blocking_connection.return_value.__enter__.return_value = mock_connection
-        mock_connection.channel.return_value = mock_channel
-
+        mock_get_connection.return_value.__enter__.return_value = mock_connection
         msg = {
             'workflow': {
             }
@@ -48,7 +42,7 @@ class TestStartWorkflow(TestCase):
         # No retry when no retry is specified
         result = retry_workflow(msg)
         self.assertFalse(result)
-        mock_channel.basic_publish.assert_not_called()
+        mock_connection.publish_delayed.assert_not_called()
 
         msg = {
             'workflow': {
@@ -58,19 +52,20 @@ class TestStartWorkflow(TestCase):
         # No retry when out of retry time
         result = retry_workflow(msg)
         self.assertFalse(result)
-        mock_channel.basic_publish.assert_not_called()
-
+        mock_connection.publish_delayed.assert_not_called()
+        retry_time = 100
         msg = {
             'workflow': {
-                'retry_time': 100
+                RETRY_TIME_KEY: retry_time
             }
         }
         # Retry when retry is specified
         result = retry_workflow(msg)
-        mock_channel.basic_publish.assert_called_with(
-            body='{"workflow": {"retry_time": 40}}',
-            exchange='',
-            properties=ANY,
-            routing_key='gob.workflow.workflow.queue_delay'
+        mock_connection.publish_delayed.assert_called_with(
+            exchange='workflow exchange',
+            key='workflow request key',
+            queue='workflow queue',
+            msg={"workflow": {RETRY_TIME_KEY: retry_time - SINGLE_RETRY_TIME}},
+            delay_msec=SINGLE_RETRY_TIME * 1000
         )
         self.assertTrue(result)

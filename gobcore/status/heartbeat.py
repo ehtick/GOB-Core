@@ -49,6 +49,24 @@ class Heartbeat():
     progress_key = PROGRESS_KEY
     terminated = False
 
+    def __init__(self, connection, name):
+        """Hearbeat
+
+        :param connection: the connection to use for the heartbeats
+        :param name: the name of the service for which heartbeats are sent
+        """
+        self._connection = connection
+        self._name = name
+
+        self._exchange = Heartbeat.exchange
+        self._heartbeat_key = Heartbeat.heartbeat_key
+
+        # Send an initial heartbeat
+        self.send()
+
+        # At exit send a final heartbeat that denotes the end of the process
+        atexit.register(self.send)
+
     @classmethod
     def progress(cls, connection, service, msg, status, info_msg=None):
         """
@@ -96,24 +114,6 @@ class Heartbeat():
         host_info = [f"{key}: {value}" for key, value in get_host_info().items()]
 
         return f"{queue} - {status} - {host_info} - {msg_info}"
-
-    def __init__(self, connection, name):
-        """Hearbeat
-
-        :param connection: the connection to use for the heartbeats
-        :param name: the name of the service for which heartbeats are sent
-        """
-        self._connection = connection
-        self._name = name
-
-        self._exchange = Heartbeat.exchange
-        self._heartbeat_key = Heartbeat.heartbeat_key
-
-        # Send an initial heartbeat
-        self.send()
-
-        # At exit send a final heartbeat that denotes the end of the process
-        atexit.register(self.send)
 
     @property
     def threads(self) -> typing.Iterable[threading.Thread]:

@@ -4,10 +4,11 @@ from unittest.mock import MagicMock, call
 
 from tests.gobcore import fixtures
 
-from gobcore.message_broker.async_message_broker import AsyncConnection
+# from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.message_broker import messagedriven_service
 from gobcore.message_broker.messagedriven_service import \
     MessagedrivenService, _on_message, STATUS_FAIL, RUNS_IN_OWN_THREAD
+from gobcore.status.heartbeat import STATUS_OK, STATUS_START
 
 
 def handler(msg):
@@ -24,40 +25,44 @@ def mock_get_on_message(service):
 
 class TestMessageDrivenServiceFunctions(unittest.TestCase):
 
+    @mock.patch("gobcore.message_broker.messagedriven_service.Heartbeat")
     @mock.patch("gobcore.message_broker.messagedriven_service.contains_notification")
     @mock.patch("gobcore.message_broker.messagedriven_service.send_notification")
     @mock.patch("gobcore.message_broker.messagedriven_service.process_issues")
-    def test_on_message(self, mock_process_issues, mock_send_notification, mock_contains_notification):
+    def test_on_message(self, mock_process_issues, mock_send_notification, mock_contains_notification, mock_heartbeat):
 
         global return_message
 
         # mock_contains_notification = True
 
         # setup mocks and fixtures
-        mocked_handler = mock.Mock(wraps=handler)
-        service = fixtures.get_service_fixture(mocked_handler)
+        mock_handler = MagicMock()
+        # setup expectations
+        return_message = fixtures.random_string()
+        mock_handler.return_value = return_message
+        service = fixtures.get_service_fixture(mock_handler)
         single_service = [v for v in service.values()][0]
 
         message = {}
-        connection = AsyncConnection({})
+        connection = MagicMock()
 
-        # setup expectations
-        return_message = fixtures.random_string()
         return_queue = single_service['report']
 
-        with mock.patch.object(connection, "publish") as mocked_publish:
+        # on_message = messagedriven_service._get_on_message(single_service)
+        result = messagedriven_service._on_message(connection, single_service, message)
 
-            # on_message = messagedriven_service._get_on_message(single_service)
-            result = messagedriven_service._on_message(connection, single_service, message)
+        # The result should be True
+        self.assertTrue(result)
 
-            # The result should be True
-            self.assertTrue(result)
+        mock_heartbeat.progress.assert_has_calls([
+            call(connection, single_service, message, STATUS_START),
+            call(connection, single_service, message, STATUS_OK),
+        ])
+        # The message handler should be called with the message
+        mock_handler.assert_called_with(message)
 
-            # The message handler should be called with the message
-            mocked_handler.assert_called_with(message)
-
-            # The return message should be published on the return queue
-            mocked_publish.assert_called_with(return_queue['exchange'], return_queue['key'], return_message)
+        # The return message should be published on the return queue
+        connection.publish.assert_called_with(return_queue['exchange'], return_queue['key'], return_message)
 
         mock_process_issues.assert_called_with(return_message)
         mock_send_notification.assert_called_with(return_message)

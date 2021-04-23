@@ -2,6 +2,7 @@ import requests
 import os
 import threading
 import traceback
+import json
 
 import pika
 
@@ -13,6 +14,8 @@ from gobcore.message_broker.config import (
     MESSAGE_BROKER_USER, MESSAGE_BROKER_PASSWORD, QUEUE_CONFIGURATION,
     EXCHANGES
 )
+
+from gobcore.message_broker.brokers.broker_class import BrokerManager, Connection, AsyncConnection
 
 
 def progress(*args):
@@ -37,7 +40,7 @@ def _get_connection_params():
     )
 
 
-class BrokerManager():
+class RabbitMQBrokerManager(BrokerManager):
 
     def __init__(self):
         self._conn_params = _get_connection_params()
@@ -45,11 +48,20 @@ class BrokerManager():
 
     def __enter__(self):
         self._connection = pika.BlockingConnection(self._conn_params)
-        self._channel = self._connection.channel()
         return self
 
     def __exit__(self, *args):
         self._connection.close()
+
+    def _delete_vhost(self, host, port, vhost_name):
+        response = requests.delete(
+            url=f"http://{host}:{port}/api/vhosts/{vhost_name}",
+            headers={
+                "content-type": "application/json"
+            },
+            auth=(MESSAGE_BROKER_USER, MESSAGE_BROKER_PASSWORD),
+        )
+        response.raise_for_status()
 
     def _create_vhost(self, host, port, vhost_name):
         """
@@ -67,7 +79,7 @@ class BrokerManager():
         )
         response.raise_for_status()
 
-    def _create_exchange(self, exchange, durable):
+    def create_exchange(self, exchange):
         """
         Create a RabbitMQ exchange
 
@@ -76,12 +88,13 @@ class BrokerManager():
         :param durable: specifies wether the exchange should be persistent
         :return:
         """
-        self._channel.exchange_declare(
-            exchange=exchange,
-            exchange_type="topic",
-            durable=durable)
+        with self._connection.channel() as channel:
+            channel.exchange_declare(
+                exchange=exchange,
+                exchange_type="topic",
+                durable=True)
 
-    def _create_queue(self, queue, durable):
+    def _create_queue(self, queue, durable, **kwargs):
         """
         Create a RabbitMQ queue
 
@@ -90,10 +103,11 @@ class BrokerManager():
         :param durable: specifies wether the queue should be persistent
         :return:
         """
-        self._channel.queue_declare(
-            queue=queue,
-            durable=durable
-        )
+        with self._connection.channel() as channel:
+            channel.queue_declare(
+                queue=queue,
+                durable=durable
+            )
 
     def _bind_queue(self, exchange, queue, key):
         """
@@ -105,21 +119,22 @@ class BrokerManager():
         :param key: the key
         :return:
         """
-        self._channel.queue_bind(
-            exchange=exchange,
-            queue=queue,
-            routing_key=key
-        )
+        with self._connection.channel() as channel:
+            channel.queue_bind(
+                exchange=exchange,
+                queue=queue,
+                routing_key=key
+            )
 
-    def create_queue_with_binding(self, exchange, queue, keys):
-        self._create_queue(queue=queue, durable=True)
+    def create_queue_with_binding(self, exchange, queue, keys, **kwargs):
+        self._create_queue(queue=queue, durable=True, **kwargs)
         for key in keys:
             self._bind_queue(exchange=exchange, queue=queue, key=key)
 
     def _initialize_queues(self, queue_configuration):
         # First create all exchanges (some exchanges may not be included in queue_configuration below)
         for exchange in EXCHANGES:
-            self._create_exchange(exchange=exchange, durable=True)
+            self.create_exchange(exchange=exchange)
 
         for exchange, queues in queue_configuration.items():
             for queue, keys in queues.items():
@@ -131,8 +146,123 @@ class BrokerManager():
         print('* Creating exchange keys and queues')
         self._initialize_queues(QUEUE_CONFIGURATION)
 
+    def destroy_all(self):
+        print('* Deleting vhost and all exchanges')
+        self._delete_vhost(MESSAGE_BROKER, MESSAGE_BROKER_PORT, MESSAGE_BROKER_VHOST)
 
-class AsyncConnection(object):
+
+class RabbitMQConnection(Connection):
+    """This is an synchronous RabbitMQ connection.
+
+    No automatic reconnection with RabbitMQ is implemented.
+
+    """
+
+    def __init__(self, params=None):
+        """Create a new Connection
+
+        :param address: The RabbitMQ address
+        """
+
+        # The connection parameters for the RabbitMQ Message broker
+        self._connection_params = _get_connection_params()
+
+        # The Connection and Channel objects
+        self._connection = None
+        self._channel = None
+
+        # Custom params
+        self._params = {
+            "load_message": True,
+            "stream_contents": False,
+            "prefetch_count": 1
+        }
+        self._params.update(params or {})
+
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, *args):
+        self.disconnect()
+
+    def is_alive(self):
+        if self._connection is None or self._channel is None:
+            return False
+        else:
+            return self._connection.is_open and self._channel.is_open
+
+    def connect(self):
+        self._connection = pika.BlockingConnection(self._connection_params)
+        self._channel = self._connection.channel()
+
+    def publish(self, exchange: str, key: str, msg: dict, ttl_msec: int=0):
+
+        msg = offload_message(msg, to_json)
+        message = json.dumps(msg)
+        properties = dict(delivery_mode=2)
+        if ttl_msec:
+            properties['expiration'] = str(ttl_msec)
+        self._publish(self, exchange, key, message, properties)
+
+    def publish_delayed(self, exchange: str, key: str, queue: str, msg: dict, delay_msec: int=0):
+        '''
+            Create a delay message intended for the queue
+        '''
+        # RabbitMQ does not support scheduled messages, use the
+        # dead letter routing to simulate this.
+        msg = offload_message(msg, to_json)
+        message = json.dumps(msg)
+        delay_queue = f"{queue}_delay"
+        with RabbitMQBrokerManager() as mconn:
+            mconn.create_queue_with_binding(
+                exchange, delay_queue, [key],
+                arguments={
+                    'x-dead-letter-exchange': exchange,
+                    'x-dead-letter-routing-key': key
+                })
+        # Publish a delayed workflow-request message using ttl
+        properties = dict(expiration=str(delay_msec))
+        self._publish(exchange, key, message, properties)
+
+    def _publish(self, exchange, key, message: str, properties: dict):
+
+        '''
+          Publish a message to exchange with key having
+        '''
+        # Check whether a connection has been established
+        if self._channel is None or not self._channel.is_open:
+            raise Exception("Connection with message broker not available")
+
+        # Convert the message to json
+        self._channel.basic_publish(
+            exchange=exchange,
+            routing_key=key,
+            properties=pika.BasicProperties(**properties),
+            body=message,
+        )
+
+    def disconnect(self):
+        """Disconnect from RabbitMQ
+
+        Close any open channels
+        Close the connection
+        Stop any running eventloop
+
+        :return: None
+        """
+        # Close any open channel
+        if self._channel is not None and self._channel.is_open:
+            self._channel.close()
+        self._channel = None
+
+        # Close any open connection
+        if self._connection is not None:
+            self._connection.close()
+        self._connection = None
+
+
+class RabbitMQAsyncConnection(AsyncConnection):
     """This is an asynchronous RabbitMQ connection.
 
     It handles unexpected conditions when interacting with RabbitMQ
@@ -463,7 +593,11 @@ class AsyncConnection(object):
                 self._eventloop = None
         self._connection = None
 
+    def receive_msgs(self, queue, max_wait_time, max_message_count):
+        raise AssertionError('Not needed yet....')
 
-if __name__ == '__main__':
-    with BrokerManager() as bm:
-        bm.create_all()
+    def receive_msg(self, queue):
+        raise AssertionError('Not needed yet....')
+
+
+rabbitmq_connectors = (RabbitMQBrokerManager, RabbitMQConnection, RabbitMQAsyncConnection)

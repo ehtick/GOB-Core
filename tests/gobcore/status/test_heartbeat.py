@@ -4,6 +4,7 @@ import mock
 from gobcore.status.heartbeat import Heartbeat
 from gobcore.message_broker.config import STATUS_EXCHANGE, HEARTBEAT_KEY
 
+
 class MockHeartbeatConnection:
 
     msg = None
@@ -28,7 +29,7 @@ class MockedThread:
         self.name = name
 
     def is_alive(self):
-        return self._is_alive;
+        return self._is_alive
 
 
 def generate_threads(*specs):
@@ -114,3 +115,14 @@ class TestHeartbeat(unittest.TestCase):
         self.assertTrue("dns: " in msg)
         self.assertTrue(header['catalogue'] in msg)
         self.assertTrue("collection: None" in msg)
+
+    @mock.patch("atexit.register")
+    def test_teminate(self, mocked_atexit_register):
+        connection = MockHeartbeatConnection()
+        h = Heartbeat(connection, "Myname")
+        h._connection = mock.MagicMock()
+        h._connection.publish.side_effect = Exception()
+        self.assertRaises(Exception, h.send)
+        h._connection.publish.assert_called_once()
+        h.terminate()
+        h.send()

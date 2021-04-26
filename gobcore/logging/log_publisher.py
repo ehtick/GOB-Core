@@ -8,7 +8,7 @@ A LogPublisher publishes log message on the message broker.
 import threading
 import time
 
-from gobcore.message_broker.brokers.broker import get_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 from gobcore.message_broker.config import LOG_EXCHANGE, AUDIT_LOG_EXCHANGE, ISSUE_EXCHANGE, REQUEST
 
 
@@ -35,7 +35,7 @@ class LogPublisher():
         self._auto_disconnect_timeout = timeout
         if self._connection is None:
             # Start a connection if no connection is active
-            self._connection = get_connection()
+            self._connection = msg_broker.connection()
             self._connection.connect()
             # Start auto disconnect thread
             if self._auto_disconnect_thread is not None:

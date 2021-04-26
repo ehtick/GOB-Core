@@ -251,8 +251,8 @@ class TestMessageDrivenService(unittest.TestCase):
         messagedriven_service._get_service.assert_called_with('queue')
         mock_on_message.assert_called_with('connection', messagedriven_service._get_service.return_value, 'msg')
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.get_async_connection")
-    def test_listen(self, mock_connection, mock_init_messagebroker):
+    @mock.patch("gobcore.message_broker.messagedriven_service.msg_broker")
+    def test_listen(self, patched_msg_broker, mock_init_messagebroker):
         messagedriven_service = MessagedrivenService({}, 'name', {})
 
         class MockConnection:
@@ -266,14 +266,14 @@ class TestMessageDrivenService(unittest.TestCase):
         def stop_check():
             return False
 
-        mock_connection.return_value.__enter__.return_value = MockConnection()
+        patched_msg_broker.async_connection.return_value.__enter__.return_value = MockConnection()
         messagedriven_service.check_connection = 0
 
         messagedriven_service._listen(stop_check, ['q1', 'q1'])
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.get_async_connection")
     @mock.patch("gobcore.message_broker.messagedriven_service.Heartbeat")
-    def test_heartbeat_loop(self, mock_heartbeat, mock_connection, mock_init_messagebroker):
+    @mock.patch("gobcore.message_broker.messagedriven_service.msg_broker")
+    def test_heartbeat_loop(self, mock_msg_broker, mock_heartbeat, mock_init_messagebroker):
         messagedriven_service = MessagedrivenService({}, 'name', {})
 
         class MockConnection:
@@ -284,7 +284,7 @@ class TestMessageDrivenService(unittest.TestCase):
                 messagedriven_service.keep_running = False
                 return True
 
-        mock_connection.return_value.__enter__.return_value = MockConnection()
+        mock_msg_broker.async_connection.return_value.__enter__.return_value = MockConnection()
         messagedriven_service.check_connection = 0
         messagedriven_service.heartbeat_interval = 0
 
@@ -311,7 +311,7 @@ class TestMessageDrivenService(unittest.TestCase):
             def is_alive(self):
                 raise KeyboardInterrupt()
 
-        mock_connection.return_value.__enter__.return_value = MockConnection()
+        mock_msg_broker.async_connection.return_value.__enter__.return_value = MockConnection()
 
         messagedriven_service._heartbeat_loop()
         mock_heartbeat.return_value.terminate.assert_called_once()

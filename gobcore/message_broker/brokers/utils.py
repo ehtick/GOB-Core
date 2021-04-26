@@ -1,6 +1,6 @@
 import argparse
 import json
-from gobcore.message_broker.brokers.broker import get_manager, get_async_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
     parser.add_argument('--destroy', dest='destroy', action='store_true')
     parser.add_argument('--no-destroy', dest='destroy', action='store_false')
     args = parser.parse_args()
-    with get_manager() as bm:
+    with msg_broker.manager() as bm:
         print(' [*] Destroy exchanges')
         if args.destroy:
             bm.destroy_all()
@@ -22,13 +22,13 @@ def main():
             bm.create_all()
     if args.flush:
         print(f'[*] flushing {args.flush}')
-        with get_async_connection() as conn:
+        with msg_broker.async_connection() as conn:
             for msg in conn.receive_msgs(args.flush):
                 print(json.loads(msg))
     if args.publish:
         print(f'[*] publish {args.publish}')
         message = {"test": "message"}
-        with get_async_connection() as conn:
+        with msg_broker.async_connection() as conn:
             exchange, key = args.publish.split(',')
             conn.publish(exchange=exchange, key=key, msg=message)
 

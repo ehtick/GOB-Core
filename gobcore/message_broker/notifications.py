@@ -1,4 +1,4 @@
-from gobcore.message_broker.brokers.broker import get_manager, get_async_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 
 # Use a dedicated exchange for notifications
 NOTIFY_EXCHANGE = "gob.notify"
@@ -158,9 +158,9 @@ def _send_notification(exchange, notification_type, msg):
     :param msg:
     :return:
     """
-    with get_manager() as manager:
+    with msg_broker.manager() as manager:
         manager.create_exchange(exchange)
-    with get_async_connection() as conn:
+    with msg_broker.async_connection() as conn:
         # Send the message as a non-persistent message on the queue
         conn.publish(exchange=exchange, key=notification_type, msg=msg)
 
@@ -173,7 +173,7 @@ def _listen_to_notifications(exchange, queue, notification_type=None):
     :param queue:
     :return:
     """
-    with get_manager() as conn:
+    with msg_broker.manager() as conn:
         # Create exchange and queue if they do not yet exist
         conn.create_exchange(exchange=exchange, durable=True)
         keys = [notification_type] if notification_type else []

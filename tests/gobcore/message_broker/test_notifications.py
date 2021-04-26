@@ -87,13 +87,12 @@ class TestNotifications(TestCase):
         self.assertEqual(result.header, 'any header')
         self.assertEqual(result.contents, {'applied': 'any applied', 'last_event': 'any last_event'})
 
-    @patch("gobcore.message_broker.notifications.get_async_connection")
-    @patch("gobcore.message_broker.notifications.get_manager")
-    def test__send_notification(self, mock_get_manager, mock_get_async_connection):
+    @patch("gobcore.message_broker.notifications.msg_broker")
+    def test__send_notification(self, mock_msg_broker):
         mock_connection = MagicMock()
         mock_manager = MagicMock()
-        mock_get_async_connection.return_value.__enter__.return_value = mock_connection
-        mock_get_manager.return_value.__enter__.return_value = mock_manager
+        mock_msg_broker.async_connection.return_value.__enter__.return_value = mock_connection
+        mock_msg_broker.manager.return_value.__enter__.return_value = mock_manager
         _send_notification('any exchange', 'any type', {})
         mock_manager.create_exchange.assert_called_with('any exchange')
         mock_connection.publish.assert_called_with(
@@ -101,10 +100,10 @@ class TestNotifications(TestCase):
             exchange='any exchange',
             key='any type')
 
-    @patch("gobcore.message_broker.notifications.get_manager")
-    def test__listen_to_notificiations(self, mock_get_manager):
+    @patch("gobcore.message_broker.notifications.msg_broker")
+    def test__listen_to_notificiations(self, mock_msg_broker):
         mock_manager = MagicMock()
-        mock_get_manager.return_value.__enter__.return_value = mock_manager
+        mock_msg_broker.manager.return_value.__enter__.return_value = mock_manager
         result = _listen_to_notifications('any exchange', 'any queue', 'any notification')
         mock_manager.create_exchange.assert_called_with(exchange='any exchange', durable=True)
         mock_manager.create_queue_with_binding.assert_called_with(

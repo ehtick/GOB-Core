@@ -46,7 +46,7 @@ class Connection(ABC):
         pass
 
     @abstractmethod
-    def publish(self, exchange: str, key: str, msg: str, ttl_msec: int):
+    def publish(self, exchange: str, key: str, msg: str, ttl_msec: int=0):
         pass
 
     @abstractmethod

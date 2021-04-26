@@ -1,6 +1,6 @@
-from gobcore.message_broker.brokers.broker import get_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 
 
 def publish(exchange, key, msg):
-    with get_connection() as connection:
+    with msg_broker.connection() as connection:
         connection.publish(exchange, key, msg)

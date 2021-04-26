@@ -14,22 +14,28 @@ BROKER_MAP = {
 }
 
 
-def _get(idx, **kwargs):
-    try:
-        return BROKER_MAP[MESSAGE_BROKER_TYPE][idx](**kwargs)
-    except KeyError:
-        message_broker_types = [MESSAGE_BROKER_TYPE_RABBITMQ, MESSAGE_BROKER_TYPE_AZURE]
-        raise GOBException(
-            f'Invalid MESSAGE_BROKER_TYPE={MESSAGE_BROKER_TYPE}, available={message_broker_types}')
+class MsgBroker:
+
+    @classmethod
+    def _get(cls, idx, **kwargs):
+        try:
+            return BROKER_MAP[MESSAGE_BROKER_TYPE][idx](**kwargs)
+        except KeyError:
+            message_broker_types = [MESSAGE_BROKER_TYPE_RABBITMQ, MESSAGE_BROKER_TYPE_AZURE]
+            raise GOBException(
+                f'Invalid MESSAGE_BROKER_TYPE={MESSAGE_BROKER_TYPE}, available={message_broker_types}')
+
+    @classmethod
+    def manager(cls):
+        return cls._get(0)
+
+    @classmethod
+    def connection(cls, params=None):
+        return cls._get(1)
+
+    @classmethod
+    def async_connection(cls, params=None):
+        return cls._get(2, params=params)
 
 
-def get_manager():
-    return _get(0)
-
-
-def get_connection(params=None):
-    return _get(1)
-
-
-def get_async_connection(params=None):
-    return _get(2, params=params)
+msg_broker = MsgBroker()

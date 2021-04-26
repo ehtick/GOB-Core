@@ -1,16 +1,18 @@
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from gobcore.message_broker import publish
 
 
 class TestInitFile(TestCase):
 
-    @patch("gobcore.message_broker.get_connection")
-    def test_publish(self, mock_connection):
+    @patch("gobcore.message_broker.msg_broker")
+    def test_publish(self, mock_msg_broker):
         exchange = 'exchange'
         key = 'key'
         msg = 'msg'
+        connection = MagicMock()
+        mock_msg_broker.connection = connection
         publish(exchange, key, msg)
-        mock_connection.return_value.__enter__.return_value.publish.assert_called_with(exchange, key, msg)
-        mock_connection.assert_called_with()
+        connection.return_value.__enter__.return_value.publish.assert_called_with(exchange, key, msg)
+        connection.assert_called_with()

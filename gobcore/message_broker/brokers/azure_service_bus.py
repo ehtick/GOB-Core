@@ -154,7 +154,10 @@ class AzureConnection(Connection):
             msg = offload_message(msg, to_json)
             message = ServiceBusMessage(json.dumps(msg))
             message.label = key
-            sender.send_messages(message)
+            kwargs = {}
+            if ttl_msec:
+                kwargs['time_to_live'] = datetime.timedelta(milliseconds=ttl_msec)
+            sender.send_messages(message, **kwargs)
 
     def publish_delayed(self, exchange: str, key: str, queue: str, msg: dict, delay_msec: int=0):
         with self._client:

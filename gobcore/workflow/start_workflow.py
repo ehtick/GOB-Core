@@ -1,4 +1,4 @@
-from gobcore.message_broker.brokers.broker import get_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 from gobcore.message_broker.config import WORKFLOW_EXCHANGE, WORKFLOW_QUEUE, WORKFLOW_REQUEST_KEY
 
 
@@ -25,7 +25,7 @@ def start_workflow(workflow, arguments):
     if contents_ref:
         msg['contents_ref'] = contents_ref
 
-    with get_connection() as conn:
+    with msg_broker.connection() as conn:
         # Publish a workflow-request message on the workflow-exchange for the given workflow
         conn.publish(
             exchange=WORKFLOW_EXCHANGE,
@@ -63,7 +63,7 @@ def retry_workflow(msg):
     # Log retry
     print(f"Retry workflow, {remaining_retry_time} time left", workflow)
 
-    with get_connection() as conn:
+    with msg_broker.connection() as conn:
         delay_ms = SINGLE_RETRY_TIME * 1000
         conn.publish_delayed(
             exchange=WORKFLOW_EXCHANGE,

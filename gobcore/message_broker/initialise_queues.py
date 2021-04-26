@@ -13,13 +13,14 @@ The initialisation of the queues is an integral part of the initialisation and s
 from typing import List
 from functools import wraps
 from gobcore.message_broker.config import MESSAGE_BROKER
-from gobcore.message_broker.brokers.broker import get_manager
+from gobcore.message_broker.brokers.broker import msg_broker
 
 
 def manager_ctx(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        with get_manager() as m:
+        with msg_broker.manager() as m:
+            print(f'm={m}')
             return f(*args, **kwargs, manager=m)
 
     return wrapper
@@ -28,6 +29,7 @@ def manager_ctx(f):
 @manager_ctx
 def create_queue_with_binding(exchange: str, queue: str, keys: List[str], manager):
     print(f'Create queue with bindings for {MESSAGE_BROKER}')
+    print(f'Manager {manager}')
     manager.create_queue_with_binding(exchange, queue, keys)
 
 

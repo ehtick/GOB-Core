@@ -9,10 +9,10 @@ from gobcore.workflow.start_workflow import start_workflow, retry_workflow, SING
 @patch("gobcore.workflow.start_workflow.WORKFLOW_REQUEST_KEY", 'workflow request key')
 class TestStartWorkflow(TestCase):
 
-    @patch("gobcore.workflow.start_workflow.get_connection")
-    def test_start_workflow(self, mock_get_connection):
+    @patch("gobcore.workflow.start_workflow.msg_broker")
+    def test_start_workflow(self, mock_msg_broker):
         mock_connection = MagicMock()
-        mock_get_connection.return_value.__enter__.return_value = mock_connection
+        mock_msg_broker.connection.return_value.__enter__.return_value = mock_connection
         start_workflow('any workflow', {'arguments': 'any arguments'})
         mock_connection.publish.assert_called_with(
             exchange='workflow exchange',
@@ -30,10 +30,10 @@ class TestStartWorkflow(TestCase):
             }
         )
 
-    @patch("gobcore.workflow.start_workflow.get_connection")
-    def test_retry_workflow(self, mock_get_connection):
+    @patch("gobcore.workflow.start_workflow.msg_broker")
+    def test_retry_workflow(self, mock_msg_broker):
         mock_connection = MagicMock()
-        mock_get_connection.return_value.__enter__.return_value = mock_connection
+        mock_msg_broker.connection.return_value.__enter__.return_value = mock_connection
         msg = {
             'workflow': {
             }

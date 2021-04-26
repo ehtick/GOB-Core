@@ -7,7 +7,7 @@ from gobcore.message_broker.notifications import contains_notification, send_not
 from gobcore.quality.issue import process_issues
 from gobcore.message_broker.utils import StoppableThread
 
-from gobcore.message_broker.brokers.broker import get_async_connection
+from gobcore.message_broker.brokers.broker import msg_broker
 
 CHECK_CONNECTION = 5                # Check connection every n seconds
 RUNS_IN_OWN_THREAD = "own_thread"   # Service that runs in a separate thread
@@ -153,7 +153,7 @@ class MessagedrivenService:
         return _on_message(connection, service, msg)
 
     def _listen(self, stop_check, queues: list):
-        with get_async_connection(self._params) as connection:
+        with msg_broker.async_connection(self._params) as connection:
             # Subscribe to the queues, handle messages in the on_message function (runs in another thread)
             queue_threads = connection.subscribe(queues, self._on_message)
 
@@ -186,7 +186,7 @@ class MessagedrivenService:
         progress('Should nicelly close other threads')
 
     def _heartbeat_loop(self):  # noqa: C901
-        with get_async_connection(self._params) as connection:
+        with msg_broker.async_connection(self._params) as connection:
             heartbeat = Heartbeat(connection, self.name)
 
             n = 0

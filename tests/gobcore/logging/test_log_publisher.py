@@ -19,12 +19,12 @@ class TestLogPublisher(TestCase):
 
     @patch('gobcore.logging.log_publisher.threading.Thread')
     @patch('gobcore.logging.log_publisher.LogPublisher._auto_disconnect')
-    @patch('gobcore.logging.log_publisher.get_connection')
-    def test_publish(self, patched_connect, patched_auto_disconnect, patched_thread):
+    @patch('gobcore.logging.log_publisher.msg_broker')
+    def test_publish(self, patched_msg_broker, patched_auto_disconnect, patched_thread):
         publisher = LogPublisher()
         _auto_disconnect_thread = MagicMock()
         publisher._auto_disconnect_thread = _auto_disconnect_thread
-        connection = patched_connect.return_value
+        connection = patched_msg_broker.connection.return_value
         publisher.publish("Level", "Message")
         connection.connect.assert_called_with()
         connection.publish.assert_called_with(publisher._exchange, "Level", "Message", )

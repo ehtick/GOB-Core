@@ -242,6 +242,25 @@ class RabbitMQConnection(Connection):
             body=message,
         )
 
+    def receive_msgs(self, queue, max_wait_time=0, max_message_count=0):
+
+        if max_message_count == 0:
+            print('Press CTRL-C to quit...')
+        kwargs = {}
+        if max_wait_time:
+            kwargs['inactivity_timeout'] = int(max_wait_time)
+        for method, properties, body in self._channel.consume(queue, **kwargs):
+            if method is None:
+                break
+            yield body
+            self._channel.basic_ack(delivery_tag=method.delivery_tag)
+            max_message_count -= 1
+            if max_message_count == 0:
+                break
+
+    def receive_msg(self, queue):
+        raise AssertionError('Not needed yet....')
+
     def disconnect(self):
         """Disconnect from RabbitMQ
 
@@ -592,12 +611,6 @@ class RabbitMQAsyncConnection(AsyncConnection):
                 self._eventloop.join()
                 self._eventloop = None
         self._connection = None
-
-    def receive_msgs(self, queue, max_wait_time, max_message_count):
-        raise AssertionError('Not needed yet....')
-
-    def receive_msg(self, queue):
-        raise AssertionError('Not needed yet....')
 
 
 rabbitmq_connectors = (RabbitMQBrokerManager, RabbitMQConnection, RabbitMQAsyncConnection)

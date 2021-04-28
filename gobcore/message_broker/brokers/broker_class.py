@@ -1,3 +1,6 @@
+'''
+  Inerface definition for a broker
+'''
 from abc import ABC, abstractmethod
 
 
@@ -54,6 +57,14 @@ class Connection(ABC):
         pass
 
     @abstractmethod
+    def receive_msgs(self, queue, max_wait_time, max_message_count):
+        pass
+
+    @abstractmethod
+    def receive_msg(self, queue):
+        pass
+
+    @abstractmethod
     def disconnect(self):
         pass
 
@@ -91,12 +102,4 @@ class AsyncConnection(ABC):
 
     @abstractmethod
     def disconnect(self):
-        pass
-
-    @abstractmethod
-    def receive_msgs(self, queue, max_wait_time, max_message_count):
-        pass
-
-    @abstractmethod
-    def receive_msg(self, queue):
         pass

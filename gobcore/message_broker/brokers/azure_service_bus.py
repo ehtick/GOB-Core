@@ -36,6 +36,18 @@ def _continue_exists(func, *args, **kwargs):
         pass
 
 
+def _get_exchange(queue: str):
+    try:
+        return [x for x, y in QUEUE_CONFIGURATION.items() if queue in y.keys()][0]
+    except IndexError:
+        raise Exception('Unkown queue specified')
+
+
+def _create_message(msg: dict, key)->ServiceBusMessage:
+    msg = offload_message(msg, to_json)
+    return ServiceBusMessage(json.dumps(msg), application_properties={"Key": key})
+
+
 class AzureBrokerManager(BrokerManager):
 
     def __init__(self):
@@ -65,7 +77,7 @@ class AzureBrokerManager(BrokerManager):
     def _get_subscriptions(self, exchange: str):
         return [s.name for s in self._connection.list_subscriptions(exchange)]
 
-    def create_exchange(self, exchange, _durable):
+    def create_exchange(self, exchange):
         try:
             self._connection.create_topic(exchange)
         except ResourceExistsError:
@@ -75,13 +87,13 @@ class AzureBrokerManager(BrokerManager):
     def _get_filter(key):
         operator = '=' if key.find('*') == -1 else 'LIKE'
         value = key.replace('*', '%')
-        return f"Label {operator} '{value}'"
+        return f"Key {operator} '{value}'"
 
     def get_filter_args(self, keys):
         rules = ' OR '.join([self._get_filter(key) for key in keys])
         return SqlRuleFilter(f"{rules} ")
 
-    def create_queue_with_binding(self, exchange, queue, keys):
+    def create_queue_with_binding(self, exchange, queue, keys, **kwargs):
         _continue_exists(self._connection.create_subscription, exchange, queue)
 
         # Filters use SQL like syntax,
@@ -97,7 +109,7 @@ class AzureBrokerManager(BrokerManager):
         exchanges = self._get_topics()
         for exchange in QUEUE_CONFIGURATION.keys():
             if exchange not in exchanges:
-                self.create_exchange(exchange, True)
+                self.create_exchange(exchange)
             queues = self._get_subscriptions(exchange)
             for queue, keys in QUEUE_CONFIGURATION[exchange].items():
                 if queue not in queues:
@@ -124,6 +136,22 @@ class AzureBrokerManager(BrokerManager):
             # No need to cleanup suscriptions, are binded to tpoic and removed when topic is deleted
 
 
+def _publish(client, exchange: str, key: str, msg: dict, ttl_msec: int=0, delay_msec: int=0):
+
+    kwargs = {}
+    if ttl_msec:
+        kwargs['timeout'] = float(delay_msec) / 1000
+    if delay_msec:
+        kwargs['scheduled_time_utc'] = datetime.datetime.utcnow() + datetime.timedelta(milliseconds=delay_msec)
+        sf = 'schedule_messages'
+    else:
+        sf = 'send_messages'
+    with client:
+        sender = client.get_topic_sender(topic_name=exchange)
+        message = _create_message(msg, key)
+        getattr(sender, sf)(message, **kwargs)
+
+
 class AzureConnection(Connection):
 
     def __init__(self, params=None):
@@ -132,7 +160,6 @@ class AzureConnection(Connection):
         :param address: The RabbitMQ address
         """
         self._client = None
-        super().__init__(self)
 
     def __enter__(self):
         self.connect()
@@ -147,27 +174,34 @@ class AzureConnection(Connection):
         address = MESSAGE_BROKER
         self._client = ServiceBusClient(address, credential)
 
-    def publish(self, exchange: str, key: str, msg: dict, ttl_msec: int=0):
-        with self._client:
-            sender = self._client.get_topic_sender(topic_name=exchange)
-
-            msg = offload_message(msg, to_json)
-            message = ServiceBusMessage(json.dumps(msg))
-            message.label = key
-            kwargs = {}
-            if ttl_msec:
-                kwargs['time_to_live'] = datetime.timedelta(milliseconds=ttl_msec)
-            sender.send_messages(message, **kwargs)
+    def publish(self, exchange: str, key: str, msg: dict, ttl_msec: int=0, delay_msec: int=0):
+        _publish(self._client, exchange, key, msg, ttl_msec, delay_msec)
 
     def publish_delayed(self, exchange: str, key: str, queue: str, msg: dict, delay_msec: int=0):
-        with self._client:
-            sender = self._client.get_topic_sender(topic_name=exchange)
+        scheduled_time_utc = datetime.datetime.utcnow() + datetime.timedelta(milliseconds=delay_msec)
+        self._publish(exchange, key, msg, lambda x: x.schedule_messages, scheduled_time_utc=scheduled_time_utc)
 
-            msg = offload_message(msg, to_json)
-            scheduled_time_utc = datetime.datetime.utcnow() + datetime.timedelta(milliseconds=delay_msec)
-            message = ServiceBusMessage(json.dumps(msg))
-            message.label = key
-            sender.schedule_messages(message, scheduled_time_utc)
+    def receive_msgs(self, queue, max_wait_time=None, max_message_count=None):
+        '''
+          Receive message blocking
+        '''
+        exchange = _get_exchange(queue)
+
+        with self._client:
+            receiver = self._client.get_subscription_receiver(exchange, queue)
+            with receiver:
+                kwargs = {}
+                if max_wait_time:
+                    kwargs['max_wait_time'] = max_wait_time
+                if max_message_count:
+                    kwargs['max_message_count'] = max_message_count
+                receiver_msg = receiver.receive_messages(**kwargs)
+                for msg in receiver_msg:
+                    yield b''.join(msg.message.get_data())
+                    receiver.complete_message(msg)
+
+    def receive_msg(self, queue):
+        raise AssertionError('Not needed yet....')
 
     def disconnect(self):
         """Disconnect from RabbitMQ
@@ -240,22 +274,9 @@ class AzureAsyncConnection(AsyncConnection):
 
     def publish(self, exchange: str, key: str, msg: dict):
         '''
-           Publish a message to exchange = (topic) with Label = key
+           Publish a message to exchange = (topic) with CorrelationId = key
         '''
-        with self._client:
-            sender = self._client.get_topic_sender(topic_name=exchange)
-
-            msg = offload_message(msg, to_json)
-            message = ServiceBusMessage(json.dumps(msg))
-            message.label = key
-            sender.send_messages(message)
-
-    @staticmethod
-    def _get_exchange(queue: str):
-        try:
-            return [x for x, y in QUEUE_CONFIGURATION.items() if queue in y.keys()][0]
-        except IndexError:
-            raise Exception('Unkown queue specified')
+        _publish(self._client, exchange, key, msg)
 
     def subscribe(self, queues, message_handler):  # noqa: C901
         """Subscribe to the given queues, for each queue start a new thread
@@ -303,29 +324,12 @@ class AzureAsyncConnection(AsyncConnection):
 
         for queue in queues:
             progress('Subscription', queue)
-            exchange = self._get_exchange(queue)
+            exchange = _get_exchange(queue)
             subs = StoppableThread(target=subscription, args=(exchange, queue, message_handler), name=queue)
             subs.start()
             self._subscriptions.append(subs)
 
         return self._subscriptions
-
-    def receive_msgs(self, queue, max_wait_time=5, max_message_count=1000):
-        '''
-          Receive message blocking
-        '''
-        messages = []
-        exchange = self._get_exchange(queue)
-
-        with self._client:
-            receiver = self._client.get_subscription_receiver(exchange, queue)
-            with receiver:
-                receiver_msg = receiver.receive_messages(
-                    max_message_count=max_message_count, max_wait_time=max_wait_time)
-                for msg in receiver_msg:
-                    messages.append(b''.join(msg.message.get_data()))
-                    receiver.complete_message(msg)
-        return messages
 
     def disconnect(self):
         progress(f"Disconnect")
@@ -337,4 +341,4 @@ class AzureAsyncConnection(AsyncConnection):
         progress(f"Disconnect Joined")
 
 
-azure_connectors = (BrokerManager, AzureConnection, AzureAsyncConnection)
+azure_connectors = (AzureBrokerManager, AzureConnection, AzureAsyncConnection)

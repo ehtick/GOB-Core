@@ -19,7 +19,8 @@ class MsgBroker:
     @classmethod
     def _get(cls, idx, **kwargs):
         try:
-            return BROKER_MAP[MESSAGE_BROKER_TYPE][idx](**kwargs)
+            broker = BROKER_MAP[MESSAGE_BROKER_TYPE][idx]
+            return broker(**kwargs)
         except KeyError:
             message_broker_types = [MESSAGE_BROKER_TYPE_RABBITMQ, MESSAGE_BROKER_TYPE_AZURE]
             raise GOBException(

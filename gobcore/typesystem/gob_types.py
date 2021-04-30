@@ -382,6 +382,44 @@ class Date(String):
         return datetime.datetime.strptime(self._string, self.internal_format).date()
 
 
+class Time(String):
+    name = "Time"
+    sql_type = sqlalchemy.Time
+    internal_format = "%H:%M:%S.%f"
+
+    def __init__(self, value):
+        super().__init__(value)
+
+    @classmethod
+    def from_value(cls, value, **kwargs):
+        input_format = kwargs['format'] if 'format' in kwargs else cls.internal_format
+
+        if value is not None:
+            try:
+                if not isinstance(value, datetime.time):
+                    if isinstance(value, str):
+                        value = datetime.time.fromisoformat(value)
+                    value = datetime.strtime(value, input_format)
+                # Transform to internal string format and work around issue: https://bugs.python.org/issue13305
+                value = value.strftime("%m-%dT%H:%M:%S.%f")
+            except ValueError as v:
+                raise GOBTypeException(v)
+
+        return cls(str(value)) if value is not None else cls(None)
+
+    @property
+    def to_db(self):
+        if self._string is None:
+            return None
+        return datetime.time.strptime(self._string, self.internal_format)
+
+    @property
+    def to_value(self):
+        if self._string is None:
+            return None
+        return datetime.time.strptime(self._string, self.internal_format)
+
+
 class DateTime(Date):
     name = "DateTime"
     sql_type = sqlalchemy.DateTime
@@ -419,6 +457,26 @@ class DateTime(Date):
         if self._string is None:
             return None
         return datetime.datetime.strptime(self._string, self.internal_format)
+
+
+class Interval(String):
+    name = 'Interval'
+
+    def __init__(self, value):
+        raise GOBTypeException('type not supported (yet)')
+        super().__init__(value)
+
+    @classmethod
+    def from_value(cls, value, **kwargs):
+        pass
+
+    @property
+    def to_db(self):
+        pass
+
+    @property
+    def to_value(self):
+        pass
 
 
 class JSON(GOBType):
@@ -620,3 +678,7 @@ class IncompleteDate(JSON):
     @property
     def _formatted(self):
         return f"{self.year or 0:04}-{self.month or 0:02}-{self.day or 0:02}"
+
+
+class URI(String):
+    pass

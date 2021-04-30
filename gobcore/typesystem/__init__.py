@@ -31,6 +31,7 @@ GOB_TYPES = [
     GOB.ManyReference,
     GOB.VeryManyReference,
     GOB.IncompleteDate,
+    GOB.URI,
 ]
 
 GOB_SECURE_TYPES = [

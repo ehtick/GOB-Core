@@ -7,23 +7,26 @@ from gobcore.model import GOBModel
 
 
 class GOBSources():
+    _relations = None
 
     def __init__(self):
+        if GOBSources._relations:
+            return
+
         path = os.path.join(os.path.dirname(__file__), 'gobsources.json')
         with open(path) as file:
             data = json.load(file)
 
-        self._data = data
-        self._model = GOBModel()
+        gob_model = GOBModel()
 
-        self._relations = defaultdict(lambda: defaultdict(list))
+        GOBSources._relations = defaultdict(lambda: defaultdict(list))
 
         # Extract references for easy access in API
-        for source_name, source in self._data.items():
-            self._extract_relations(source_name, source)
+        for source_name, source in data.items():
+            self._extract_relations(gob_model, source_name, source)
 
-    def _extract_relations(self, source_name, source):
-        for catalog_name, catalog in self._model.get_catalogs().items():
+    def _extract_relations(self, gob_model, source_name, source):
+        for catalog_name, catalog in gob_model.get_catalogs().items():
             for collection_name, collection in catalog['collections'].items():
                 for field_name, spec in collection['references'].items():
                     field_relation = self._get_field_relation(
@@ -42,7 +45,7 @@ class GOBSources():
                             **field_relation
                         }
                         # Store the relation for the catalog - collection
-                        self._relations[catalog_name][collection_name].append(relation)
+                        GOBSources._relations[catalog_name][collection_name].append(relation)
 
     def _get_field_relation(self, source, catalog_name, collection_name, field_name):
         try:
@@ -71,4 +74,4 @@ class GOBSources():
             return []
 
     def get_relations(self, catalog_name, collection_name):
-        return self._relations[catalog_name][collection_name]
+        return GOBSources._relations[catalog_name][collection_name]

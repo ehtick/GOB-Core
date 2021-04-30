@@ -1,5 +1,6 @@
 import os
 import json
+from typing import List
 
 from gobcore.exceptions import GOBException
 from gobcore.model.metadata import FIELD
@@ -8,6 +9,7 @@ from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXE
 from gobcore.model.relations import get_relations, get_inverse_relations
 from gobcore.model.quality import QUALITY_CATALOG, get_quality_assurances
 from gobcore.model.schema import load_schema, SchemaException
+from gobcore.model.ams_schema import get_model
 
 
 EVENTS_DESCRIPTION = {
@@ -53,20 +55,24 @@ class GOBModel():
     inverse_relations = None
     _data = None
 
-    def __init__(self):
+    def __init__(self, catalogs: List[str]= None):
         if GOBModel._data is not None:
             # Model is already initialised
             return
 
-        path = os.path.join(os.path.dirname(__file__), 'gobmodel.json')
-        with open(path) as file:
-            data = json.load(file)
-
-        if os.getenv('DISABLE_TEST_CATALOGUE', False):
+        data = {}
+        if not os.getenv('DISABLE_TEST_CATALOGUE', False):
             # Default is to include the test catalogue
             # By setting the DISABLE_TEST_CATALOGUE environment variable
             # the test catalogue can be removed
-            del data["test_catalogue"]
+            path = os.path.join(os.path.dirname(__file__), 'test_catalog.json')
+            with open(path) as file:
+                data['test_catalog'] = json.load(file)
+
+        catalogs = catalogs or []
+        catalogs += [x for x in os.getenv('CATALOGS', '').split(',') if x.strip()]
+        for catalog in catalogs:
+            data[catalog] = get_model(catalog)
 
         GOBModel._data = data
         self._load_schemas()

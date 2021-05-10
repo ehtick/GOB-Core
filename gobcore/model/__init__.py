@@ -55,7 +55,7 @@ class GOBModel():
     inverse_relations = None
     _data = None
 
-    def __init__(self, catalogs: List[str]= None):
+    def __init__(self, catalogs: List[str] = None):
         if GOBModel._data is not None:
             # Model is already initialised
             return

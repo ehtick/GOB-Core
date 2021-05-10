@@ -100,7 +100,7 @@ def _replace(field: dict, item, replace_item, value_func):
         del(item[field])
 
 
-def _optional(fields: dict, name: str)-> dict:
+def _optional(fields: dict, name: str) -> dict:
     return {name: fields[name]} if name in fields else {}
 
 
@@ -163,7 +163,7 @@ DEFAULT_SCHEMA_REF = 'https://raw.githubusercontent.com/Amsterdam/amsterdam-sche
 AMS_SCHEMA_REF = os.environ.get('AMS_SCHEME_REF', DEFAULT_SCHEMA_REF)
 
 
-def to_snake(camel_str: str)->str:
+def to_snake(camel_str: str) -> str:
     return re.sub(r'(?<=[a-z])[A-Z]|[A-Z](?=[^A-Z])', r'_\g<0>', camel_str).lower().strip('_')
 
 
@@ -229,7 +229,7 @@ def ams2gob_model(ams_model: dict):
 
 def get_ams_model(catalogue):
     url = os.path.join(AMS_SCHEMA_REF, catalogue, catalogue + '.json')
-    print(f'Fetching schema from {url}')
+    print('Fetching schema from {url}')
     with urllib.request.urlopen(url) as response:
         return json.loads(response.read().decode('utf-8'))
 

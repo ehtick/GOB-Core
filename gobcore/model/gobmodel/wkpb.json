@@ -1,0 +1,146 @@
+{
+    "wkpb": {
+        "version": "0.1",
+        "abbreviation": "WKPB",
+        "description": "De Gemeentelijke beperkingenregistratie op grond van de Wkpb bevat alle bij wet genoemde beperkingenbesluiten op onroerende zaken, die het gemeentebestuur heeft opgelegd.",
+        "collections": {
+            "beperkingen": {
+                "version": "0.1",
+                "abbreviation": "BPG",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Uniek nummer waarmee de beperking is genummerd. (in Neuron applicatie bekend als inschrijfnummer)"
+                    },
+                    "volgnummer": {
+                        "type": "GOB.String",
+                        "description": "Volgnummer van de beperking."
+                    },
+                    "beperking": {
+                        "type": "GOB.JSON",
+                        "description": "De omschrijving van de beperking.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": "Datum waarop de beperking in werking treedt."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": "Datum dat de beperking beëindigd is."
+                    },
+                    "belast_kadastrale_objecten": {
+                        "type": "GOB.VeryManyReference",
+                        "ref": "brk:kadastraleobjecten",
+                        "description": "Het kadastraal object dat door een beperking wordt belast."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "wkpb:dossiers",
+                        "description": "Het dossier dat aan de stadia van de beperking ten grondslag ligt."
+                    },
+                    "datum_bekendmaking": {
+                        "type": "GOB.Date",
+                        "description": "Datum ontvangst door het stadsdeel of de dienst, als het gaat om: melding van voornemen tot sanering (Wet bodembescherming, art. 28 juncto 39b); of beslissing in administratief beroep of rechterlijke uitspraak. Datum bekend worden bij het stadsdeel of de dienst, als het een vervallenverklaring (Wkpb, art. 7.4) betreft. Datum bekendmaking of verzending door het stadsdeel of de dienst, als het gaat om: voorbescherming als gemeentelijk monument; een ander besluit (op grond van het Aanwijzingsbesluit Wkpb)."
+                    },
+                    "aard": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van de handeling die op de beperking heeft plaatsgevonden.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "orgaan": {
+                        "type": "GOB.JSON",
+                        "description": "Het orgaan dat de beperking heeft opgelegd.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "persoonsgegevens_afschermen": {
+                        "type": "GOB.Boolean",
+                        "description": "Aanduiding dat de persoonsgegevens moeten worden afgeschermd."
+                    },
+                    "heeft_voorgaande_beperking": {
+                        "type": "GOB.Reference",
+                        "ref": "wkpb:beperkingen",
+                        "description": "Bij het wijzigen, verlengen en beëindigen van een beperking staat hier de identificatie van de voorgaande beperking."
+                    },
+                    "registratiedatum": {
+                        "type": "GOB.DateTime",
+                        "description": "Datum waarop het gegeven in de bron geregistreerd is."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van het proces waarin de beperking zich bevindt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Tweedimensionale ligging, grootte en vorm waarop de beperking volgens het besluit rust."
+                    }
+                }
+            },
+            "dossiers": {
+                "version": "0.1",
+                "abbreviation": "DSR",
+                "entity_id": "dossier",
+                "attributes": {
+                    "dossier": {
+                        "type": "GOB.String",
+                        "description": "Verwijzing vanuit de overige objectklassen."
+                    },
+                    "heeft_brondocumenten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "wkpb:brondocumenten",
+                        "description": "De brondocument(en) behorende bij het dossier."
+                    }
+                }
+            },
+            "brondocumenten": {
+                "version": "0.1",
+                "abbreviation": "BDT",
+                "entity_id": "documentnummer",
+                "attributes": {
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Nummer van het brondocument."
+                    },
+                    "registratiedatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop het brondocument is opgeslagen in het register."
+                    }
+                }
+            }
+        }
+    }
+}

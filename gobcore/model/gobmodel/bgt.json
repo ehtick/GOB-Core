@@ -1,0 +1,65 @@
+{
+    "bgt": {
+        "version": "0.1",
+        "description": "De Basisregistratie grootschalige topografie.",
+        "abbreviation": "BGT",
+        "collections": {
+            "onderbouw": {
+                "version": "0.1",
+                "abbreviation": "ONW",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "Datum waar op het object bij de bronhouder is ontstaan."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "Datum waarop het object bij de bronhouder niet meer geldig is."
+                    },
+                    "relatieve_hoogteligging": {
+                        "type": "GOB.Integer",
+                        "description": "-2, -1, 0, 1, 2, 3 Aanduiding voor de relatieve hoogte van het object ten opzichte van het maaiveld."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Multivlakgeometrie."
+                    }
+                }
+            },
+            "overbouw": {
+                "version": "0.1",
+                "abbreviation": "OVW",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Uniek identificerend kenmerk voor het object dat onveranderlijk is zolang het object bestaat."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "Datum waar op het object bij de bronhouder is ontstaan."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "Datum waarop het object bij de bronhouder niet meer geldig is."
+                    },
+                    "relatieve_hoogteligging": {
+                        "type": "GOB.Integer",
+                        "description": "-2, -1, 0, 1, 2, 3 Aanduiding voor de relatieve hoogte van het object ten opzichte van het maaiveld."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Multivlakgeometrie."
+                    }
+                }
+            }
+        }
+    }
+}

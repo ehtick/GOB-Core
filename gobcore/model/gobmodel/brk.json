@@ -1,0 +1,1019 @@
+{
+    "brk": {
+        "version": "0.1",
+        "abbreviation": "BRK",
+        "description": "De Basisregistratie kadaster (BRK) bevat informatie over percelen, eigendom, hypotheken, beperkte rechten (zoals recht van erfpacht, opstal en vruchtgebruik) en leidingnetwerken. Daarnaast staan er kadastrale kaarten in met perceel, perceelnummer, oppervlakte, kadastrale grens en de grenzen van het rijk, de provincies en gemeenten.",
+        "collections": {
+            "kadastraleobjecten": {
+                "version": "0.1",
+                "abbreviation": "KOT",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een Kadastraal object."
+                    },
+                    "kadastrale_aanduiding": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een Kadastraal Object samengesteld uit gemeentecode, kadastrale sectie, perceelnummer, indexletter en indexnummer."
+                    },
+                    "aangeduid_door_gemeente": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:gemeentes",
+                        "description": ""
+                    },
+                    "aangeduid_door_kadastralegemeente": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralegemeentes",
+                        "description": "De kadastrale gemeente, het eerste gedeelte van de aanduiding van een kadastraal object."
+                    },
+                    "aangeduid_door_kadastralegemeentecode": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralegemeentecodes",
+                        "description": ""
+                    },
+                    "aangeduid_door_kadastralesectie": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralesecties",
+                        "description": "De kadastrale sectie, het tweede gedeelte van de aanduiding van een kadastraal object."
+                    },
+                    "perceelnummer": {
+                        "type": "GOB.Integer",
+                        "description": "Een numerieke aanduiding van het kadastrale perceel per sectie, deel van de kadastrale aanduiding van de onroerende zaak."
+                    },
+                    "indexletter": {
+                        "type": "GOB.Character",
+                        "description": "Letter Kadastraal object, dit geeft een indicatie voor het type object. G Grond perceel. A Appartementsrecht"
+                    },
+                    "indexnummer": {
+                        "type": "GOB.Integer",
+                        "description": "Volgnummer van het Appartementsrecht"
+                    },
+                    "gemeente": {
+                        "type": "GOB.String",
+                        "description": ""
+                    },
+                    "soort_grootte": {
+                        "type": "GOB.JSON",
+                        "description": "Aanduiding van soort grootte",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "grootte": {
+                        "type": "GOB.Decimal",
+                        "description": "De grootte van een kadastraal object is de oppervlakte van het kadastrale perceel. Dit kan bij een deelperceel een geschatte grootte zijn."
+                    },
+                    "soort_cultuur_bebouwd": {
+                        "type": "GOB.JSON",
+                        "description": "De soort cultuur bebouwd is een aanduiding voor de aard van de soort cultuur van een bebouwd kadastraal object, weergegeven als ‘omschrijving kadastraal object’ in Mijn.kadaster.nl (Kadaster-on-line; KOL). Dit kenmerk is afgeleid van de notariële akte (artikel 87, eerste lid, onder a, van de Kadasterregeling 1994). Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        },
+                        "has_multiple_values": true
+                    },
+                    "soort_cultuur_onbebouwd": {
+                        "type": "GOB.JSON",
+                        "description": "De soort cultuur onbebouwd is een aanduiding voor de aard van de meest significante cultuur van het onbebouwde deel van het kadastraal object, weergegeven als ‘omschrijving kadastraal object’ in Mijn.kadaster.nl Dit kenmerk is in beginsel afgeleid van de notariële akte, maar kan worden bijgesteld op grond van een verzoek van de eigenaar (of een schriftelijk gevolmachtigde namens de eigenaar)per brief, fax of e-mailbericht. Dit kan afwijken van: het feitelijk gebruik in de WOZ; gebruiksdoel in de BAG; SBI-code in het HR.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "status": {
+                        "type": "GOB.Character",
+                        "description": "Status van het Kadastraal Object ('B' is bestaand)"
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de kadastrale sectie in het stelsel van de Rijksdriehoeksmeting (RD)"
+                    },
+                    "plaatscoordinaten": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "De aanduiding van een kaartpunt voor de weergave van de identificatie van een perceel (centroïde)"
+                    },
+                    "perceelnummer_rotatie": {
+                        "type": "GOB.Decimal",
+                        "description": "Rotatie van het perceelnummer ten behoeve van afbeelding op de kaart. Perceelnummers worden bijvoorbeeld gekanteld om in een smal perceel te passen"
+                    },
+                    "perceelnummer_verschuiving": {
+                        "type": "GOB.JSON",
+                        "description": "Coördinaten voor het verschuiven van het perceelnummer op de kaart naar een locatie waar meer ruimte is om het nummer af te beelden",
+                        "attributes": {
+                            "x": {
+                                "type": "GOB.String"
+                            },
+                            "y": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "bijpijling_geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de bijpijling (de puur grafische lijn tussen het perceel en het perceelnummer)  in het stelsel van de Rijksdriehoeksmeting (RD)"
+                    },
+                    "indicatie_voorlopige_geometrie": {
+                        "type": "GOB.Character",
+                        "description": "Indicatie of de geometrie (kadastrale grens) voorlopig is of niet J N"
+                    },
+                    "koopsom": {
+                        "type": "GOB.Integer",
+                        "description": "Het in een ter inschrijving aangeboden stuk vermelde bedrag, waarvoor 1 of meer onroerende zaken zijn verkregen."
+                    },
+                    "koopsom_valutacode": {
+                        "type": "GOB.String",
+                        "description": "Aanduiding van de valutasoort gebruikt bij de koop"
+                    },
+                    "koopjaar": {
+                        "type": "GOB.String",
+                        "description": "Transactiejaar van de aankoop"
+                    },
+                    "indicatie_meer_objecten": {
+                        "type": "GOB.Character",
+                        "description": "Indicatie dat de koopsom betrekking heeft op meer dan 1 kadastraal object"
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    },
+                    "in_onderzoek": {
+                        "type": "GOB.String",
+                        "description": "Als dit veld is gevuld geeft dit de omschrijving waarom dit gegeven in onderzoek staat (art. 7n en 7r Kadasterwet)."
+                    },
+                    "is_ontstaan_uit_g_perceel": {
+                        "type": "GOB.ManyReference",
+                        "description": "Dit veld is alléén gevuld wanneer het beschreven kadastrale object een A-perceel betreft.",
+                        "ref": "brk:kadastraleobjecten"
+                    },
+                    "heeft_een_relatie_met_verblijfsobject": {
+                        "type": "GOB.ManyReference",
+                        "description": "Relatie naar verblijfsobject",
+                        "ref": "bag:verblijfsobjecten"
+                    },
+                    "is_ontstaan_uit_kadastraalobject": {
+                        "type": "GOB.ManyReference",
+                        "description": "Onderliggende percelen. Alleen gevuld wanneer het beschreven kadastrale object een A-perceel betreft.",
+                        "ref": "brk:kadastraleobjecten"
+                    }
+                }
+            },
+            "zakelijkerechten": {
+                "version": "0.1",
+                "abbreviation": "ZRT",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De Kadaster identificatie is een door het Kadaster toegekende landelijk uniek nummer aan dit zakelijk recht binnen de kadastrale registratie."
+                    },
+                    "belast_zakelijkerechten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Dit zakelijk recht belast de volgende Aardzakelijkrechten"
+                    },
+                    "belast_met_zakelijkerechten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Dit zakelijk recht is belast met de volgende Aardzakelijkrechten"
+                    },
+                    "ontstaan_uit_zakelijkerechten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Als deze waarde is gevuld, dan is dit recht ontstaan uit een appartementssplitsing, die hier met zijn identificerende kenmerk aangegeven wordt (VVE)"
+                    },
+                    "ontstaan_uit_appartementsrechtsplitsing_vve": {
+                        "type": "GOB.Reference",
+                        "description": "VVE Subject ontstaan uit Appartementsrechtsplitsing",
+                        "ref": "brk:kadastralesubjecten"
+                    },
+                    "betrokken_bij_zakelijkerechten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Als deze waarde is gevuld, dan is dit recht betrokken bij een appartementssplitsing, die hier met zijn identificerende kenmerk aangegeven wordt (VVE)"
+                    },
+                    "betrokken_bij_appartementsrechtsplitsing_vve": {
+                        "type": "GOB.Reference",
+                        "description": "VVE Subject betrokken bij Appartementsrechtsplitsing",
+                        "ref": "brk:kadastralesubjecten"
+                    },
+                    "is_beperkt_tot": {
+                        "type": "GOB.Integer",
+                        "description": "Is beperkt tot tenaamstelling, dat wil zeggen is beperkt tot een subject"
+                    },
+                    "rust_op_kadastraalobject": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastraleobjecten",
+                        "description": "Het kadastraal object en volgnummer waarop het zakelijk recht rust"
+                    },
+                    "appartementsrechtsplitsingidentificatie": {
+                        "type": "GOB.String",
+                        "description": "De identificatie van de appartementsrechtsplitsing"
+                    },
+                    "appartementsrechtsplitsingtype": {
+                        "type": "GOB.JSON",
+                        "description": "Het type appartementsrechtsplitsing. De mogelijke waarden zijn: hoofdsplitsing of ondersplitsing of splitsing afkoop erfpacht.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "einddatum_appartementsrechtsplitsing": {
+                        "type": "GOB.String",
+                        "description": "Einddatum van de appartementsrechtsplitsing"
+                    },
+                    "indicatie_actueel_appartementsrechtsplitsing": {
+                        "type": "GOB.String",
+                        "description": "Indicatie van de actualiteit van de appartementsrechtsplitsing"
+                    },
+                    "aard_zakelijk_recht": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van het zakelijk recht",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "akr_aard_zakelijk_recht": {
+                        "type": "GOB.String",
+                        "description": "De AKR code van de aard van het zakelijk recht"
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    }
+                }
+            },
+            "kadastralesubjecten": {
+                "version": "0.1",
+                "abbreviation": "SJT",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Het aan dit subject toegekende landelijk unieke nummer"
+                    },
+                    "type_subject": {
+                        "type": "GOB.String",
+                        "description": "Afgeleid gegeven. Is het subject een natuurlijk persoon of een niet-natuurlijk persoon"
+                    },
+                    "beschikkingsbevoegdheid": {
+                        "type": "GOB.JSON",
+                        "description": "Aanduiding van de beschikkingsbevoegdheid van een persoon.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "heeft_bsn_voor": {
+                        "type": "GOB.Reference",
+                        "ref": "brp:personen",
+                        "description": "Het burgerservicenummer, bedoeld in artikel 1.1 van de Wet algemene bepalingen burgerservicenummer.",
+                        "secure": {
+                            "bronwaarde": {
+                                "type": "GOB.SecureString",
+                                "level": 4
+                            }
+                        }
+                    },
+                    "voornamen": {
+                        "type": "GOB.SecureString",
+                        "description": "Voornamen van het subject",
+                        "level": 4
+                    },
+                    "voorvoegsels": {
+                        "type": "GOB.SecureString",
+                        "description": "Voorvoegsels bij de geslachtsnaam",
+                        "level": 4
+                    },
+                    "geslachtsnaam": {
+                        "type": "GOB.SecureString",
+                        "description": "Geslachtsnaam van de geregistreerde persoon",
+                        "level": 4
+                    },
+                    "geslacht": {
+                        "type": "GOB.JSON",
+                        "description": "Geslacht van het geregistreerd persoon. Dit kenmerk kent een domein voor als de persoon in de BRP voorkomt en een domein voor als de persoon niet in de BRP voorkomt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "naam_gebruik": {
+                        "type": "GOB.JSON",
+                        "description": "Aanduiding naam gebruik",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "geboortedatum": {
+                        "type": "GOB.SecureDate",
+                        "description": "De datum waarop een natuurlijk persoon is geboren. Deze datum kan onvolledig zijn (alleen jaar, of alleen jaar en maand bekend).",
+                        "level": 4
+                    },
+                    "geboorteplaats": {
+                        "type": "GOB.String",
+                        "description": "De geboorteplaats is een plaatsaanduiding, die aangeeft waar de natuurlijke persoon geboren is."
+                    },
+                    "geboorteland": {
+                        "type": "GOB.JSON",
+                        "description": "Geboorteland is een aanduiding van het land waar de natuurlijke persoon geboren is.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "datum_overlijden": {
+                        "type": "GOB.String",
+                        "description": "De overlijdensdatum is de datum waarop een natuurlijk persoon is overleden."
+                    },
+                    "indicatie_overleden": {
+                        "type": "GOB.String",
+                        "description": "Indicatie of de persoon al dan niet overleden is. De datum van overlijden is soms niet bekend, maar wel dat iemand overleden is. Dat is uit dit attribuut af te leiden."
+                    },
+                    "voornamen_partner": {
+                        "type": "GOB.SecureString",
+                        "description": "Voorna(a)m(en) van de gerigstreerde partner",
+                        "level": 4
+                    },
+                    "voorvoegsels_partner": {
+                        "type": "GOB.SecureString",
+                        "description": "Voorvoegsel van de geregistreerde partner",
+                        "level": 4
+                    },
+                    "geslachtsnaam_partner": {
+                        "type": "GOB.SecureString",
+                        "description": "Geslachtsna(a)m(en) van de geregistreerde partner",
+                        "level": 4
+                    },
+                    "heeft_rsin_voor": {
+                        "type": "GOB.Reference",
+                        "ref": "hr:nietnatuurlijkepersonen",
+                        "description": "Het Rechtspersonen Samenwerking Identificatie Nummer uit het Handelsregister."
+                    },
+                    "heeft_kvknummer_voor": {
+                        "type": "GOB.Reference",
+                        "ref": "hr:maatschappelijkeactiviteiten",
+                        "description": "Het KvK-nummer uit het Handelsregister."
+                    },
+                    "rechtsvorm": {
+                        "type": "GOB.JSON",
+                        "description": "De juridische vorm van een niet-natuurlijk persoon.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "statutaire_naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van de rechtspersoon. Het betreft de naam die is opgenomen in de oprichtingsakte."
+                    },
+                    "statutaire_zetel": {
+                        "type": "GOB.String",
+                        "description": "De statutaire plaats van vestiging."
+                    },
+                    "woonadres": {
+                        "type": "GOB.JSON",
+                        "description": "BAG: Verblijfsobject / Standplaats / Ligplaats",
+                        "attributes": {
+                            "adresseerbaar_object": {
+                                "type": "GOB.String"
+                            },
+                            "openbare_ruimte": {
+                                "type": "GOB.String"
+                            },
+                            "huisnummer": {
+                                "type": "GOB.Integer"
+                            },
+                            "huisletter": {
+                                "type": "GOB.String"
+                            },
+                            "huisnummer_toevoeging": {
+                                "type": "GOB.String"
+                            },
+                            "postcode": {
+                                "type": "GOB.String"
+                            },
+                            "woonplaats": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "land_waarnaar_vertrokken": {
+                        "type": "GOB.JSON",
+                        "description": "Land waar naar vertrokken",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "woonadres_buitenland": {
+                        "type": "GOB.JSON",
+                        "description": "Buitenlands adres",
+                        "attributes": {
+                            "adres": {
+                                "type": "GOB.String"
+                            },
+                            "woonplaats": {
+                                "type": "GOB.String"
+                            },
+                            "regio": {
+                                "type": "GOB.String"
+                            },
+                            "naam": {
+                                "type": "GOB.String"
+                            },
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "postadres": {
+                        "type": "GOB.JSON",
+                        "description": "",
+                        "attributes": {
+                            "adresseerbaar_object": {
+                                "type": "GOB.String"
+                            },
+                            "openbare_ruimte": {
+                                "type": "GOB.String"
+                            },
+                            "huisnummer": {
+                                "type": "GOB.Integer"
+                            },
+                            "huisletter": {
+                                "type": "GOB.String"
+                            },
+                            "huisnummer_toevoeging": {
+                                "type": "GOB.String"
+                            },
+                            "postcode": {
+                                "type": "GOB.String"
+                            },
+                            "woonplaats": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "postadres_buitenland": {
+                        "type": "GOB.JSON",
+                        "description": "",
+                        "attributes": {
+                            "adres": {
+                                "type": "GOB.String"
+                            },
+                            "woonplaats": {
+                                "type": "GOB.String"
+                            },
+                            "regio": {
+                                "type": "GOB.String"
+                            },
+                            "naam": {
+                                "type": "GOB.String"
+                            },
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "postadres_postbus": {
+                        "type": "GOB.JSON",
+                        "description": "",
+                        "attributes": {
+                            "nummer": {
+                                "type": "GOB.String"
+                            },
+                            "postcode": {
+                                "type": "GOB.String"
+                            },
+                            "woonplaatsnaam": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    }
+                }
+            },
+            "tenaamstellingen": {
+                "version": "0.1",
+                "abbreviation": "TNG",
+                "entity_id": "id",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De identificatie is een uniek nummer aan deze tenaamstelling binnen de kadastrale registratie."
+                    },
+                    "volgnummer": {
+                        "type": "GOB.Integer",
+                        "description": ""
+                    },
+                    "van_kadastraalsubject": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralesubjecten",
+                        "description": "Het Subject waarvoor deze tenaamstelling geldt."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": ""
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": ""
+                    },
+                    "aandeel": {
+                        "type": "GOB.JSON",
+                        "description": "Aandeel in Recht is het aandeel waarvoor een persoon deelneemt in het Recht",
+                        "attributes": {
+                            "teller": {
+                                "type": "GOB.Integer"
+                            },
+                            "noemer": {
+                                "type": "GOB.Integer"
+                            }
+                        }
+                    },
+                    "geldt_voor": {
+                        "type": "GOB.JSON",
+                        "description": "Twee of meer personen kunnen gezamenlijk een aandeel hebben in een recht, waarbij het afzonderlijke aandeel in het gezamenlijk aandeel niet bekend is (als gezamenlijkAandeel bekend is dan is het individuele aandeel niet bekend en omgekeerd).",
+                        "attributes": {
+                            "teller": {
+                                "type": "GOB.Integer"
+                            },
+                            "noemer": {
+                                "type": "GOB.Integer"
+                            }
+                        }
+                    },
+                    "burgerlijke_staat_ten_tijde_van_verkrijging": {
+                        "type": "GOB.JSON",
+                        "description": "De burgerlijke staat is een aanduiding voor de leefvorm van een persoon, zoals deze volgens het brondocument ten tijde van de verkrijging van het recht bestond. Leefvorm van een persoon heeft betrekking op huwelijk c.q. geregistreerd partnerschap.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "verkregen_namens_samenwerkingsverband": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van het samenwerkingsverband (zoals Maatschap, VOF of CV) namens welke een natuurlijk persoon deze tenaamstelling heeft verkregen.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "in_onderzoek": {
+                        "type": "GOB.String",
+                        "description": ""
+                    },
+                    "van_zakelijkrecht": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Het Zakelijk recht waarover deze tenaamstelling gaat."
+                    },
+                    "is_gebaseerd_op_stukdeel": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:stukdelen",
+                        "description": "Het Stukdeel waar deze tenaamstelling op gebaseerd is."
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    }
+                }
+            },
+            "aantekeningenrechten": {
+                "version": "0.1",
+                "abbreviation": "ART",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Het aan deze aantekening toegekende landelijk unieke nummer."
+                    },
+                    "aard": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van de aantekening.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "omschrijving": {
+                        "type": "GOB.String",
+                        "description": "Omschrijving bij de aantekening"
+                    },
+                    "betrokken_tenaamstelling": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:tenaamstellingen",
+                        "description": "Identificatie van de betrokken tenaamstelling"
+                    },
+                    "heeft_betrokken_persoon": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:kadastralesubjecten",
+                        "description": "Identificatie van het betrokken subject"
+                    },
+                    "is_gebaseerd_op_stukdeel": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:stukdelen",
+                        "description": "Identificatie van het betrokken stukdeel"
+                    },
+                    "einddatum": {
+                        "type": "GOB.DateTime",
+                        "description": "Einddatum geeft aan wanneer een bepaalde aantekening volgens het ingeschreven stuk niet langer meer rechtsgeldig is."
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    }
+                }
+            },
+            "aantekeningenkadastraleobjecten": {
+                "version": "0.1",
+                "abbreviation": "AKT",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Het door het Kadaster toegekende landelijk unieke nummer aan deze aantekening."
+                    },
+                    "aard": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van de aantekening",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "omschrijving": {
+                        "type": "GOB.String",
+                        "description": "Omschrijving bij de aantekening"
+                    },
+                    "heeft_betrokken_persoon": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:kadastralesubjecten",
+                        "description": "Identificatie van het betrokken subject"
+                    },
+                    "heeft_betrekking_op_kadastraal_object": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastraleobjecten",
+                        "description": "Identificatie van het kadastrale object (onroerende zaak)"
+                    },
+                    "is_gebaseerd_op_stukdeel": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:stukdelen",
+                        "description": "Identificatie van het betrokken stukdeel"
+                    },
+                    "einddatum": {
+                        "type": "GOB.DateTime",
+                        "description": "Einddatum geeft aan wanneer een bepaalde aantekening volgens het ingeschreven stuk niet langer meer rechtsgeldig is."
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    }
+                }
+            },
+            "stukdelen": {
+                "version": "0.1",
+                "abbreviation": "SDL",
+                "entity_id": "id",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Neuron ID"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Het door het Kadaster toegekende landelijk unieke nummer aan het stukdeel."
+                    },
+                    "aard": {
+                        "type": "GOB.JSON",
+                        "description": "Aanduiding voor de aard van een deel van het ter inschrijving aangeboden stuk (rechtsfeit).",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "bedrag_transactie": {
+                        "type": "GOB.JSON",
+                        "description": "Het in een ter inschrijving aangeboden stuk vermelde bedrag, waarvoor 1 of meer onroerende zaken zijn verkregen.",
+                        "attributes": {
+                            "bedrag": {
+                                "type": "GOB.Integer"
+                            },
+                            "valuta": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "is_bron_voor_tenaamstelling": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:tenaamstellingen",
+                        "description": "Geeft weer welke tenaamstelling is ontstaan op basis van dit stukdeel"
+                    },
+                    "is_bron_voor_aantekening_kadastraal_object": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:aantekeningenkadastraleobjecten",
+                        "description": "Geeft weer welke aantekening kadastraal object is ontstaan op basis van dit stukdeel"
+                    },
+                    "is_bron_voor_aantekening_recht": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:aantekeningenrechten",
+                        "description": "Geeft weer welke aantekening recht is ontstaan op basis van dit stukdeel"
+                    },
+                    "is_bron_voor_zakelijk_recht": {
+                        "type": "GOB.ManyReference",
+                        "ref": "brk:zakelijkerechten",
+                        "description": "Geeft weer welk zakelijk recht is ontstaan op basis van dit stukdeel."
+                    },
+                    "stukidentificatie": {
+                        "type": "GOB.String",
+                        "description": "Het door het Kadaster toegekende landelijk unieke nummer aan het stuk."
+                    },
+                    "portefeuillenummer_akr": {
+                        "type": "GOB.String",
+                        "description": "Portefeuillenummer toegekend aan het stuk in het AKR-systeem."
+                    },
+                    "tijdstip_aanbieding_stuk": {
+                        "type": "GOB.String",
+                        "description": "Het tijdstip waarop een ter inschrijving aangeboden stuk is ontvangen met inachtneming van de openingstijden en -dagen van het Kadaster. Als tijdstip van inschrijving geldt het tijdstip van aanbieding van de voor de inschrijving vereiste stukken."
+                    },
+                    "reeks": {
+                        "type": "GOB.String",
+                        "description": "Verwijzing naar de oorspronkelijke (mogelijk tussentijds vervallen) Kadastervestiging waar het stuk oorspronkelijk is ingeschreven."
+                    },
+                    "volgnummer_stuk": {
+                        "type": "GOB.Integer",
+                        "description": "Volgnummer van het stuk."
+                    },
+                    "registercode_stuk": {
+                        "type": "GOB.JSON",
+                        "description": "Het soort register, aangeduid met een code.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "soort_register_stuk": {
+                        "type": "GOB.JSON",
+                        "description": "Het register waarvan een ter inschrijving aangeboden stuk deel uitmaakt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "deel_soort_stuk": {
+                        "type": "GOB.String",
+                        "description": "Identificatie van het stuk binnen zijn soort."
+                    },
+                    "toestandsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de geleverde toestand van het onderliggende kadatraal object is ontstaan in de Basisregistratie Kadaster. (normaal gesproken maximaal 2 weken later t.o.v. tijdstip inschrijving)"
+                    }
+                }
+            },
+            "aardzakelijkerechten": {
+                "version": "0.1",
+                "abbreviation": "AZT",
+                "entity_id": "code",
+                "attributes": {
+                    "code": {
+                        "type": "GOB.Integer",
+                        "description": "De aard zakelijk recht code"
+                    },
+                    "waarde": {
+                        "type": "GOB.String",
+                        "description": "Beschrijving van dit aard zakelijk recht"
+                    },
+                    "datum_vanaf": {
+                        "type": "GOB.Date",
+                        "description": "De datum vanaf wanneer dit aard zakelijk recht in gebruik genomen is"
+                    },
+                    "datum_tot": {
+                        "type": "GOB.Date",
+                        "description": "De datum tot wanneer dit aard zakelijk recht in gebruik geweest is"
+                    },
+                    "toelichting": {
+                        "type": "GOB.String",
+                        "description": "Toelichting op het gebruik van dit aard zakelijk recht"
+                    },
+                    "akr_code": {
+                        "type": "GOB.String",
+                        "description": "De AKR Code van dit aard zakelijk recht"
+                    }
+                }
+            },
+            "gemeentes": {
+                "version": "0.1",
+                "abbreviation": "GME",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een gemeente."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De officiële vastgestelde gemeentenaam."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de gemeente is ontstaan."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop de gemeente is opgeheven."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de gemeentegrens in het stelsel van de Rijksdriehoekmeting (RD)."
+                    }
+                }
+            },
+            "meta": {
+                "version": "0.1",
+                "abbreviation": "META",
+                "entity_id": "id",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": ""
+                    },
+                    "kennisgevingsdatum": {
+                        "type": "GOB.DateTime",
+                        "description": "Toestandsdatum, d.i. de laatste aanmaakdatum van de BRK-berichten in de naar DIVA gerepliceerde BRK-levering."
+                    }
+                }
+            },
+            "kadastralesecties": {
+                "version": "0.2",
+                "abbreviation": "KSE",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een Kadastrale sectie."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Een alfanumerieke aanduiding van de kadastrale sectie, deel van de kadastrale aanduiding van de onroerende zaak."
+                    },
+                    "is_onderdeel_van_kadastralegemeentecode": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralegemeentecodes",
+                        "description": "Een alfanumerieke aanduiding van de kadastrale gemeentecode, deel van de kadastrale aanduiding van de onroerende zaak. (bv. ASD02)."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de kadastrale sectie in het stelsel van de Rijksdriehoekmeting (RD)."
+                    }
+                }
+            },
+            "kadastralegemeentecodes": {
+                "version": "0.1",
+                "abbreviation": "KCE",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een Kadastrale gemeentecode."
+                    },
+                    "is_onderdeel_van_kadastralegemeente": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:kadastralegemeentes",
+                        "description": "De kadastrale gemeente waar de kadastrale gemeentecode onderdeel van is (bv. Sloten)."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de kadastrale gemeentecode in het stelsel van de Rijksdriehoekmeting (RD)."
+                    }
+                }
+            },
+            "kadastralegemeentes": {
+                "version": "0.1",
+                "abbreviation": "KGE",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van een Kadastrale gemeente."
+                    },
+                    "ligt_in_gemeente": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:gemeentes",
+                        "description": "De burgelijke gemeente waarin de kadastrale gemeente ligt."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de kadastrale gemeente in het stelsel van de Rijksdriehoekmeting (RD)."
+                    }
+                }
+            }
+        }
+    }
+}

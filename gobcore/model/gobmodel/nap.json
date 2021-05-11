@@ -1,0 +1,99 @@
+{
+    "nap": {
+        "version": "0.1",
+        "description": "De Registratie normaal Amsterdams peil (NAP) omvat de vastgelegde hoogtemetingen van peilmerken in Amsterdam.",
+        "abbreviation": "NAP",
+        "collections": {
+            "peilmerken": {
+                "version": "0.1",
+                "abbreviation": "PMK",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Het peilmerknummer van het peilmerk."
+                    },
+                    "hoogte_tov_nap": {
+                        "type": "GOB.Decimal",
+                        "description": "Hoogte van het peilmerk t.o.v. NAP"
+                    },
+                    "jaar": {
+                        "type": "GOB.Integer",
+                        "description": "Het jaar van waterpassing, behorende bij de hoogte."
+                    },
+                    "merk": {
+                        "type": "GOB.JSON",
+                        "description": "Merk van het referentiepunt",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "omschrijving": {
+                        "type": "GOB.String",
+                        "description": "Beschrijving van het object waarin het peilmerk zich bevindt."
+                    },
+                    "windrichting": {
+                        "type": "GOB.String",
+                        "description": "Windrichting"
+                    },
+                    "x_coordinaat_muurvlak": {
+                        "type": "GOB.Decimal",
+                        "description": "X-coördinaat muurvlak"
+                    },
+                    "y_coordinaat_muurvlak": {
+                        "type": "GOB.Decimal",
+                        "description": "Y-coördinaat muurvlak"
+                    },
+                    "rws_nummer": {
+                        "type": "GOB.String",
+                        "description": "Nummer dat Rijkswaterstaat hanteert."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Point",
+                        "srid": "RD",
+                        "description": "Geometrische ligging van de meetbout"
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "Status van het referentiepunt (1=actueel, 2=niet te meten, 3=vervallen)",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "vervaldatum": {
+                        "type": "GOB.Date",
+                        "description": "Vervaldatum van het peilmerk."
+                    },
+                    "ligt_in_bouwblok": {
+                        "type": "GOB.Reference",
+                        "description": "Het bouwblok waarbinnen het peilmerk ligt",
+                        "ref": "gebieden:bouwblokken"
+                    },
+                    "publiceerbaar": {
+                        "type": "GOB.Boolean",
+                        "description": "Publiceerbaar ja of nee"
+                    }
+                },
+                "api": {
+                    "filters": [
+                        {
+                            "field": "publiceerbaar",
+                            "op": "==",
+                            "value": true
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

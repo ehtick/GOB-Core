@@ -1,0 +1,920 @@
+{
+    "bag": {
+        "version": "0.1",
+        "abbreviation": "BAG",
+        "description": "De lijst met kenmerken bestaat uit kenmerken die landelijk zijn vastgesteld, en uit kenmerken die als extra gegevens (de BAG+ gegevens) voor de procesvoering van de gemeente Amsterdam worden bijgehouden.",
+        "collections": {
+            "woonplaatsen": {
+                "version": "0.3",
+                "abbreviation": "WPS",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende code 3594."
+                    },
+                    "woonplaats_ptt": {
+                        "type": "GOB.String",
+                        "description": "Woonplaatsnaam volgens de schrijfwijze van PostNL."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "Officiële naam woonplaats."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging woonplaats in het Nationale Rijksdriehoekstelsel."
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.String",
+                        "description": "Dit geeft aan dat een WOONPLAATS in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument."
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "Levenscyclus van de woonplaats, Woonplaats aangewezen, Woonplaats ingetrokken.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "ligt_in_gemeente": {
+                        "type": "GOB.Reference",
+                        "ref": "brk:gemeentes",
+                        "description": "De gemeente waarin de woonplaats ligt."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    }
+                }
+            },
+            "standplaatsen": {
+                "version": "0.4",
+                "abbreviation": "SPS",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een STANDPLAATS in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van de levenscyclus van een standplaats, waarin de betreffende standplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "heeft_hoofdadres": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het HOOFDadres dat de standplaats heeft."
+                    },
+                    "heeft_nevenadres": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het NEVENadres dat de standplaats (optioneel) heeft."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de standplaats in het Nationale Rijksdriehoekstelsel."
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "ligt_in_buurt": {
+                        "type": "GOB.Reference",
+                        "ref": "gebieden:buurten",
+                        "description": "De buurt waarin een standplaats ligt."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "gebruiksdoel": {
+                        "type": "GOB.JSON",
+                        "description": "Een categorisering van de gebruiksdoelen van de betreffende standplaats, zoals dit door de overheid als zodanig is toegestaan.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        },
+                        "has_multiple_values": true
+                    }
+                }
+            },
+            "ligplaatsen": {
+                "version": "0.4",
+                "abbreviation": "LPS",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een LIGPLAATS in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van de levenscyclus van een ligplaats, waarin de betreffende ligplaats zich bevindt, Plaats aangewezen, plaats ingetrokken.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "heeft_hoofdadres": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het HOOFDadres dat de ligplaats heeft."
+                    },
+                    "heeft_nevenadres": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het NEVENadres dat de ligplaats (optioneel) heeft."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van de ligplaats in het Nationale Rijksdriehoekstelsel."
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "ligt_in_buurt": {
+                        "type": "GOB.Reference",
+                        "ref": "gebieden:buurten",
+                        "description": "De buurt waarin een ligplaats ligt."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "gebruiksdoel": {
+                        "type": "GOB.JSON",
+                        "description": "Een categorisering van de gebruiksdoelen van de betreffende ligplaats, zoals dit door de overheid als zodanig is toegestaan.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        },
+                        "has_multiple_values": true
+                    }
+                }
+            },
+            "openbareruimtes": {
+                "version": "0.3",
+                "entity_id": "identificatie",
+                "abbreviation": "ORE",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "straatcode": {
+                        "type": "GOB.String",
+                        "description": "Straatcode."
+                    },
+                    "straatnaam_ptt": {
+                        "type": "GOB.String",
+                        "description": "Straatnaam volgens de schrijfwijze van PostNL (17 tekens)."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De status van de levenscyclus van een openbare ruimte (Naamgeving uitgegeven, Naamgeving ingetrokken).",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een OPENBARE RUIMTE in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument (J/N)"
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "type": {
+                        "type": "GOB.JSON",
+                        "description": "De aard van de zodanig benoemde openbare ruimte (01 Weg, 02 Water, 03 Spoorbaan, 04 Terrein, 05 Kunstwerk, 06 Landschappelijk gebied, 07 Administratief gebied)",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "Officiële naam openbare ruimte (80 tekens)."
+                    },
+                    "naam_nen": {
+                        "type": "GOB.String",
+                        "description": "Straatnaam volgens de inkortingsregels van NEN 5825 (24 tekens)."
+                    },
+                    "ligt_in_woonplaats": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:woonplaatsen",
+                        "description": "De woonplaats (landelijke identificatie) waarin de openbare ruimte ligt."
+                    },
+                    "beschrijving_naam": {
+                        "type": "GOB.String",
+                        "description": "Beschrijving van de openbare ruimte bijvoorbeeld: Vogel. Wereldwijd komen 24 soorten albatrossen voor. De meeste leven op het zuidelijk halfrond. De grootste albatros heeft een spanwijdte van meer dan drie meter en is daarmee de grootste zeevogel ter wereld."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Zie inwinregels voor geometrie openbare ruimte."
+                    }
+                }
+            },
+            "nummeraanduidingen": {
+                "version": "0.3",
+                "abbreviation": "NAG",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "huisnummer": {
+                        "type": "GOB.Integer",
+                        "description": "Een door het bevoegde gemeentelijke orgaan ten aanzien van een adresseerbaar object toegekende nummering."
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een gegeven in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument (J/N)."
+                    },
+                    "huisletter": {
+                        "type": "GOB.String",
+                        "description": "Een door het bevoegde gemeentelijke orgaan ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken."
+                    },
+                    "huisnummertoevoeging": {
+                        "type": "GOB.String",
+                        "description": "Een door het bevoegde gemeentelijke orgaan ten aanzien van een adresseerbaar object toegekende nadere toevoeging aan een huisnummer of een combinatie van huisnummer en huisletter."
+                    },
+                    "postcode": {
+                        "type": "GOB.String",
+                        "description": "De door PostNL vastgestelde code bestaande uit 4 cijfers en 2 letters (1234AB)."
+                    },
+                    "ligt_in_woonplaats": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:woonplaatsen",
+                        "description": "De woonplaats (landelijke identificatie) waarin de nummeraanduiding ligt."
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "ligt_aan_openbareruimte": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:openbareruimtes",
+                        "description": "De openbare ruimte (landelijke identificatie) waaraan het betreffende adresseerbare object ligt."
+                    },
+                    "type_adresseerbaar_object": {
+                        "type": "GOB.JSON",
+                        "description": "Het type adresseerbaar object waaraan een nummeraanduiding is toegekend.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van de levenscyclus van een nummeraanduiding,waarin de betreffende nummeraanduiding zich bevindt. (Naamgeving uitgegeven, Naamgeving ingetrokken).",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "type_adres": {
+                        "type": "GOB.String",
+                        "description": "Hiermee wordt aangegeven of het een relatie betreft vanuit een hoofdadres. Anders is er sprake van een nevenadres (Hoofdadres, Nevenadres)."
+                    },
+                    "adresseert_verblijfsobject": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:verblijfsobjecten",
+                        "description": "Het verblijfsobject (landelijke identificatie) dat door de nummeraanduiding wordt aangeduid."
+                    },
+                    "adresseert_ligplaats": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:ligplaatsen",
+                        "description": "De ligplaats (landelijke identificatie) die door de nummeraanduiding wordt aangeduid."
+                    },
+                    "adresseert_standplaats": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:standplaatsen",
+                        "description": "De standplaats (landelijke identificatie) die door de nummeraanduiding wordt aangeduid."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    }
+                }
+            },
+            "verblijfsobjecten": {
+                "version": "0.3",
+                "abbreviation": "VOT",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "cbs_nummer": {
+                        "type": "GOB.String",
+                        "description": "CBS-nummer."
+                    },
+                    "indicatie_woningvoorraad": {
+                        "type": "GOB.String",
+                        "description": "Geeft aan of een verblijfsobject bij de woningvoorraad hoort."
+                    },
+                    "financieringscode": {
+                        "type": "GOB.JSON",
+                        "description": "Geeft aan op welke wijze een woning gefinancierd is bij de bouw.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een VERBLIJFSOBJECT in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument (J/N)."
+                    },
+                    "heeft_hoofdadres": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het HOOFDadres dat het verblijfsobject heeft."
+                    },
+                    "heeft_nevenadres": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:nummeraanduidingen",
+                        "description": "Het NEVENadres dat het verblijfsobject (optioneel) heeft."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "De locatie van het verblijfsobject in het Nationale Rijksdriehoekstelsel."
+                    },
+                    "gebruiksdoel": {
+                        "type": "GOB.JSON",
+                        "description": "Een categorisering van de gebruiksdoelen van het betreffende verblijfsobject, zoals dit door de overheid als zodanig is toegestaan.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        },
+                        "has_multiple_values": true
+                    },
+                    "oppervlakte": {
+                        "type": "GOB.Integer",
+                        "description": "De gebruiksoppervlakte van het verblijfsobject conform hetgeen in NEN 2580 is vastgelegd omtrent gebruiksoppervlakte."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van de levenscyclus van een verblijfsobject, waarin het betreffende VERBLIJFSOBJECT zich bevindt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "ligt_in_panden": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:panden",
+                        "description": "De unieke landelijke aanduidingen van de panden waarvan het verblijfsobject onderdeel uitmaakt."
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "gebruiksdoel_woonfunctie": {
+                        "type": "GOB.JSON",
+                        "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "gebruiksdoel_gezondheidszorgfunctie": {
+                        "type": "GOB.JSON",
+                        "description": "Amsterdamse uitbreiding op Gebruiksdoel verblijfsobject.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "aantal_eenheden_complex": {
+                        "type": "GOB.Integer",
+                        "description": "Aantal eenheden complex per verblijfsobject (alléén bij een speciale  woonfunctie of gezondheidszorgfunctie; zie gebruiksdoel-plus)."
+                    },
+                    "verdieping_toegang": {
+                        "type": "GOB.Integer",
+                        "description": "Aanduiding op welke verdieping zich de toegang tot het verblijfsobject bevindt."
+                    },
+                    "aantal_bouwlagen": {
+                        "type": "GOB.Integer",
+                        "description": "Aantal bouwlagen van een verblijfsobject."
+                    },
+                    "hoogste_bouwlaag": {
+                        "type": "GOB.Integer",
+                        "description": "Hoogste bouwlaag van een verblijfsobject."
+                    },
+                    "laagste_bouwlaag": {
+                        "type": "GOB.Integer",
+                        "description": "Laagste bouwlaag van een verblijfsobject."
+                    },
+                    "aantal_kamers": {
+                        "type": "GOB.Integer",
+                        "description": "Geeft het aantal kamers aan binnen het verblijfsobject."
+                    },
+                    "eigendomsverhouding": {
+                        "type": "GOB.JSON",
+                        "description": "Geeft de eigendomsverhouding aan (huur of eigendom).",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "feitelijk_gebruik": {
+                        "type": "GOB.JSON",
+                        "description": "Feitelijk gebruik van een verblijfsobject.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "toegang": {
+                        "type": "GOB.JSON",
+                        "description": "Plaats waar zich de toegang tot het verblijfsobject bevindt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        },
+                        "has_multiple_values": true
+                    },
+                    "redenopvoer": {
+                        "type": "GOB.JSON",
+                        "description": "Reden van de opvoer van het verblijfsobject.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "redenafvoer": {
+                        "type": "GOB.JSON",
+                        "description": "Reden van de afvoer van het verblijfsobject.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "ligt_in_buurt": {
+                        "type": "GOB.Reference",
+                        "ref": "gebieden:buurten",
+                        "description": "Buurt waarin het verblijfsobject ligt."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    }
+                }
+            },
+            "panden": {
+                "version": "0.3",
+                "abbreviation": "PND",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Landelijke identificerende sleutel."
+                    },
+                    "geconstateerd": {
+                        "type": "GOB.Boolean",
+                        "description": "Dit geeft aan dat een PAND in de registratie is opgenomen als gevolg van een feitelijke constatering en niet op basis van een regulier brondocument (J/N)."
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Vorm en ligging van het pand in het Nationale Rijksdriehoekstelsel."
+                    },
+                    "oorspronkelijk_bouwjaar": {
+                        "type": "GOB.Integer",
+                        "description": "De aanduiding van het jaar waarin een pand oorspronkelijk als bouwkundig gereed is of wordt opgeleverd."
+                    },
+                    "status": {
+                        "type": "GOB.JSON",
+                        "description": "De fase van de levenscyclus van een pand, waarin het betreffende pand zich bevindt.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "heeft_onderzoeken": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:onderzoeken",
+                        "description": "Hiermee wordt aangegeven welke onderzoeken er worden uitgevoerd naar de juistheid van een of meer gegevens van het betreffende object."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het brondocument is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het unieke nummer van het brondocument."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "Naamgeving van een pand (bv. naam van metrostation of bijzonder gebouw)."
+                    },
+                    "ligging": {
+                        "type": "GOB.JSON",
+                        "description": "Situering pand met verblijfsobject (vrijstaand, tussenwoning, etc.).",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "type_woonobject": {
+                        "type": "GOB.String",
+                        "description": "Eén woning, Meerdere woningen."
+                    },
+                    "ligt_in_bouwblok": {
+                        "type": "GOB.Reference",
+                        "ref": "gebieden:bouwblokken",
+                        "description": "Het bouwblok waarin het pand ligt."
+                    },
+                    "aantal_bouwlagen": {
+                        "type": "GOB.Integer",
+                        "description": "Aantal bouwlagen van een pand."
+                    },
+                    "hoogste_bouwlaag": {
+                        "type": "GOB.Integer",
+                        "description": "Hoogste bouwlaag van een pand."
+                    },
+                    "laagste_bouwlaag": {
+                        "type": "GOB.Integer",
+                        "description": "Laagste bouwlaag van een pand."
+                    },
+                    "heeft_dossier": {
+                        "type": "GOB.Reference",
+                        "ref": "bag:dossiers",
+                        "description": "Het dossier op basis waarvan het object is toegevoegd aan de registratie."
+                    },
+                    "bagproces": {
+                        "type": "GOB.JSON",
+                        "description": "Functionele handeling die ten grondslag ligt aan de gebeurtenis.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.Integer"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    }
+                }
+            },
+            "dossiers": {
+                "version": "0.1",
+                "abbreviation": "DSR",
+                "entity_id": "dossier",
+                "attributes": {
+                    "dossier": {
+                        "type": "GOB.String",
+                        "description": "Verwijzing vanuit de overige objectklassen."
+                    },
+                    "heeft_brondocumenten": {
+                        "type": "GOB.ManyReference",
+                        "ref": "bag:brondocumenten",
+                        "description": "De brondocument(en) behorende bij het dossier."
+                    }
+                }
+            },
+            "brondocumenten": {
+                "version": "0.1",
+                "abbreviation": "BDT",
+                "entity_id": "documentnummer",
+                "attributes": {
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Identificerende nummer van het document."
+                    },
+                    "bronleverancier": {
+                        "type": "GOB.JSON",
+                        "description": "Verstrekker van brondocumenten en/​of gegevens voortkomend uit het uitoefenen of voorbereiden van een gemeentelijke bevoegdheid, die nodig zijn voor een registratie aan de bronhouder, conform vastgestelde aanleverspecificaties.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "type_dossier": {
+                        "type": "GOB.JSON",
+                        "description": "Het type dossier.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "type_brondocument": {
+                        "type": "GOB.JSON",
+                        "description": "Het type brondocument.",
+                        "attributes": {
+                            "code": {
+                                "type": "GOB.String"
+                            },
+                            "omschrijving": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "registratiedatum": {
+                        "type": "GOB.DateTime",
+                        "description": "De datum waarop het brondocument is opgeslagen in het register."
+                    }
+                }
+            },
+            "onderzoeken": {
+                "version": "0.1",
+                "abbreviation": "OZK",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Identificatie van de objectklasse Onderzoek voor intern gebruik."
+                    },
+                    "object_identificatie": {
+                        "type": "GOB.String",
+                        "description": "Identificerende nummer van het object dat in onderzoek is geplaatst."
+                    },
+                    "objecttype": {
+                        "type": "GOB.String",
+                        "description": "Geeft aan welk objectklasse in onderzoek staat."
+                    },
+                    "kenmerk": {
+                        "type": "GOB.String",
+                        "description": "De naam van het kenmerk van het object dat in onderzoek is geplaatst. Het kenmerk kan ook een relatie zijn met een ander object."
+                    },
+                    "in_onderzoek": {
+                        "type": "GOB.String",
+                        "description": "Indicatie of het kenmerk wel of niet in onderzoek staat."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document, waarin de grondslag van het onderzoek wordt vastgelegd, is vastgesteld."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Het nummer van het document waarin de grondslag van het onderzoek wordt vastgelegd."
+                    },
+                    "tijdstip_registratie": {
+                        "type": "GOB.DateTime",
+                        "description": "Het tijdstip waarop het onderzoek is geregistreerd bij de bronhouder."
+                    },
+                    "eind_registratie": {
+                        "type": "GOB.DateTime",
+                        "description": "Het tijdstip waarop de registratie van het onderzoek is beëindigd bij de bronhouder."
+                    }
+                }
+            }
+        }
+    }
+}

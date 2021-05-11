@@ -1,0 +1,411 @@
+{
+    "test_catalogue": {
+        "version": "0.1",
+        "abbreviation": "TST",
+        "description": "Test catalogue.",
+        "collections": {
+            "test_entity": {
+                "version": "0.1",
+                "abbreviation": "TSE",
+                "entity_id": "string",
+                "attributes": {
+                    "string": {
+                        "type": "GOB.String",
+                        "description": "String value."
+                    },
+                    "character": {
+                        "type": "GOB.Character",
+                        "description": "Character value."
+                    },
+                    "decimal": {
+                        "type": "GOB.Decimal",
+                        "description": "Decimal value."
+                    },
+                    "integer": {
+                        "type": "GOB.Integer",
+                        "description": "Integer value."
+                    },
+                    "point": {
+                        "type": "GOB.Geo.Point",
+                        "srid": "RD",
+                        "description": "Point value"
+                    },
+                    "date": {
+                        "type": "GOB.Date",
+                        "description": "Date value."
+                    },
+                    "boolean": {
+                        "type": "GOB.Boolean",
+                        "description": "Boolean value."
+                    },
+                    "json": {
+                        "type": "GOB.JSON",
+                        "description": "JSON value.",
+                        "attributes": {
+                            "str": {
+                                "type": "GOB.String"
+                            },
+                            "array": {
+                                "type": "GOB.JSON"
+                            },
+                            "bool": {
+                                "type": "GOB.Boolean"
+                            },
+                            "null": {
+                                "type": "GOB.String"
+                            }
+                        }
+                    },
+                    "datetime": {
+                        "type": "GOB.DateTime",
+                        "description": "DateTime value."
+                    },
+                    "reference": {
+                        "type": "GOB.Reference",
+                        "description": "Reference value.",
+                        "ref": "test_catalogue:test_entity_ref"
+                    },
+                    "manyreference": {
+                        "type": "GOB.ManyReference",
+                        "description": "Many Reference value.",
+                        "ref": "test_catalogue:test_entity_ref"
+                    },
+                    "polygon": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Many Reference value."
+                    },
+                    "geometry": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Geometry value."
+                    },
+                    "incomplete_date": {
+                        "type": "GOB.IncompleteDate",
+                        "description": "Incomplete date value"
+                    }
+                },
+                "api": {
+                    "filters": []
+                }
+            },
+            "test_entity_ref": {
+                "version": "0.1",
+                "entity_id": "string",
+                "abbreviation": "TER",
+                "attributes": {
+                    "string": {
+                        "type": "GOB.String",
+                        "description": "String value."
+                    }
+                }
+            },
+            "test_entity_autoid": {
+                "version": "0.1",
+                "entity_id": "identificatie",
+                "abbreviation": "TEA",
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Object code"
+                    },
+                    "autoid": {
+                        "type": "GOB.String",
+                        "description": "autoid"
+                    }
+                }
+            },
+            "test_entity_autoid_states": {
+                "version": "0.1",
+                "entity_id": "identificatie",
+                "abbreviation": "TEA",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Object code"
+                    },
+                    "autoid": {
+                        "type": "GOB.String",
+                        "description": "autoid"
+                    }
+                }
+            },
+            "rel_test_entity_a": {
+                "version": "0.1",
+                "description": "Entity to test relations. Has states.",
+                "abbreviation": "RTA",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "ref_to_c": {
+                        "type": "GOB.Reference",
+                        "description": "Reference to RTC",
+                        "ref": "test_catalogue:rel_test_entity_c"
+                    },
+                    "manyref_to_c": {
+                        "type": "GOB.ManyReference",
+                        "description": "ManyReference to RTC",
+                        "ref": "test_catalogue:rel_test_entity_c"
+                    },
+                    "ref_to_d": {
+                        "type": "GOB.Reference",
+                        "description": "Reference to RTD",
+                        "ref": "test_catalogue:rel_test_entity_d"
+                    },
+                    "manyref_to_d": {
+                        "type": "GOB.ManyReference",
+                        "description": "ManyReference to RTD",
+                        "ref": "test_catalogue:rel_test_entity_d"
+                    }
+                }
+            },
+            "rel_test_entity_b": {
+                "version": "0.1",
+                "description": "Entity to test relations. No states.",
+                "abbreviation": "RTB",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "ref_to_c": {
+                        "type": "GOB.Reference",
+                        "description": "Reference to RTC",
+                        "ref": "test_catalogue:rel_test_entity_c"
+                    },
+                    "manyref_to_c": {
+                        "type": "GOB.ManyReference",
+                        "description": "ManyReference to RTC",
+                        "ref": "test_catalogue:rel_test_entity_c"
+                    },
+                    "ref_to_d": {
+                        "type": "GOB.Reference",
+                        "description": "Reference to RTD",
+                        "ref": "test_catalogue:rel_test_entity_d"
+                    },
+                    "manyref_to_d": {
+                        "type": "GOB.ManyReference",
+                        "description": "ManyReference to RTD",
+                        "ref": "test_catalogue:rel_test_entity_d"
+                    }
+                }
+            },
+            "rel_test_entity_c": {
+                "version": "0.1",
+                "description": "Entity to test relations. Has states.",
+                "abbreviation": "RTC",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    }
+                }
+            },
+            "rel_test_entity_d": {
+                "version": "0.1",
+                "description": "Entity to test relations. No states.",
+                "abbreviation": "RTD",
+                "entity_id": "identificatie",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    }
+                }
+            },
+            "rel_collapsed_a": {
+                "version": "0.1",
+                "description": "Entity to test collapsed state relations",
+                "abbreviation": "COLA",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "reference": {
+                        "type": "GOB.Reference",
+                        "description": "The reference that is tested",
+                        "ref": "test_catalogue:rel_collapsed_b"
+                    }
+                }
+            },
+            "rel_collapsed_b": {
+                "version": "0.1",
+                "description": "Entity to test collapsed state relations",
+                "abbreviation": "COLB",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    }
+                }
+            },
+            "rel_multiple_allowed_src": {
+                "version": "0.1",
+                "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+                "abbreviation": "MA1",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "reference": {
+                        "type": "GOB.Reference",
+                        "description": "A single reference to dst",
+                        "ref": "test_catalogue:rel_multiple_allowed_dst"
+                    },
+                    "manyreference": {
+                        "type": "GOB.ManyReference",
+                        "description": "A many reference to dst",
+                        "ref": "test_catalogue:rel_multiple_allowed_dst"
+                    }
+                }
+            },
+            "rel_multiple_allowed_multisource_src": {
+                "version": "0.1",
+                "description": "Entity to test relations with multiple possible destination objects per bronwaarde for only one source",
+                "abbreviation": "MA2",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "reference": {
+                        "type": "GOB.Reference",
+                        "description": "A single reference to dst",
+                        "ref": "test_catalogue:rel_multiple_allowed_dst"
+                    },
+                    "manyreference": {
+                        "type": "GOB.ManyReference",
+                        "description": "A many reference to dst",
+                        "ref": "test_catalogue:rel_multiple_allowed_dst"
+                    }
+                }
+            },
+            "rel_multiple_allowed_dst": {
+                "version": "0.1",
+                "description": "Entity to test relations with multiple possible destination objects per bronwaarde",
+                "abbreviation": "MA3",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "id": {
+                        "type": "GOB.Integer",
+                        "description": "Identifying attribute"
+                    },
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Object identificatie"
+                    },
+                    "referenced_attribute": {
+                        "type": "GOB.String",
+                        "description": "The referenced attribute from src"
+                    }
+                }
+            },
+            "secure": {
+                "version": "0.1",
+                "abbreviation": "SEC",
+                "entity_id": "id",
+                "attributes": {
+                    "id": {
+                        "type": "GOB.String",
+                        "description": "Identification."
+                    },
+                    "secure_string": {
+                        "type": "GOB.SecureString",
+                        "level": 5,
+                        "description": "Secure string."
+                    },
+                    "secure_number": {
+                        "type": "GOB.SecureDecimal",
+                        "level": 5,
+                        "description": "Secure number."
+                    },
+                    "secure_datetime": {
+                        "type": "GOB.SecureDateTime",
+                        "level": 5,
+                        "description": "Secure date time."
+                    },
+                    "secure_reference": {
+                        "type": "GOB.Reference",
+                        "description": "Secure reference.",
+                        "ref": "test_catalogue:test_entity",
+                        "secure": {
+                            "bronwaarde": {
+                                "type": "GOB.SecureString",
+                                "level": 5
+                            }
+                        }
+                    },
+                    "string": {
+                        "type": "GOB.String",
+                        "description": "string."
+                    },
+                    "number": {
+                        "type": "GOB.Decimal",
+                        "description": "number."
+                    },
+                    "datetime": {
+                        "type": "GOB.DateTime",
+                        "description": "date time."
+                    }
+                }
+            }
+        }
+    }
+}

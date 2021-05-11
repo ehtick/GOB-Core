@@ -1,0 +1,302 @@
+{
+    "gebieden": {
+        "version": "0.1",
+        "description": "Gebieden in Amsterdam.",
+        "abbreviation": "GBD",
+        "collections": {
+            "bouwblokken": {
+                "version": "0.1",
+                "abbreviation": "BBK",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Officiële code van het object."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "ligt_in_buurt": {
+                        "type": "GOB.Reference",
+                        "description": "De buurt waar het bouwblok in ligt.",
+                        "ref": "gebieden:buurten"
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Geometry",
+                        "description": "Geometrische beschrijving van een object."
+                    }
+                }
+            },
+            "buurten": {
+                "version": "0.1",
+                "abbreviation": "BRT",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van het brondocument op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "cbs_code": {
+                        "type": "GOB.String",
+                        "description": "De CBS-code van het object."
+                    },
+                    "ligt_in_wijk": {
+                        "type": "GOB.Reference",
+                        "description": "De wijk waar de buurt in ligt.",
+                        "ref": "gebieden:wijken"
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Geometrische beschrijving van een object."
+                    },
+                    "_ligt_in_ggpgebied": {
+                        "type": "GOB.Reference",
+                        "description": "Het GGP-gebied waar de buurt in ligt",
+                        "ref": "gebieden:ggpgebieden"
+                    },
+                    "_ligt_in_ggwgebied": {
+                        "type": "GOB.Reference",
+                        "description": "Het GGW-gebied waar de buurt in ligt",
+                        "ref": "gebieden:ggwgebieden"
+                    }
+                }
+            },
+            "wijken": {
+                "version": "0.1",
+                "abbreviation": "WIJK",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van het brondocument op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "cbs_code": {
+                        "type": "GOB.String",
+                        "description": "De CBS-code van het object."
+                    },
+                    "ligt_in_stadsdeel": {
+                        "type": "GOB.Reference",
+                        "description": "Het stadsdeel waar de wijk in ligt.",
+                        "ref": "gebieden:stadsdelen"
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Geometrische beschrijving van een object."
+                    },
+                    "_ligt_in_ggwgebied": {
+                        "type": "GOB.Reference",
+                        "description": "Het GGW-gebied waar de wijk in ligt.",
+                        "ref": "gebieden:ggwgebieden"
+                    }
+                }
+            },
+            "ggwgebieden": {
+                "version": "0.1",
+                "abbreviation": "GGW",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "De code van het object."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Unieke aanduiding van het brondocument op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "ligt_in_stadsdeel": {
+                        "type": "GOB.Reference",
+                        "description": "Het stadsdeel waar het gebied in ligt.",
+                        "ref": "gebieden:stadsdelen"
+                    },
+                    "bestaat_uit_buurten": {
+                        "type": "GOB.ManyReference",
+                        "description": "De buurten waaruit het object bestaat.",
+                        "ref": "gebieden:buurten",
+                        "hidden": true
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Geometrische beschrijving van een object."
+                    }
+                }
+            },
+            "ggpgebieden": {
+                "version": "0.1",
+                "abbreviation": "GGP",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "De code van het object."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "Unieke aanduiding van het brondocument op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "ligt_in_stadsdeel": {
+                        "type": "GOB.Reference",
+                        "description": "Het stadsdeel waar het gebied in ligt.",
+                        "ref": "gebieden:stadsdelen"
+                    },
+                    "bestaat_uit_buurten": {
+                        "type": "GOB.ManyReference",
+                        "description": "De buurten waaruit het object bestaat.",
+                        "ref": "gebieden:buurten",
+                        "hidden": true
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Geometrische beschrijving van een object."
+                    }
+                }
+            },
+            "stadsdelen": {
+                "version": "0.1",
+                "abbreviation": "SDL",
+                "entity_id": "identificatie",
+                "has_states": true,
+                "attributes": {
+                    "identificatie": {
+                        "type": "GOB.String",
+                        "description": "Unieke identificatie van het object."
+                    },
+                    "naam": {
+                        "type": "GOB.String",
+                        "description": "De naam van het object."
+                    },
+                    "code": {
+                        "type": "GOB.String",
+                        "description": "Volledige, samengestelde, code, bestaande uit stadsdeelcode en wijkcode."
+                    },
+                    "begin_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is gecreëerd."
+                    },
+                    "eind_geldigheid": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het object is komen te vervallen."
+                    },
+                    "documentdatum": {
+                        "type": "GOB.Date",
+                        "description": "De datum waarop het document is vastgesteld, op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "documentnummer": {
+                        "type": "GOB.String",
+                        "description": "De unieke aanduiding van het brondocument op basis waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien van het object heeft plaatsgevonden."
+                    },
+                    "ligt_in_gemeente": {
+                        "type": "GOB.Reference",
+                        "description": "De gemeente waar het stadsdeel in ligt.",
+                        "ref": "brk:gemeentes"
+                    },
+                    "geometrie": {
+                        "type": "GOB.Geo.Polygon",
+                        "description": "Geometrische beschrijving van een object."
+                    }
+                }
+            }
+        }
+    }
+}

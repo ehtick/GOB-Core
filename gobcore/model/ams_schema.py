@@ -4,6 +4,7 @@ import os
 import os.path
 import json
 import re
+from collections import OrderedDict
 
 from gobcore.typesystem import gob_types
 from gobcore.exceptions import GOBTypeException
@@ -140,9 +141,9 @@ def Ams2GOBArray(fields):
 def gob_type_by_ref(ref):
     try:
         gob_type = {
-            "https://geojson.org/schema/Geometry.json": "GOB.Geomerty",
-            "https://geojson.org/schema/Polygon.json": "GOB.Geo.Polygon",
-            "https://geojson.org/schema/MultiPolygon.json": "GOB.Geometry",
+            "https://geojson.org/schema/Geometry.json": "Geo.Geomerty",
+            "https://geojson.org/schema/Polygon.json": "Geo.Polygon",
+            "https://geojson.org/schema/MultiPolygon.json": "Geo.Geometry",
         }[ref]
     except KeyError:
         raise GOBTypeException(f'Unkown $ref type {ref}')
@@ -175,22 +176,22 @@ def _get_gob_attribute(field_name, ams_field: dict):
         ret = gob_type_by_ref(ams_field['$ref'])
     else:
         raise GOBTypeException(f'Unknown type for field={field_name}')
-    ret.update(_optional(ams_field, 'description'))
+    ret.update({'description': ams_field.get('description', '')})
     return ret
 
 
 def _get_gob_attributes(properties: dict, has_states: bool):
     # schema is not needed.
-    skip_attributes = {'schema', 'volgnummer'} if has_states else {'schema'}
-    return {
-        to_snake(k): _get_gob_attribute(k, v)
+    skip_attributes = {'schema', 'volgnummer', 'registratiedatum'} if has_states else {'schema'}
+    return OrderedDict(
+        (to_snake(k), _get_gob_attribute(k, v))
         for (k, v) in properties.items() if k not in skip_attributes
-    }
+    )
 
 
 def _get_gob_collection(catalogue: str, ams_table: dict):
     schema = ams_table['schema']
-    ret = {}
+    ret = OrderedDict()
     identifier = schema.get('identifier')
     has_states = False
     if identifier is not None:
@@ -204,11 +205,11 @@ def _get_gob_collection(catalogue: str, ams_table: dict):
         abbreviation = COLLECTION_ABBR[catalogue][ams_table['id']]
     except KeyError:
         abbreviation = ams_table.get('shortname', ams_table['id'])
-    ret.update({
-        'version': '0.1',
-        'abbreviation': abbreviation,
-        'attributes': _get_gob_attributes(ams_table['schema']['properties'], has_states),
-    })
+    ret.update((
+        ('version', '0.1'),
+        ('abbreviation', abbreviation),
+        ('attributes', _get_gob_attributes(ams_table['schema']['properties'], has_states)),
+    ))
     return ret
 
 
@@ -223,18 +224,18 @@ def ams2gob_model(ams_model: dict):
         "abbreviation": CATALOGUE_ABBR[catalog],
         'collections': _get_gob_collections(catalog, ams_model['tables'])
     }
-    ret.update(_optional(ams_model, 'description'))
+    ret.update({'description': ams_model.get('description', '')})
     return ret
 
 
-def get_ams_model(catalogue):
-    url = os.path.join(AMS_SCHEMA_REF, catalogue, catalogue + '.json')
-    print('Fetching schema from {url}')
+def get_ams_model(catalog):
+    url = os.path.join(AMS_SCHEMA_REF, catalog, catalog + '.json')
+    print(f'Fetching {catalog} from {url}')
     with urllib.request.urlopen(url) as response:
         return json.loads(response.read().decode('utf-8'))
 
 
-def get_model(catalog):
+def get_gob_model(catalog):
     return ams2gob_model(get_ams_model(catalog))
 
 
@@ -244,20 +245,20 @@ if __name__ == '__main__':
     parser.add_argument("catalog")
     parser.add_argument('out_file')
     args = parser.parse_args()
-    translated_model = get_model(args.catalog)
+    translated_model = {args.catalog: get_gob_model(args.catalog)}
     with open(args.out_file, 'wb') as f:
         f.write(json.dumps(translated_model, indent=4, ensure_ascii=False).encode('utf-8'))
-    gob_model = json.load(open(os.path.join(os.path.dirname(__file__), 'gobmodel.json')))
-    gob_catalog = gob_model[args.catalog]
-    for entity in gob_catalog['collections'].keys():
-        tr_fields = set(translated_model['collections'][entity].keys())
-        gob_fields = set(gob_catalog['collections'][entity].keys())
-        fields_diff = tr_fields.symmetric_difference(set(gob_fields))
-        if fields_diff:
-            print(f'catalog={args.catalog} entity={entity} fields_diff={fields_diff}')
-        else:
-            tr_attr = set(attr for attr in translated_model['collections'][entity]['attributes'])
-            gob_attr = set(attr for attr in gob_catalog['collections'][entity]['attributes'])
-            attr_diff = tr_attr.symmetric_difference(gob_attr)
-            if attr_diff:
-                print(f'catalog={args.catalog} entity={entity} attr_diff={attr_diff}')
+    # gob_model = json.load(open(os.path.join(os.path.dirname(__file__), 'gobmodel.json')))
+    # gob_catalog = gob_model[args.catalog]
+    # for entity in gob_catalog['collections'].keys():
+    #     tr_fields = set(translated_model['collections'][entity].keys())
+    #     gob_fields = set(gob_catalog['collections'][entity].keys())
+    #     fields_diff = tr_fields.symmetric_difference(set(gob_fields))
+    #     if fields_diff:
+    #         print(f'catalog={args.catalog} entity={entity} fields_diff={fields_diff}')
+    #     else:
+    #         tr_attr = set(attr for attr in translated_model['collections'][entity]['attributes'])
+    #         gob_attr = set(attr for attr in gob_catalog['collections'][entity]['attributes'])
+    #         attr_diff = tr_attr.symmetric_difference(gob_attr)
+    #         if attr_diff:
+    #             print(f'catalog={args.catalog} entity={entity} attr_diff={attr_diff}')

@@ -1,4 +1,5 @@
 import os
+import glob
 import json
 from typing import List
 
@@ -9,7 +10,7 @@ from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXE
 from gobcore.model.relations import get_relations, get_inverse_relations
 from gobcore.model.quality import QUALITY_CATALOG, get_quality_assurances
 from gobcore.model.schema import load_schema, SchemaException
-from gobcore.model.ams_schema import get_model
+from gobcore.model.ams_schema import get_gob_model
 
 
 EVENTS_DESCRIPTION = {
@@ -55,24 +56,22 @@ class GOBModel():
     inverse_relations = None
     _data = None
 
-    def __init__(self, catalogs: List[str] = None):
+    def __init__(self):
         if GOBModel._data is not None:
             # Model is already initialised
             return
 
         data = {}
-        if not os.getenv('DISABLE_TEST_CATALOGUE', False):
+        path = os.path.join(os.path.dirname(__file__), 'gobmodel')
+        for f in glob.glob(os.path.join(path, '*.json')):
+            with open(f) as file:
+                data |= json.load(file)
+
+        if os.getenv('DISABLE_TEST_CATALOGUE', False):
             # Default is to include the test catalogue
             # By setting the DISABLE_TEST_CATALOGUE environment variable
             # the test catalogue can be removed
-            path = os.path.join(os.path.dirname(__file__), 'test_catalog.json')
-            with open(path) as file:
-                data['test_catalog'] = json.load(file)
-
-        catalogs = catalogs or []
-        catalogs += [x for x in os.getenv('CATALOGS', '').split(',') if x.strip()]
-        for catalog in catalogs:
-            data[catalog] = get_model(catalog)
+            del data["test_catalogue"]
 
         GOBModel._data = data
         self._load_schemas()
@@ -342,3 +341,65 @@ class GOBModel():
             raise NoSuchCollectionException(collection_abbr)
 
         return catalog, collection
+
+
+if os.environ.get('USE_AMS_SCHEMA'): # Noqa
+
+    class GOBModel(GOBModel):
+        '''
+           Very dirty class override, but for now work fine
+           can enable or disable AMS model with USE_AMS_SCHEME
+        '''
+        inverse_relations = None
+        _data = None
+
+        def __init__(self, catalogs: List[str] = None):
+            print('Using Amsterdam schema....')
+            if GOBModel._data is not None:
+                # Model is already initialised
+                return
+
+            data = {}
+            catalogs = catalogs or []
+            # Catalogs that are used are descibed in the CATALOGS
+            # comma separated
+            catalogs += [x for x in os.getenv('CATALOGS', '').split(',') if x.strip()]
+            for catalog in catalogs:
+                data[catalog] = get_gob_model(catalog)
+
+            GOBModel._data = data
+            self._load_schemas()
+            data[QUALITY_CATALOG] = get_quality_assurances(self)
+            data["rel"] = get_relations(self)
+
+            global_attributes = {
+                **PRIVATE_META_FIELDS,
+                **PUBLIC_META_FIELDS,
+                **FIXED_FIELDS
+            }
+
+            # Extract references for easy access in API. Add catalog and
+            # collection names to catalog and collection objects
+            for catalog_name, catalog in self._data.items():
+                catalog['name'] = catalog_name
+
+                for entity_name, model in catalog['collections'].items():
+                    model['name'] = entity_name
+                    model['references'] = self._extract_references(model['attributes'])
+                    model['very_many_references'] = self._extract_very_many_references(model['attributes'])
+
+                    model_attributes = model['attributes']
+                    state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
+                    all_attributes = {
+                        **state_attributes,
+                        **model_attributes
+                    }
+
+                    # Add fields to the GOBModel to be used in database creation and lookups
+                    model['fields'] = all_attributes
+
+                    # Include complete definition, including all global fields
+                    model['all_fields'] = {
+                        **all_attributes,
+                        **global_attributes
+                    }

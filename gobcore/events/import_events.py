@@ -30,17 +30,15 @@ class ImportEvent(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def create_event(cls, _source_id, _entity_source_id, data, version):
+    def create_event(cls, _tid, data, version):
         """Creates the event dict for the given parameters
 
-        :param _source_id: the source id of the data this event is based on
-        :param _id_column: the key or attribute which holds the id
+        :param _tid: the tid of the data this event is based on
         :param data: the data for the event
 
         :return: a dict representing the event
         """
-        data["_source_id"] = _source_id
-        data["_entity_source_id"] = _entity_source_id
+        data["_tid"] = _tid
 
         return {"event": cls.name, "data": data, "version": version}
 
@@ -64,7 +62,8 @@ class ImportEvent(metaclass=ABCMeta):
     def source(self):
         return self._metadata.source
 
-    def __init__(self, data, metadata):
+    def __init__(self, tid, data, metadata):
+        self.tid = tid
         self.data = data  # Original data for use by calling code. Should not be modified
         self._data = data  # Data for internal used. Can be modified
         self._metadata = metadata
@@ -127,7 +126,7 @@ class ADD(ImportEvent):
         super().apply_to(entity)
 
     @classmethod
-    def create_event(cls, _source_id, _entity_source_id, data, version):
+    def create_event(cls, _tid, data, version):
         #   ADD has no modifications, only data
         if modifications_key in data:
             data.pop(modifications_key)
@@ -137,7 +136,7 @@ class ADD(ImportEvent):
             **(cls.last_event(data))
         }
 
-        return super().create_event(_source_id, _entity_source_id, event_data, version)
+        return super().create_event(_tid, event_data, version)
 
     def get_attribute_dict(self):
         # The data for the add event is in the entity attribute
@@ -194,7 +193,7 @@ class MODIFY(ImportEvent):
         return modified_attributes
 
     @classmethod
-    def create_event(cls, _source_id, _entity_source_id, data, version):
+    def create_event(cls, _tid, data, version):
         #   MODIFY has no data attributes only modifications
         if modifications_key not in data:
             raise GOBException("MODIFY event requires modifications")
@@ -204,7 +203,7 @@ class MODIFY(ImportEvent):
             **(cls.last_event(data))
         }
 
-        return super().create_event(_source_id, _entity_source_id, mods, version)
+        return super().create_event(_tid, mods, version)
 
 
 class DELETE(ImportEvent):
@@ -222,9 +221,9 @@ class DELETE(ImportEvent):
     timestamp_field = "_date_deleted"
 
     @classmethod
-    def create_event(cls, _source_id, _entity_source_id, data, version):
+    def create_event(cls, _tid, data, version):
         #  DELETE has no data, except reference to entity age
-        return super().create_event(_source_id, _entity_source_id, cls.last_event(data), version)
+        return super().create_event(_tid, cls.last_event(data), version)
 
 
 class CONFIRM(ImportEvent):
@@ -242,9 +241,9 @@ class CONFIRM(ImportEvent):
     timestamp_field = "_date_confirmed"
 
     @classmethod
-    def create_event(cls, _source_id, _entity_source_id, data, version):
+    def create_event(cls, _tid, data, version):
         #  CONFIRM has no data, except reference to entity age
-        return super().create_event(_source_id, _entity_source_id, cls.last_event(data), version)
+        return super().create_event(_tid, cls.last_event(data), version)
 
 
 class BULKCONFIRM(ImportEvent):
@@ -257,11 +256,11 @@ class BULKCONFIRM(ImportEvent):
         source_id: None
         data: {
             confirms: [
-                {'source_id': 12881429, 'last_event': 1234},
-                {'source_id': 12881430, 'last_event': 1235},
+                {'tid': 12881429, 'last_event': 1234},
+                {'tid': 12881430, 'last_event': 1235},
                 ...
             ],
-            _source_id: None
+            _tid: None
         }
     }
     """
@@ -273,8 +272,7 @@ class BULKCONFIRM(ImportEvent):
         #  BULKCONFIRM has a list of dicts with source_id and last_event
         data = {
             'confirms': confirms,
-            '_source_id': None,
-            '_entity_source_id': None
+            '_tid': None,
         }
         return {"event": cls.name, "data": data, "version": version}
 

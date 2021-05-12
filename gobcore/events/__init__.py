@@ -68,23 +68,18 @@ def get_event_for(old_data, new_data, modifications, version):
         # MODIFY, CONFIRM, DELETE
         # Attach event to the previous event for the entity
         _last_event = old_data._last_event
-        # The source_id might change, so save the old entity source_id
-        _entity_source_id = old_data._source_id
     else:
         # ADD
         # No previous event, entity source id is equal to the new source id
         _last_event = None
-        _entity_source_id = new_data["_source_id"]
 
     if has_new_state:
         # ADD, MODIFY, CONFIRM
         # Register the source of the event
-        _source_id = new_data["_source_id"]
         _hash = new_data[import_events.hash_key]
     else:
         # DELETE
         # No new source id, keep existing source id
-        _source_id = old_data._source_id
         _hash = None
 
     # The event data are the modifications
@@ -97,7 +92,8 @@ def get_event_for(old_data, new_data, modifications, version):
         # The ultimate event class will filter either the modifications (MODIFY) or the new data (ADD)
         data.update(new_data)
 
-    return gob_event.create_event(_source_id, _entity_source_id, data, version)
+    tid = old_data._tid if has_old_state else new_data['_tid']
+    return gob_event.create_event(tid, data, version)
 
 
 def _get_event_class_for(has_old_state, has_new_state, has_modifications):
@@ -125,7 +121,7 @@ def _get_event_class_for(has_old_state, has_new_state, has_modifications):
         return GOB.CONFIRM
 
 
-def GobEvent(event_message, metadata):
+def GobEvent(tid, event_message, metadata):
     """Get the event instance for a given event, instantiated with the data of the event
 
     Example:
@@ -138,7 +134,7 @@ def GobEvent(event_message, metadata):
     event_name = event_message["event"]
     data = event_message["data"]
 
-    return _get_event(event_name)(data, metadata)
+    return _get_event(event_name)(tid, data, metadata)
 
 
 def database_to_gobevent(event) -> ImportEvent:
@@ -162,7 +158,7 @@ def database_to_gobevent(event) -> ImportEvent:
 
     event_msg = {
         "event": event.action,
-        "data": data
+        "data": data,
     }
 
     msg_header = {
@@ -173,11 +169,11 @@ def database_to_gobevent(event) -> ImportEvent:
         "catalogue": event.catalogue,
         "entity": event.entity,
         "version": event.version,
-        "timestamp": event.timestamp
+        "timestamp": event.timestamp,
     }
 
     # Construct the event out of the reconstructed event data
-    gob_event = GobEvent(event_msg, MessageMetaData(msg_header))
+    gob_event = GobEvent(event.tid, event_msg, MessageMetaData(msg_header))
 
     # Store the id of the event in the gob_event
     gob_event.id = event.eventid

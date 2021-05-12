@@ -38,21 +38,6 @@ class TestModel(unittest.TestCase):
         # Test non existing abbreviation
         self.assertEqual(None, self.model.get_reference_by_abbreviations('xxx', 'xxx'))
 
-    def test_functional_key_fields(self):
-        fields = self.model.get_functional_key_fields('meetbouten', 'meetbouten')
-        self.assertEqual(fields, ['_source', 'identificatie'])
-
-    def test_functional_key_fields_state(self):
-        self.model.get_collection = MagicMock(return_value={'entity_id': 'identificatie'})
-        self.model.has_states = MagicMock(return_value=True)
-
-        self.assertEqual(['_source', 'identificatie', 'volgnummer'],
-                         self.model.get_functional_key_fields('cat', 'coll'))
-
-    def test_technical_key_fields(self):
-        fields = self.model.get_technical_key_fields('meetbouten', 'meetbouten')
-        self.assertEqual(fields, ['_source', '_source_id'])
-
     def test_source_id(self):
         entity = {
             'idfield': 'idvalue'

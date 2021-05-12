@@ -15,12 +15,13 @@ EVENTS_DESCRIPTION = {
     "timestamp": "Datetime when the event as created",
     "catalogue": "The catalogue in which the entity resides",
     "entity": "The entity to which the event need to be applied",
+    "tid": "The tid (combination _id and volgnummer, if applicable) of the entity this event refers to",
     "version": "The version of the entity model",
     "action": "Add, change, delete or confirm",
-    "source": "The functional source of the entity, e.g. AMSBI",
+    "source": "The functional source of the entity, e.g. AMSBI",  # Deprecated. Remove later
     "application": "The technical source of the entity, e.g. DIVA",
-    "source_id": "The id of the entity in the source",
-    "contents": "A json object that holds the contents for the action, the full entity for an Add"
+    "source_id": "The id of the entity in the source",  # Deprecated. Remove later
+    "contents": "A json object that holds the contents for the action, the full entity for an Add",
 }
 
 EVENTS = {
@@ -28,12 +29,13 @@ EVENTS = {
     "timestamp": "GOB.DateTime",
     "catalogue": "GOB.String",
     "entity": "GOB.String",
+    "tid": "GOB.String",
     "version": "GOB.String",
     "action": "GOB.String",
-    "source": "GOB.String",
+    "source": "GOB.String",  # Deprecated. Remove later
     "application": "GOB.String",
-    "source_id": "GOB.String",
-    "contents": "GOB.JSON"
+    "source_id": "GOB.String",  # Deprecated. Remove later
+    "contents": "GOB.JSON",
 }
 
 
@@ -175,30 +177,6 @@ class GOBModel():
             raise GOBException(f"Multiple collections found with name {collection_name}")
 
         return (catalog, collections[0]) if collections else None
-
-    def get_functional_key_fields(self, catalog_name, collection_name):
-        """
-        Return the list of fieldnames that functionally identifies an entity
-
-        :param catalog_name: name of the catalog
-        :param collection_name: name of the collection
-        :return: array of fieldnames
-        """
-        collection = self.get_collection(catalog_name, collection_name)
-        result = [FIELD.SOURCE, collection["entity_id"]]
-        if self.has_states(catalog_name, collection_name):
-            result.append(FIELD.SEQNR)
-        return result
-
-    def get_technical_key_fields(self, catalog_name, collection_name):
-        """
-        Return the list of fieldnames that technically identifies an entity
-
-        :param catalog_name: name of the catalog
-        :param collection_name: name of the collection
-        :return: array of fieldnames
-        """
-        return [FIELD.SOURCE, FIELD.SOURCE_ID]
 
     def has_states(self, catalog_name, collection_name):
         """

@@ -21,6 +21,7 @@ class FIELD:
     DATE_DELETED = "_date_deleted"
     SOURCE = "_source"
     ID = "_id"
+    TID = "_tid"
     REFERENCE_ID = "id"
     APPLICATION = "_application"
     SOURCE_ID = "_source_id"
@@ -47,6 +48,8 @@ DESCRIPTION = {
     FIELD.VERSION: "Version of the entity",
     FIELD.SOURCE: "Functional source for the specific entity, eg the name of a department.",
     FIELD.ID: "Functional source id, a generic (independent from Stelselpedia) id field for every entity.",
+    FIELD.TID: "Technical id, the concatenation of the _id and sequence number (volgnummer) that uniquely identifies "
+               "this object",
     FIELD.REFERENCE_ID: "Embedded id in reference fields. Links to the ID/Entity ID.",
     FIELD.APPLICATION: "Technical source for the specific entity, eg the name of a database.",
     FIELD.SOURCE_ID: "Technical source id, id of the entity in the above mentioned source application.",
@@ -59,8 +62,8 @@ DESCRIPTION = {
     FIELD.SOURCE_VALUE: "The original source value, used to resolve references.",
     FIELD.START_VALIDITY: "Timestamp indicating the start of the validity of this object",
     FIELD.END_VALIDITY: "Timestamp indicating the end of the validity of this object",
-    FIELD.LAST_SRC_EVENT: "Id of the last src event that has been appleid to this entity",
-    FIELD.LAST_DST_EVENT: "Id of the last dst event that has been appleid to this entity",
+    FIELD.LAST_SRC_EVENT: "Id of the last src event that has been applied to this entity",
+    FIELD.LAST_DST_EVENT: "Id of the last dst event that has been applied to this entity",
 }
 
 """Meta data that is registered for every entity"""
@@ -94,7 +97,8 @@ METADATA_COLUMNS = {
 """Columns that are at the start of each entity"""
 FIXED_COLUMNS = {
     FIELD.GOBID: "GOB.PKInteger",
-    FIELD.ID: "GOB.String"
+    FIELD.ID: "GOB.String",
+    FIELD.TID: "GOB.String",
 }
 
 """Columns that are part of entities that have states"""

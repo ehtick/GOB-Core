@@ -50,12 +50,12 @@ def get_event_data_fixture(gob_event):
 def get_event_fixture():
     gob_event = random_gob_event()
     data = get_event_data_fixture(gob_event)
-    return gob_event.create_event(random_string(), random_string(), data, '0.9')
+    return gob_event.create_event(random_string(), data, '0.9')
 
 
 def get_data_fixture():
     data = {
-        "_source_id": random_string(),
+        "_tid": random_string(),
         "_hash": random_string(),
         "_last_event": random.randint(0, 100)
     }

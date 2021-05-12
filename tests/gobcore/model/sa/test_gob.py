@@ -89,6 +89,7 @@ class TestGob(unittest.TestCase):
             self.MockForeignKeyConstraint('', '', 'table_name_sfk'),
             self.MockForeignKeyConstraint('', '', 'table_name_dfk'),
             mock_unique.return_value,
+            mock_unique.return_value,
         ))
 
     @patch("gobcore.model.sa.gob.GOBModel", MockModel)
@@ -116,4 +117,4 @@ class TestGob(unittest.TestCase):
         mock_model_type.assert_called_with('table_name', {
             'column1': 'column1spec',
             'column2': 'column2spec',
-        }, False, (mock_unique.return_value,))
+        }, False, (mock_unique.return_value, mock_unique.return_value,))

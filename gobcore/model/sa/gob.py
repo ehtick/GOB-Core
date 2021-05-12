@@ -76,6 +76,8 @@ def columns_to_model(catalog_name, table_name, columns, has_states=False, constr
     # Convert columns to SQLAlchemy Columns
     columns = {column_name: get_column(column_name, column_spec) for column_name, column_spec in columns.items()}
 
+    unique_constraint_tid = UniqueConstraint(FIELD.TID, name=f"{NameCompressor.compress_name(table_name)}__tid_key")
+
     if catalog_name == "rel":
         # Add FK constraints from relation table to src and dst tables
         relation_info = split_relation_table_name(table_name)
@@ -110,17 +112,18 @@ def columns_to_model(catalog_name, table_name, columns, has_states=False, constr
                 name=f"{NameCompressor.compress_name(table_name)}_{srcdst[0]}fk"
             )
 
-        unique_constraint = UniqueConstraint(FIELD.SOURCE_ID,
-                                             name=f"{NameCompressor.compress_name(table_name)}_uniq")
+        unique_constraint_source_id = UniqueConstraint(FIELD.SOURCE_ID,
+                                                       name=f"{NameCompressor.compress_name(table_name)}_uniq")
 
         if relation_info['reference_name'] in src_collection["very_many_references"].keys():
             # Do not create FK constraints for very many references
-            table_args = (unique_constraint,)
+            table_args = (unique_constraint_source_id, unique_constraint_tid,)
         else:
             table_args = (
                 fk_constraint(src_catalog, src_collection, 'src'),
                 fk_constraint(dst_catalog, dst_collection, 'dst'),
-                unique_constraint,
+                unique_constraint_source_id,
+                unique_constraint_tid,
             )
 
     else:
@@ -130,7 +133,10 @@ def columns_to_model(catalog_name, table_name, columns, has_states=False, constr
         # Limit the table_name to prevent a key name of more than 63 characters
         constraint_name = f"{table_name[:40]}_{'_'.join(constraint_columns)}_key"
 
-        table_args = (UniqueConstraint(*constraint_columns, name=constraint_name),)
+        if FIELD.TID in columns:
+            table_args = (UniqueConstraint(*constraint_columns, name=constraint_name), unique_constraint_tid,)
+        else:
+            table_args = (UniqueConstraint(*constraint_columns, name=constraint_name),)
 
     # Create model
     return _create_model_type(table_name, columns, has_states, table_args)
@@ -190,6 +196,7 @@ def _default_indexes_for_columns(input_columns: list, table_type: str) -> dict:
 
     entity_table_indexes = [
         (FIELD.ID, FIELD.SEQNR),
+        (FIELD.TID,),
     ]
 
     relation_table_indexes = [

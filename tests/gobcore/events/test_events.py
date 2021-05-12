@@ -80,11 +80,12 @@ class TestEvents(unittest.TestCase):
         event = fixtures.get_event_fixture()
         metadata = fixtures.get_metadata_fixture()
 
-        gob_event = GobEvent(event, metadata)
+        gob_event = GobEvent('the tid', event, metadata)
 
         self.assertIsInstance(gob_event, events._get_event(event['event']))
         self.assertEqual(event['data'], gob_event._data)
         self.assertEqual(metadata, gob_event._metadata)
+        self.assertEqual('the tid', gob_event.tid)
 
     @patch('gobcore.events.GOBModel')
     @patch('gobcore.events.GobEvent')
@@ -103,6 +104,7 @@ class TestEvents(unittest.TestCase):
             'source': 'test',
             'action': 'ADD',
             'source_id': 'source_id',
+            "tid": "the tid",
         }
 
         data = {
@@ -121,7 +123,7 @@ class TestEvents(unittest.TestCase):
 
         database_to_gobevent(event)
 
-        mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)
+        mock_gob_event.assert_called_with('the tid', expected_event_msg, expected_meta_data)
 
     @patch('gobcore.events.GOBMigrations')
     @patch('gobcore.events.GOBModel')
@@ -149,7 +151,8 @@ class TestEvents(unittest.TestCase):
             'source': 'test',
             'action': 'ADD',
             'source_id': 'source_id',
-            'contents': None
+            'contents': None,
+            "tid": "the tid",
         }
 
         data = {
@@ -176,4 +179,4 @@ class TestEvents(unittest.TestCase):
         mock_migrations().migrate_event_data.assert_called_with(event, data, event.catalogue, event.entity,
                                                                 target_version)
 
-        mock_gob_event.assert_called_with(expected_event_msg, expected_meta_data)
+        mock_gob_event.assert_called_with("the tid", expected_event_msg, expected_meta_data)

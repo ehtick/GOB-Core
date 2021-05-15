@@ -177,6 +177,39 @@ def get_relation_name(model, catalog_name, collection_name, reference_name):
                               reference_name=reference_name)
 
 
+def init_relations():
+    return {
+        "version": "0.1",
+        "abbreviation": "REL",
+        "description": "GOB Relations",
+        "collections": {}
+    }
+
+
+def set_relations(relations, model, src_catalog_name, src_catalog):
+    for src_collection_name, src_collection in src_catalog['collections'].items():
+        references = model._extract_references(src_collection['attributes'])
+        for reference_name, reference in references.items():
+            dst_catalog_name, dst_collection_name = reference['ref'].split(':')
+            src = {
+                "catalog": src_catalog,
+                "catalog_name": src_catalog_name,
+                "collection": src_collection,
+                "collection_name": src_collection_name
+            }
+            dst = _get_destination(model, dst_catalog_name, dst_collection_name)
+            name = _get_relation_name(src=src,
+                                      dst=dst,
+                                      reference_name=reference_name)
+            if not (dst and name):
+                if _startup:
+                    # Show warnings only on startup
+                    print(f"Skip {src_catalog_name}.{src_collection_name}.{reference_name} => " +
+                          f"{dst_catalog_name}.{dst_collection_name}")
+                continue
+            relations["collections"][name] = _get_relation(name)
+
+
 def get_relations(model):
     """
     Get the relation specs for all references within the GOB model

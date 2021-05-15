@@ -63,6 +63,21 @@ def _get_qa_abbreviation(catalog, collection):
     return f"{catalog['abbreviation']}_{collection['abbreviation']}"
 
 
+def init_qualty_assurance():
+    return {
+        "description": "Kwaliteits gegevens over GOB data.",
+        "version": "0.1",
+        "abbreviation": "QA",
+        "collections": {}
+    }
+
+
+def set_quality_assurance_collections(qa: dict, catalog_name, catalog):
+    for collection_name, collection in catalog['collections'].items():
+        entity = get_entity_name(catalog_name, collection_name)
+        qa['collections'][entity] = _get_qa(catalog, collection)
+
+
 def get_quality_assurances(model):
     quality_assurance = {
         "description": "Kwaliteits gegevens over GOB data.",

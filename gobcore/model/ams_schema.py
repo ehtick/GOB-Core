@@ -9,6 +9,10 @@ from collections import OrderedDict
 from gobcore.typesystem import gob_types
 from gobcore.exceptions import GOBTypeException
 
+DEFAULT_SCHEMA_REF = 'https://schemas.data.amsterdam.nl/datasets'
+AMS_SCHEMA_REF = os.environ.get('AMS_SCHEME_REF', DEFAULT_SCHEMA_REF)
+
+
 # Taken from gobmodel.json
 CATALOGUE_ABBR = {
     'meetbouten': 'MBN',
@@ -160,9 +164,6 @@ transform = {
     'array': Ams2GOBArray,
 }
 
-DEFAULT_SCHEMA_REF = 'https://raw.githubusercontent.com/Amsterdam/amsterdam-schema/master/datasets/'
-AMS_SCHEMA_REF = os.environ.get('AMS_SCHEME_REF', DEFAULT_SCHEMA_REF)
-
 
 def to_snake(camel_str: str) -> str:
     return re.sub(r'(?<=[a-z])[A-Z]|[A-Z](?=[^A-Z])', r'_\g<0>', camel_str).lower().strip('_')
@@ -229,8 +230,8 @@ def ams2gob_model(ams_model: dict):
 
 
 def get_ams_model(catalog):
-    url = os.path.join(AMS_SCHEMA_REF, catalog, catalog + '.json')
-    print(f'Fetching {catalog} from {url}')
+    url = os.path.join(AMS_SCHEMA_REF, catalog, catalog)
+    print(f'fetching url={url}')
     with urllib.request.urlopen(url) as response:
         return json.loads(response.read().decode('utf-8'))
 

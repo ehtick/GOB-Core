@@ -1,14 +1,18 @@
 import os
 import glob
 import json
-from typing import List
 
 from gobcore.exceptions import GOBException
 from gobcore.model.metadata import FIELD
 from gobcore.model.metadata import STATE_FIELDS
 from gobcore.model.metadata import PRIVATE_META_FIELDS, PUBLIC_META_FIELDS, FIXED_FIELDS
-from gobcore.model.relations import get_relations, get_inverse_relations
-from gobcore.model.quality import QUALITY_CATALOG, get_quality_assurances
+from gobcore.model.relations import get_relations, get_inverse_relations, set_relations, init_relations
+from gobcore.model.quality import (
+    QUALITY_CATALOG,
+    get_quality_assurances,
+    init_qualty_assurance,
+    set_quality_assurance_collections,
+)
 from gobcore.model.schema import load_schema, SchemaException
 from gobcore.model.ams_schema import get_gob_model
 
@@ -125,11 +129,13 @@ class GOBModel():
                         print(f"ERROR: failed to load schema {model['schema']} for {catalog_name}:{entity_name}")
                         model['attributes'] = model["_attributes"]
 
-    def _extract_references(self, attributes):
+    @staticmethod
+    def _extract_references(attributes):
         return {field_name: spec for field_name, spec in attributes.items()
                 if spec['type'] in ['GOB.Reference', 'GOB.ManyReference', 'GOB.VeryManyReference']}
 
-    def _extract_very_many_references(self, attributes):
+    @staticmethod
+    def _extract_very_many_references(attributes):
         return {field_name: spec for field_name, spec in attributes.items()
                 if spec['type'] in ['GOB.VeryManyReference']}
 
@@ -169,7 +175,7 @@ class GOBModel():
         collections = []
         catalog = None
 
-        for catalog_name in self._data.keys():
+        for catalog_name in self.get_catalog_names():
             collection = self.get_collection(catalog_name, collection_name)
 
             if collection:
@@ -249,7 +255,7 @@ class GOBModel():
         Helper function to generate all table names
         '''
         table_names = []
-        for catalog_name in self.get_catalog_names():
+        for catalog_name in self._data.keys():
             for collection_name in self.get_collection_names(catalog_name):
                 table_names.append(self.get_table_name(catalog_name, collection_name))
         return table_names
@@ -342,6 +348,37 @@ class GOBModel():
 
         return catalog, collection
 
+    @classmethod
+    def _get_catalog(cls, catalog_name):
+        pass
+
+
+class LazyDict(dict):
+    '''
+      Fetches items on request, all
+      items will contain a result of
+      the get_item function
+    '''
+
+    def __init__(self, get_item: callable):
+        self.get_item = get_item
+
+    def __get_item(self, item):
+        if not dict.__contains__(self, item):
+            try:
+                value = self.get_item(item)
+            except Exception as e:
+                print(f'Failed fetching {item} {e}')
+                return None
+            super(LazyDict, self).__setitem__(item, value)
+        return super(LazyDict, self).__getitem__(item)
+
+    def __getitem__(self, item):
+        return self.__get_item(item)
+
+    def get(self, item, owner=None):
+        self.__get_item(item)
+
 
 if os.environ.get('USE_AMS_SCHEMA'): # Noqa
 
@@ -349,29 +386,70 @@ if os.environ.get('USE_AMS_SCHEMA'): # Noqa
         '''
            Very dirty class override, but for now work fine
            can enable or disable AMS model with USE_AMS_SCHEME
+
+           Catalogue fetching should be fteched on request.
         '''
         inverse_relations = None
-        _data = None
 
-        def __init__(self, catalogs: List[str] = None):
-            print('Using Amsterdam schema....')
-            if GOBModel._data is not None:
-                # Model is already initialised
+        _catalogs = None
+        _quality_assurance = None
+        _relations = None
+
+        def __init__(self):
+            if GOBModel._catalogs is not None:
                 return
+            GOBModel._catalogs = LazyDict(GOBModel._get_catalog)
+            GOBModel._quality_assurance = init_qualty_assurance()
+            GOBModel._relations = init_relations()
 
-            data = {}
-            catalogs = catalogs or []
-            # Catalogs that are used are descibed in the CATALOGS
-            # comma separated
-            catalogs += [x for x in os.getenv('CATALOGS', '').split(',') if x.strip()]
-            for catalog in catalogs:
-                data[catalog] = get_gob_model(catalog)
+        @classmethod
+        def _get_catalog(cls, catalog_name):
+            catalog = get_gob_model(catalog_name)
+            cls._load_schema(catalog_name, catalog)
+            set_quality_assurance_collections(cls._quality_assurance, catalog_name, catalog)
+            cls.add_global_attributes(catalog_name, catalog)
+            # Relations are an issue...
+            # If relations contain refs to external catolog,
+            # we need to fetch them also, but we can leave this
+            # until we do the relate proces.
+            # For now set the relations to None.
+            set_relations(cls._relations, cls, catalog_name, catalog)
+            return catalog
 
-            GOBModel._data = data
-            self._load_schemas()
-            data[QUALITY_CATALOG] = get_quality_assurances(self)
-            data["rel"] = get_relations(self)
+        def get_catalog(self, catalog_name):
+            return self._catalogs[catalog_name]
 
+        def get_collection_names(self, catalog_name):
+            return self._catalogs.keys()
+
+        def get_collections(self, catalog_name):
+            catalog = self.get_catalog(catalog_name) or {}
+            return catalog.get('collections')
+
+        @classmethod
+        def get_collection(cls, catalog_name, collection_name):
+            print(f'catalog_name=={catalog_name}')
+            catalog = cls._catalogs[catalog_name] or {}
+            collections = catalog.get('collections', {})
+            return collections.get(collection_name)
+
+        @staticmethod
+        def _load_schema(catalog_name: str, catalog: dict):
+            """
+            Load any external schemas and updates model accordingly
+            :return: None
+            """
+            for entity_name, model in catalog['collections'].items():
+                if model.get('schema') is not None:
+                    try:
+                        model['attributes'] = load_schema(model['schema'], catalog_name, entity_name)
+                    except SchemaException:
+                        # Use a fallback scenario as long as the schemas are still in development
+                        print(f"ERROR: failed to load schema {model['schema']} for {catalog_name}:{entity_name}")
+                        model['attributes'] = model["_attributes"]
+
+        @classmethod
+        def add_global_attributes(cls, catalog_name, catalog):
             global_attributes = {
                 **PRIVATE_META_FIELDS,
                 **PUBLIC_META_FIELDS,
@@ -380,26 +458,25 @@ if os.environ.get('USE_AMS_SCHEMA'): # Noqa
 
             # Extract references for easy access in API. Add catalog and
             # collection names to catalog and collection objects
-            for catalog_name, catalog in self._data.items():
-                catalog['name'] = catalog_name
+            catalog['name'] = catalog_name
 
-                for entity_name, model in catalog['collections'].items():
-                    model['name'] = entity_name
-                    model['references'] = self._extract_references(model['attributes'])
-                    model['very_many_references'] = self._extract_very_many_references(model['attributes'])
+            for entity_name, model in catalog['collections'].items():
+                model['name'] = entity_name
+                model['references'] = GOBModel._extract_references(model['attributes'])
+                model['very_many_references'] = GOBModel._extract_very_many_references(model['attributes'])
 
-                    model_attributes = model['attributes']
-                    state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
-                    all_attributes = {
-                        **state_attributes,
-                        **model_attributes
-                    }
+                model_attributes = model['attributes']
+                state_attributes = STATE_FIELDS if model.get('has_state') else {}
+                all_attributes = {
+                    **state_attributes,
+                    **model_attributes
+                }
 
-                    # Add fields to the GOBModel to be used in database creation and lookups
-                    model['fields'] = all_attributes
+                # Add fields to the GOBModel to be used in database creation and lookups
+                model['fields'] = all_attributes
 
-                    # Include complete definition, including all global fields
-                    model['all_fields'] = {
-                        **all_attributes,
-                        **global_attributes
-                    }
+                # Include complete definition, including all global fields
+                model['all_fields'] = {
+                    **all_attributes,
+                    **global_attributes
+                }

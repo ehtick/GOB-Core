@@ -681,4 +681,4 @@ class IncompleteDate(JSON):
 
 
 class URI(String):
-    pass
+    name = "URI"

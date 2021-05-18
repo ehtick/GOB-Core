@@ -66,13 +66,13 @@
         ON rel_3.src_id = wijk_0._id AND rel_3.src_volgnummer = wijk_0.volgnummer
     LEFT JOIN gebieden_stadsdelen sdl_0
         ON rel_3.dst_id = sdl_0._id AND rel_3.dst_volgnummer = sdl_0.volgnummer AND COALESCE(sdl_0._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
-    -- SELECT _ligt_in_ggwgebied
+    -- SELECT ligt_in_ggwgebied
     LEFT JOIN mv_gbd_brt_gbd_ggw__ligt_in_ggwgebied rel_4
         ON rel_4.src_id = brt_0._id AND rel_4.src_volgnummer = brt_0.volgnummer
     LEFT JOIN gebieden_ggwgebieden ggw_0
         ON rel_4.dst_id = ggw_0._id AND rel_4.dst_volgnummer = ggw_0.volgnummer AND COALESCE(ggw_0._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()
-    -- SELECT _ligt_in_ggpgebied
-    LEFT JOIN mv_gbd_brt_gbd_ggp__ligt_in_ggpgebied rel_5
+    -- SELECT ligt_in_ggpgebied
+    LEFT JOIN mv_gbd_brt_gbd_ggp_ligt_in_ggpgebied rel_5
         ON rel_5.src_id = brt_0._id AND rel_5.src_volgnummer = brt_0.volgnummer
     LEFT JOIN gebieden_ggpgebieden ggp_0
         ON rel_5.dst_id = ggp_0._id AND rel_5.dst_volgnummer = ggp_0.volgnummer AND COALESCE(ggp_0._expiration_date, '9999-12-31'::timestamp without time zone) > NOW()

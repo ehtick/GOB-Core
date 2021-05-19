@@ -894,7 +894,7 @@
             "type": "GOB.Geo.Polygon",
             "description": "Geometrische beschrijving van een object."
           },
-          "_ligt_in_ggpgebied": {
+          "ligt_in_ggpgebied": {
             "type": "GOB.Reference",
             "description": "Het GGP-gebied waar de buurt in ligt",
             "ref": "gebieden:ggpgebieden"

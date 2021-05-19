@@ -428,7 +428,6 @@ if os.environ.get('USE_AMS_SCHEMA'): # Noqa
 
         @classmethod
         def get_collection(cls, catalog_name, collection_name):
-            print(f'catalog_name=={catalog_name}')
             catalog = cls._catalogs[catalog_name] or {}
             collections = catalog.get('collections', {})
             return collections.get(collection_name)

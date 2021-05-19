@@ -10,7 +10,7 @@ from gobcore.typesystem import gob_types
 from gobcore.exceptions import GOBTypeException
 
 DEFAULT_SCHEMA_REF = 'https://schemas.data.amsterdam.nl/datasets'
-AMS_SCHEMA_REF = os.environ.get('AMS_SCHEME_REF', DEFAULT_SCHEMA_REF)
+AMS_SCHEMA_REF = os.environ.get('AMS_SCHEMA_REF', DEFAULT_SCHEMA_REF)
 
 
 # Taken from gobmodel.json
@@ -183,7 +183,7 @@ def _get_gob_attribute(field_name, ams_field: dict):
 
 def _get_gob_attributes(properties: dict, has_states: bool):
     # schema is not needed.
-    skip_attributes = {'schema', 'volgnummer', 'registratiedatum'} if has_states else {'schema'}
+    skip_attributes = {'schema'}
     return OrderedDict(
         (to_snake(k), _get_gob_attribute(k, v))
         for (k, v) in properties.items() if k not in skip_attributes
@@ -230,8 +230,9 @@ def ams2gob_model(ams_model: dict):
 
 
 def get_ams_model(catalog):
-    url = os.path.join(AMS_SCHEMA_REF, catalog, catalog)
-    print(f'fetching url={url}')
+    fname = '.'.join([p for p in [catalog, os.environ.get('AMS_SCHEMA_SUFFIX')] if p])
+    url = os.path.join(AMS_SCHEMA_REF, catalog, fname)
+    print(f'Fetching schema for collection={catalog} from {url}')
     with urllib.request.urlopen(url) as response:
         return json.loads(response.read().decode('utf-8'))
 

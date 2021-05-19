@@ -143,7 +143,7 @@
                         "type": "GOB.Geo.Polygon",
                         "description": "Geometrische beschrijving van een object."
                     },
-                    "_ligt_in_ggwgebied": {
+                    "ligt_in_ggwgebied": {
                         "type": "GOB.Reference",
                         "description": "Het GGW-gebied waar de wijk in ligt.",
                         "ref": "gebieden:ggwgebieden"

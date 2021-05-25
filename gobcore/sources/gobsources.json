@@ -1132,6 +1132,16 @@
           "method": "equals",
           "destination_attribute": "identificatie"
         }
+      },
+      "sbiactiviteiten": {
+        "heeft_als_maatschappelijkactiviteit": {
+          "method": "equals",
+          "destination_attribute": "kvknummer"
+        },
+        "heeft_als_vestiging": {
+          "method": "equals",
+          "destination_attribute": "vestigingsnummer"
+        }
       }
     }
   }

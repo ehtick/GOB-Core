@@ -1,4 +1,5 @@
 import os
+import glob
 import json
 
 from gobcore.exceptions import GOBException
@@ -60,9 +61,10 @@ class GOBModel():
             # Model is already initialised
             return
 
-        path = os.path.join(os.path.dirname(__file__), 'gobmodel.json')
-        with open(path) as file:
-            data = json.load(file)
+        data = {}
+        for path in glob.glob(os.path.join(os.path.dirname(__file__), 'gobmodel/*.json')):
+            with open(path) as f:
+                data.update(json.load(f))
 
         if os.getenv('DISABLE_TEST_CATALOGUE', False):
             # Default is to include the test catalogue

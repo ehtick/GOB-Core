@@ -51,7 +51,7 @@ class MockChannel:
     def close(self):
         self.is_open = False
         if self.on_close is not None:
-            self.on_close(self, code=0, text="OnClose")
+            self.on_close(self, Exception)
 
     def basic_publish(self,
                       exchange,
@@ -70,7 +70,7 @@ class MockChannel:
                   tag):
         pass
 
-    def basic_qos(self, prefetch_count, all_channels):
+    def basic_qos(self, prefetch_count, global_qos):
         pass
 
     def queue_bind(self,
@@ -82,12 +82,12 @@ class MockChannel:
         callback({})
 
     def basic_consume(self,
-                      consumer_callback,
+                      on_message_callback,
                       queue):
-        self.consumer_callback = consumer_callback
+        self.consumer_callback = on_message_callback
         global consumed_message
         consumed_message = "mybody"
-        consumer_callback(self, MockDeliver("mykey"), {}, "mybody")
+        on_message_callback(self, MockDeliver("mykey"), {}, "mybody")
 
 
 class MockConnection:
@@ -111,7 +111,7 @@ class MockConnection:
         if self.ioloop.running:
             self.ioloop.stop()
         if self.on_close is not None:
-            self.on_close(self, code=0, text="OnClose")
+            self.on_close(self, Exception("OnClose"))
 
 
 class MockPika:

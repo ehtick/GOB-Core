@@ -11,8 +11,11 @@ The code is modified to allow for asynchronous send and receive in parallel
 import os
 import threading
 import traceback
+from typing import Optional
 
 import pika
+from pika.channel import Channel
+from pika.connection import Connection
 
 from gobcore.message_broker.offline_contents import offload_message, end_message
 from gobcore.message_broker.utils import to_json, get_message_from_body
@@ -46,10 +49,7 @@ class AsyncConnection(object):
     """
 
     def __init__(self, connection_params, params=None):
-        """Create a new AsyncConnection
-
-        :param address: The RabbitMQ address
-        """
+        """Create a new AsyncConnection"""
 
         # The connection parameters for the RabbitMQ Message broker
         self._connection_params = connection_params
@@ -64,8 +64,8 @@ class AsyncConnection(object):
             self._params = {**self._params, **params}
 
         # The Connection and Channel objects
-        self._connection = None
-        self._channel = None
+        self._connection: Optional[Connection] = None
+        self._channel: Optional[Channel] = None
 
         # The RabbitMQ eventloop thread
         self._eventloop = None
@@ -99,16 +99,15 @@ class AsyncConnection(object):
         # Register the connection
         self._connection = connection
 
-        def on_close_channel(channel, code, text):
+        def on_close_channel(channel, exception):
             """Called when a channel is closed
 
             :param channel: The channel that is closed
-            :param code: The code for the channel closure
-            :param text: The test for the channel closure
+            :param exception: The raised exception
             :return: None
             """
 
-            progress("Channel closed:", code, text)
+            progress(f"Channel closed:", repr(exception), repr(channel))
             self.disconnect()
 
         def on_open_channel(channel):
@@ -121,7 +120,7 @@ class AsyncConnection(object):
             # Handle max 1 message at the same time
             # Do not prefetch next message, just wait for processing to finish and then get next message
             # This prevents messages to get queued after a long running earlier message and get delayed
-            channel.basic_qos(prefetch_count=self._params['prefetch_count'], all_channels=True)
+            channel.basic_qos(prefetch_count=self._params['prefetch_count'], global_qos=True)
 
             # If a callback has been defined for connection success, call this function
             if self._on_connect_callback:
@@ -145,7 +144,7 @@ class AsyncConnection(object):
         :return bool: True when the connection has been established, False otherwise
         """
 
-        def on_error_connection(connection, text):
+        def on_error_connection(connection, exception):
             """This function is called on a connection error
 
             The lock that has been set on connection creation will be released.
@@ -155,24 +154,23 @@ class AsyncConnection(object):
             The disconnect method will be called to clean up the connection properties and stop the eventloop.
 
             :param connection: The connection object
-            :param text: The error text
+            :param exception: The raised exception
             :return: None
             """
 
-            progress("Connection error:", text)
+            progress("Connection error:", repr(exception), repr(connection))
             self._lock.release()
             self.disconnect()
 
-        def on_close_connection(connection, code, text):
+        def on_close_connection(connection, exception):
             """Called when a connection is closed
 
             :param connection: The RabbitMQ connection object
-            :param code: The error code
-            :param text: The error text
+            :param exception: The raised exception
             :return: None
             """
 
-            progress("Connection closed:", code, text)
+            progress("Connection closed:", repr(exception), repr(connection))
             self._connection = None
 
         def eventloop():
@@ -323,8 +321,8 @@ class AsyncConnection(object):
 
         for queue in queues:
             self._channel.basic_consume(
-                consumer_callback=self.on_message(queue, message_handler),
-                queue=queue
+                queue=queue,
+                on_message_callback=self.on_message(queue, message_handler)
             )
 
     def disconnect(self):

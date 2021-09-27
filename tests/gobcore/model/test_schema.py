@@ -1,5 +1,5 @@
 import unittest
-import mock
+from unittest.mock import MagicMock, patch
 
 from gobcore.model.schema import _get_gob_info, _to_gob, _do_resolve, SchemaException, load_schema, _resolve_all
 
@@ -9,15 +9,15 @@ class TestAMSSchema(unittest.TestCase):
     def setUp(self):
         pass
 
-    @mock.patch("gobcore.model.schema.requests.get")
-    @mock.patch("gobcore.model.schema._resolve_all")
-    @mock.patch("gobcore.model.schema._to_gob")
+    @patch("gobcore.model.schema.requests.get")
+    @patch("gobcore.model.schema._resolve_all")
+    @patch("gobcore.model.schema._to_gob")
     def test_load_schema(self, mock_to_gob, mock_resolve, mock_get):
         self.assertEqual(mock_to_gob.return_value, load_schema('uri', 'catalog', 'collection'))
         mock_get.assert_called_with('uri', timeout=3)
         mock_to_gob.assert_called_with(mock_resolve.return_value)
 
-    @mock.patch("gobcore.model.schema.requests.get")
+    @patch("gobcore.model.schema.requests.get")
     def test_load_schema_exception(self, mock_get):
         mock_get.side_effect = Exception
 
@@ -95,7 +95,7 @@ class TestAMSSchema(unittest.TestCase):
         })
 
     def test_do_resolve(self):
-        resolver = mock.MagicMock()
+        resolver = MagicMock()
 
         node = {
             "a": "b"
@@ -125,8 +125,8 @@ class TestAMSSchema(unittest.TestCase):
         node = [node]
         self.assertEqual([result], _do_resolve(node, resolver))
 
-    @mock.patch('gobcore.model.schema.RefResolver')
-    @mock.patch('gobcore.model.schema._do_resolve')
+    @patch('gobcore.model.schema.RefResolver')
+    @patch('gobcore.model.schema._do_resolve')
     def test_resolve_all(self, mock_do_resolve, mock_ref_resolver):
         res = _resolve_all('uri', 'spec')
         mock_ref_resolver.assert_called_with('uri', 'spec')

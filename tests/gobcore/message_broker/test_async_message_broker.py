@@ -1,11 +1,11 @@
 import json
-import pika
-from pika import spec
-import pytest
 import os
-
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
+
+import pika
+import pytest
+from pika import spec
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.message_broker.message_broker import Connection
@@ -47,6 +47,7 @@ class MockChannel:
 
     def cancel(self):
         self.is_open = False
+
 
 class MockConnection:
 

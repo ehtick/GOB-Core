@@ -1,8 +1,9 @@
 import unittest
-import mock
+from unittest.mock import patch, MagicMock
 
-from gobcore.status.heartbeat import Heartbeat
 from gobcore.message_broker.config import STATUS_EXCHANGE, HEARTBEAT_KEY
+from gobcore.status.heartbeat import Heartbeat
+
 
 class MockHeartbeatConnection:
 
@@ -28,7 +29,7 @@ class MockedThread:
         self.name = name
 
     def is_alive(self):
-        return self._is_alive;
+        return self._is_alive
 
 
 def generate_threads(*specs):
@@ -40,9 +41,9 @@ def generate_threads(*specs):
 
 class TestHeartbeat(unittest.TestCase):
 
-    @mock.patch("gobcore.message_broker.message_broker.Connection.connect")
-    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
-    @mock.patch("atexit.register")
+    @patch("gobcore.message_broker.message_broker.Connection.connect")
+    @patch("gobcore.message_broker.message_broker.Connection.publish")
+    @patch("atexit.register")
     def test_constructor(self, mocked_atexit_register, mocked_publish, mocked_connect):
         connection = MockHeartbeatConnection()
         _heartbeat = Heartbeat(connection, "Myname")
@@ -50,8 +51,8 @@ class TestHeartbeat(unittest.TestCase):
         mocked_atexit_register.assert_called()
         self.assertIsNotNone(connection.msg)
 
-    @mock.patch("gobcore.message_broker.message_broker.Connection.connect")
-    @mock.patch("gobcore.message_broker.message_broker.Connection.publish")
+    @patch("gobcore.message_broker.message_broker.Connection.connect")
+    @patch("gobcore.message_broker.message_broker.Connection.publish")
     def test_send(self, mocked_publish, mocked_connect):
         connection = MockHeartbeatConnection()
         heartbeat = Heartbeat(connection, "Myname")
@@ -63,13 +64,13 @@ class TestHeartbeat(unittest.TestCase):
         self.assertEqual(connection.key, HEARTBEAT_KEY)
         self.assertEqual(connection.msg["name"], "Myname")
 
-    @mock.patch("threading.enumerate", new=generate_threads(["a"]))
+    @patch("threading.enumerate", new=generate_threads(["a"]))
     def test_heartbeat_threads(self):
         connection = MockHeartbeatConnection()
         heartbeat = Heartbeat(connection, "Myname")
         assert len(heartbeat.threads) == 1
 
-    @mock.patch("threading.enumerate", new=generate_threads(["_a"]))
+    @patch("threading.enumerate", new=generate_threads(["_a"]))
     def test_heartbeat_no_threads(self):
         connection = MockHeartbeatConnection()
         heartbeat = Heartbeat(connection, "Myname")
@@ -77,7 +78,7 @@ class TestHeartbeat(unittest.TestCase):
 
     def test_progress(self):
         connection = MockHeartbeatConnection()
-        connection.publish = mock.MagicMock()
+        connection.publish = MagicMock()
 
         msg = {
             "header": {

@@ -1,8 +1,7 @@
 import unittest
-import mock
+from unittest.mock import patch
 
 from gobcore.secure.cryptos.fernet import FernetCrypto, DecryptionError
-from gobcore.secure.cryptos.config import _getenv
 
 
 class TestFernet(unittest.TestCase):
@@ -21,7 +20,7 @@ class TestFernet(unittest.TestCase):
         with self.assertRaises(DecryptionError):
             FernetCrypto().decrypt(f"_{enc}")
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv')
+    @patch('gobcore.secure.cryptos.config.os.getenv')
     def test_encrypt_decrypt_key_error(self, mock_get_env):
         mock_get_env.side_effect = lambda s, *args: s
         _, enc = FernetCrypto().encrypt("any value")

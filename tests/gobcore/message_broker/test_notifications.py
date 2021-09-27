@@ -1,16 +1,16 @@
 from unittest import TestCase
-from mock import patch
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, patch
 
-from gobcore.message_broker.notifications import listen_to_notifications,\
-    contains_notification,\
-    send_notification,\
-    add_notification,\
-    get_notification,\
-    EventNotification,\
-    _send_notification,\
-    _listen_to_notifications,\
+from gobcore.message_broker.notifications import listen_to_notifications, \
+    contains_notification, \
+    send_notification, \
+    add_notification, \
+    get_notification, \
+    EventNotification, \
+    _send_notification, \
+    _listen_to_notifications, \
     DumpNotification
+
 
 @patch("gobcore.message_broker.notifications.NOTIFY_EXCHANGE", 'notification exchange')
 @patch("gobcore.message_broker.notifications.NOTIFY_BASE_QUEUE", 'base queue')

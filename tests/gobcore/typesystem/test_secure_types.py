@@ -1,12 +1,12 @@
 import unittest
-from unittest.mock import MagicMock
-import mock
+from unittest.mock import MagicMock, patch
 
-from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate, SecureIncompleteDate
-from gobcore.typesystem.gob_types import JSON, String
+from gobcore.secure.config import GOB_SECURE_ATTRS
 from gobcore.secure.crypto import read_protect
 from gobcore.secure.user import User
-from gobcore.secure.config import GOB_SECURE_ATTRS
+from gobcore.typesystem.gob_secure_types import SecureString, SecureDecimal, SecureDateTime, Secure, SecureDate, \
+    SecureIncompleteDate
+from gobcore.typesystem.gob_types import JSON, String
 
 
 class MockBaseType:
@@ -19,10 +19,10 @@ class TestSecure(unittest.TestCase):
     class MockChild(Secure):
         BaseType = MockBaseType
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
-    @mock.patch('gobcore.secure.user.extract_roles', MagicMock())
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.user.extract_roles', MagicMock())
     def test_create(self):
-        mock_request = mock.MagicMock()
+        mock_request = MagicMock()
         user = User(mock_request)
         user._roles = [GOB_SECURE_ATTRS]
 
@@ -37,19 +37,19 @@ class TestSecure(unittest.TestCase):
         sec_datetime = SecureDateTime.from_value(read_protect("2000-01-25T12:25:45.0"), level=5)
         self.assertTrue(isinstance(sec_datetime, SecureDateTime))
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
     def test_from_value(self):
         res = self.MockChild.from_value('val', **{'kw': 'args'})
         self.assertIsInstance(res, type(self.MockChild('val')))
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: False)
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_protected", lambda x: False)
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: False)
+    @patch("gobcore.typesystem.gob_secure_types.is_protected", lambda x: False)
     def test_from_value_not_encrypted_or_protected(self):
         res = self.MockChild.from_value('val', **{'kw': 'args'})
         self.assertNotIsInstance(res, type(self.MockChild))
         self.assertIsInstance(res, type(MockBaseType()))
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
     def test_get_value(self):
         securetype = self.MockChild('value')
         self.assertIsNone(securetype.get_value())
@@ -57,8 +57,8 @@ class TestSecure(unittest.TestCase):
 
 class TestSecureDate(unittest.TestCase):
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.Date")
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    @patch("gobcore.typesystem.gob_secure_types.Date")
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
     def test_get_typed_value(self, mock_date):
         secure = SecureDate("val")
 
@@ -69,8 +69,8 @@ class TestSecureDate(unittest.TestCase):
 
 class TestSecureDateTime(unittest.TestCase):
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.DateTime")
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    @patch("gobcore.typesystem.gob_secure_types.DateTime")
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
     def test_get_typed_value(self, mock_datetime):
         secure = SecureDateTime("val")
 
@@ -81,8 +81,8 @@ class TestSecureDateTime(unittest.TestCase):
 
 class TestSecureIncompleteDate(unittest.TestCase):
 
-    @mock.patch("gobcore.typesystem.gob_secure_types.IncompleteDate")
-    @mock.patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
+    @patch("gobcore.typesystem.gob_secure_types.IncompleteDate")
+    @patch("gobcore.typesystem.gob_secure_types.is_encrypted", lambda x: True)
     def test_get_typed_value(self, mock_incomplete_date):
         secure = SecureIncompleteDate("val")
         res = secure.get_typed_value("value")
@@ -93,7 +93,7 @@ class TestSecureIncompleteDate(unittest.TestCase):
 class TestSecureJSON(unittest.TestCase):
 
     def test_from_value(self):
-        mock_gob_type = mock.MagicMock()
+        mock_gob_type = MagicMock()
         mock_gob_type.return_value = mock_gob_type
         mock_gob_type.from_value_secure.return_value = String("secure value")
         mock_gob_type.get_value.return_value = "public value"

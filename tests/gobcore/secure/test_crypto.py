@@ -1,6 +1,6 @@
-import unittest
-import mock
 import json
+import unittest
+from unittest.mock import patch, ANY
 
 from gobcore.secure.crypto import is_encrypted, confidence_level, encrypt, decrypt, is_protected
 from gobcore.secure.crypto import read_protect, read_unprotect
@@ -26,20 +26,20 @@ class TestCrypto(unittest.TestCase):
     def test_confidence_level(self):
         self.assertEqual(confidence_level(json.dumps({"l": 5})), 5)
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
     def test_encrypt(self):
         self.assertEqual(json.loads(encrypt("value", 5)), {
-            "i": mock.ANY,
+            "i": ANY,
             "l": 5,
-            "v": mock.ANY
+            "v": ANY
         })
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
     def test_decrypt(self):
         value = encrypt("value", 5)
         self.assertEqual(decrypt(value), "value")
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
     def test_decrypt_error(self):
         value = encrypt("value", 5)
         # Manipulate value
@@ -48,7 +48,7 @@ class TestCrypto(unittest.TestCase):
         value = json.dumps(value)
         self.assertIsNone(decrypt(value))
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
     def test_encrypt_decrypt(self):
         value = encrypt("value", 5)
         self.assertEqual(decrypt(value), "value")
@@ -56,12 +56,12 @@ class TestCrypto(unittest.TestCase):
         value = encrypt(None, 5)
         self.assertIsNone(decrypt(value))
 
-    @mock.patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
+    @patch('gobcore.secure.cryptos.config.os.getenv', lambda s, *args: s)
     def test_protect(self):
         value = read_protect("any value")
         self.assertEqual(read_unprotect(value), "any value")
 
-    @mock.patch('gobcore.secure.crypto._safe_storage', {'a': 'a value'})
+    @patch('gobcore.secure.crypto._safe_storage', {'a': 'a value'})
     def test_is_protected(self):
         self.assertTrue(is_protected('a'))
         self.assertFalse(is_protected('b'))

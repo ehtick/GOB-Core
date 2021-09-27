@@ -14,7 +14,7 @@ def extract_roles(headers: dict):
     """
     access_token = headers.get(ACCESS_TOKEN_HEADER)
     if access_token:
-        decoded = jwt.decode(access_token, verify=False)
+        decoded = jwt.decode(access_token, options={"verify_signature": False})
         return decoded.get('realm_access', {}).get('roles', [])
     return []
 

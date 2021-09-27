@@ -1,9 +1,9 @@
 import threading
 import json
+from unittest.mock import patch
+
 import pika
 import pytest
-
-from mock import patch
 
 from gobcore.message_broker.async_message_broker import AsyncConnection
 from gobcore.message_broker.message_broker import Connection

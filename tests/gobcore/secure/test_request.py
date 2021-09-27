@@ -20,7 +20,7 @@ class TestRequest(TestCase):
         }
         roles = extract_roles(headers)
         self.assertEqual(roles, ["any roles"])
-        mock_jwt.decode.assert_called_with('the token', verify=False)
+        mock_jwt.decode.assert_called_with('the token', options={"verify_signature": False})
 
         roles = extract_roles({})
         self.assertEqual(roles, [])

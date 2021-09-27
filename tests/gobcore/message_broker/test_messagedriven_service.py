@@ -1,6 +1,5 @@
-import mock
 import unittest
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch, Mock, ANY
 
 from tests.gobcore import fixtures
 
@@ -24,9 +23,9 @@ def mock_get_on_message(service):
 
 class TestMessageDrivenServiceFunctions(unittest.TestCase):
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.contains_notification")
-    @mock.patch("gobcore.message_broker.messagedriven_service.send_notification")
-    @mock.patch("gobcore.message_broker.messagedriven_service.process_issues")
+    @patch("gobcore.message_broker.messagedriven_service.contains_notification")
+    @patch("gobcore.message_broker.messagedriven_service.send_notification")
+    @patch("gobcore.message_broker.messagedriven_service.process_issues")
     def test_on_message(self, mock_process_issues, mock_send_notification, mock_contains_notification):
 
         global return_message
@@ -34,7 +33,7 @@ class TestMessageDrivenServiceFunctions(unittest.TestCase):
         mock_contains_notification = True
 
         # setup mocks and fixtures
-        mocked_handler = mock.Mock(wraps=handler)
+        mocked_handler = Mock(wraps=handler)
         service = fixtures.get_service_fixture(mocked_handler)
         single_service = [v for v in service.values()][0]
 
@@ -45,7 +44,7 @@ class TestMessageDrivenServiceFunctions(unittest.TestCase):
         return_message = fixtures.random_string()
         return_queue = single_service['report']
 
-        with mock.patch.object(connection, "publish") as mocked_publish:
+        with patch.object(connection, "publish") as mocked_publish:
 
             # on_message = messagedriven_service._get_on_message(single_service)
             result = messagedriven_service._on_message(connection, single_service, message)
@@ -62,18 +61,18 @@ class TestMessageDrivenServiceFunctions(unittest.TestCase):
         mock_process_issues.assert_called_with(return_message)
         mock_send_notification.assert_called_with(return_message)
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.send_notification")
-    @mock.patch("gobcore.message_broker.messagedriven_service.process_issues")
+    @patch("gobcore.message_broker.messagedriven_service.send_notification")
+    @patch("gobcore.message_broker.messagedriven_service.process_issues")
     def test_on_message_false(self, mock_process_issues, mock_send_notification):
         connection = MagicMock()
-        service = {'handler': mock.Mock(wraps=handler, return_value=False)}
+        service = {'handler': Mock(wraps=handler, return_value=False)}
         result = messagedriven_service._on_message(connection, service, 'message')
 
         self.assertFalse(result)
         mock_process_issues.assert_not_called()
         mock_send_notification.assert_not_called()
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.Heartbeat")
+    @patch("gobcore.message_broker.messagedriven_service.Heartbeat")
     def test_on_message_fail(self, mock_heartbeat):
         connection = MagicMock()
         service = {
@@ -85,7 +84,7 @@ class TestMessageDrivenServiceFunctions(unittest.TestCase):
 
         mock_heartbeat.progress.assert_called_with(connection, service, 'some message', STATUS_FAIL, 'exception msg')
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.MessagedrivenService")
+    @patch("gobcore.message_broker.messagedriven_service.MessagedrivenService")
     def test_messagedriven_service_wrapper(self, mock_service_class):
         services = ['service 1', 'service 2']
         name = 'some name'
@@ -95,7 +94,7 @@ class TestMessageDrivenServiceFunctions(unittest.TestCase):
         mock_service_class.return_value.start.assert_called_once()
 
 
-@mock.patch("gobcore.message_broker.messagedriven_service.initialize_message_broker")
+@patch("gobcore.message_broker.messagedriven_service.initialize_message_broker")
 class TestMessageDrivenService(unittest.TestCase):
 
     def test_get_service(self, mock_init_broker):
@@ -118,7 +117,7 @@ class TestMessageDrivenService(unittest.TestCase):
             "queue": "q2"
         })
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
+    @patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
     def test_messagedriven_service(self, mocked_connection, mock_init_broker):
 
         global return_method
@@ -139,7 +138,7 @@ class TestMessageDrivenService(unittest.TestCase):
         mock_init_broker.assert_called_with()
         mocked_connection.assert_called_with(CONNECTION_PARAMS, {})
         mocked_connection.return_value.__enter__.return_value.subscribe\
-            .assert_called_with([expected_queue], mock.ANY)  # Inner function
+            .assert_called_with([expected_queue], ANY)  # Inner function
 
         messagedriven_service._heartbeat_loop.assert_called_once()
         messagedriven_service._start_threads.assert_not_called()
@@ -224,7 +223,7 @@ class TestMessageDrivenService(unittest.TestCase):
             call(['queue2']),
         ])
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.threading.Thread")
+    @patch("gobcore.message_broker.messagedriven_service.threading.Thread")
     def test_messagedriven_service_startthread(self, mock_thread, mock_init_broker):
         messagedriven_service = MessagedrivenService({}, 'Some name', {'thread_per_service': True})
         queues_arg = ['some queue', 'some other queue']
@@ -240,7 +239,7 @@ class TestMessageDrivenService(unittest.TestCase):
             'thread': mock_thread.return_value,
         }], messagedriven_service.threads)
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.sys.exit")
+    @patch("gobcore.message_broker.messagedriven_service.sys.exit")
     def test_init_exception(self, mock_exit, mock_init_messagebroker):
         mock_init_messagebroker.side_effect = Exception
 
@@ -248,7 +247,7 @@ class TestMessageDrivenService(unittest.TestCase):
 
         mock_exit.assert_called_with(1)
 
-    @mock.patch("gobcore.message_broker.messagedriven_service._on_message")
+    @patch("gobcore.message_broker.messagedriven_service._on_message")
     def test_on_message(self, mock_on_message, mock_init_messagebroker):
         messagedriven_service = MessagedrivenService({}, 'name', {})
         messagedriven_service._get_service = MagicMock()
@@ -256,7 +255,7 @@ class TestMessageDrivenService(unittest.TestCase):
         messagedriven_service._get_service.assert_called_with('queue')
         mock_on_message.assert_called_with('connection', messagedriven_service._get_service.return_value, 'msg')
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
+    @patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
     def test_listen(self, mock_connection, mock_init_messagebroker):
         messagedriven_service = MessagedrivenService({}, 'name', {})
 
@@ -273,8 +272,8 @@ class TestMessageDrivenService(unittest.TestCase):
 
         messagedriven_service._listen(['q1', 'q1'])
 
-    @mock.patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
-    @mock.patch("gobcore.message_broker.messagedriven_service.Heartbeat")
+    @patch("gobcore.message_broker.messagedriven_service.AsyncConnection")
+    @patch("gobcore.message_broker.messagedriven_service.Heartbeat")
     def test_heartbeat_loop(self, mock_heartbeat, mock_connection, mock_init_messagebroker):
         messagedriven_service = MessagedrivenService({}, 'name', {})
 

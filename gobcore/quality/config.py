@@ -74,6 +74,12 @@ class QA_CHECK:
         "pattern": r"^{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}.[0-9]+$",
         "msg": "value should be a 4-2-2-2-6 bytes hexidecimal value with a sequence number",
     }
+    Format_4_2_2_2_6_HEX_AANN_SEQ = {
+        "type": "regex",
+        "pattern": r"^{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"
+                   r".[A-Z]{2}\d{2}.[0-9]+$",
+        "msg": "value should be a 4-2-2-2-6 bytes hexidecimal value, with 2 chars/2 numbers and with a sequence number"
+    }
 
     # Value requirements
     Value_1_2_3 = {

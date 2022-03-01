@@ -14,7 +14,7 @@ todo: The delete and confirm actions contain too much data. Contents can be left
 from abc import ABCMeta, abstractmethod
 
 from gobcore.exceptions import GOBException
-from gobcore.model import GOBModel
+from gobcore.model import GOBModel, FIELD
 from gobcore.typesystem import get_gob_type
 
 hash_key = '_hash'
@@ -120,8 +120,11 @@ class ADD(ImportEvent):
     timestamp_field = "_date_created"
 
     def apply_to(self, entity):
-        # Clear the _date_deleted field to re-enable deleted records
-        setattr(entity, '_date_deleted', None)
+        if getattr(entity, FIELD.DATE_DELETED):
+            # Clear the _date_deleted, _date_confirmed and _date_modified fields to re-enable deleted records
+            setattr(entity, FIELD.DATE_DELETED, None)
+            setattr(entity, FIELD.DATE_CONFIRMED, None)
+            setattr(entity, FIELD.DATE_MODIFIED, None)
 
         super().apply_to(entity)
 

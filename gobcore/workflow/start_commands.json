@@ -8,9 +8,14 @@
         "description": "The name of the data catalogue (example: \"meetbouten\")"
       },
       {
-        "name": "entity",
+        "name": "collection",
         "required": false,
         "description": "The name of the data collection (example: \"metingen\")"
+      },
+      {
+        "name": "application",
+        "required": false,
+        "description": "The name of the data application (example: \"Neuron\")"
       }
     ],
     "workflow": "update_model"
@@ -51,8 +56,10 @@
       },
       {
         "name": "mode",
-        "description": "The import mode: full (default) or random, last5days, ....",
-        "default": "full"
+        "description": "The import mode: \"full\" (default), \"recent\" (only recent records, defined in config) or \"delete\" (mark all known entities as deleted)",
+        "default": "full",
+        "choices": ["full", "recent", "delete"],
+        "named": true
       }
     ],
     "workflow": "import"
@@ -91,7 +98,8 @@
         "name": "product",
         "required": false,
         "description": "The name of the product to export, (example: \"csv_actueel\")",
-        "named": true
+        "named": true,
+        "choices": ["csv_actueel", "esri_actueel", "csv_history", "dat"]
       },
       {
         "name": "full",

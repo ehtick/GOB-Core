@@ -1,4 +1,5 @@
 import logging
+import types
 
 from unittest import TestCase
 from unittest.mock import MagicMock, patch, mock_open, call
@@ -269,10 +270,21 @@ class TestLogger(TestCase):
 
         with patch('builtins.open', mocked_file):
             issues = logger.get_issues()
-            result = [issue for issue in issues]
-            mock_close.assert_called()
+            self.assertIsInstance(issues, types.GeneratorType)
+            mock_close.assert_not_called()
 
+            _ = [issue for issue in issues]
+
+            mock_close.assert_called()
             mock_json.loads.assert_has_calls([call('any line'), call('any other line')])
+
+    def test_has_issue(self):
+        logger = Logger()
+        logger._issues = {'1': 'any issue', '2': 'any other issue'}
+        self.assertTrue(logger.has_issue())
+
+        logger._issues = {}
+        self.assertFalse(logger.has_issue())
 
     def test_write_issue(self):
         logger = Logger()

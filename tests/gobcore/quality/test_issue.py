@@ -289,29 +289,43 @@ class TestIssue(TestCase):
         mock_logger.get_name.return_value = "any name"
 
         # Skip empty issues for non-functional process steps
-        mock_logger.get_issues.return_value = []
+        mock_logger.get_issues.return_value = (i for i in [])
+        mock_logger.has_issue.return_value = False
         mock_is_functional.return_value = False
         process_issues(msg)
         mock_start_issue_workflow.assert_not_called()
 
         # Always skip any issues of the QA catalog itself
-        mock_logger.get_issues.return_value = [mock_issue]
+        mock_logger.get_issues.return_value = (i for i in [mock_issue])
         mock_is_functional.return_value = True
+        mock_logger.has_issue.return_value = True
         msg['header']['catalogue'] = 'qa'
         process_issues(msg)
         mock_start_issue_workflow.assert_not_called()
 
         # Skip GOBPrepare
-        mock_logger.get_issues.return_value = [mock_issue]
+        mock_logger.get_issues.return_value = (i for i in [mock_issue])
         mock_is_functional.return_value = True
+        mock_logger.has_issue.return_value = True
         msg['header']['catalogue'] = 'any catalogue'
         msg['header']['application'] = 'GOBPrepare'
         process_issues(msg)
         mock_start_issue_workflow.assert_not_called()
 
-        # Skip when no collection is present
-        mock_logger.get_issues.return_value = [mock_issue]
+        # Skip Split job
+        mock_logger.get_issues.return_value = (i for i in [mock_issue])
         mock_is_functional.return_value = True
+        mock_logger.has_issue.return_value = True
+        msg['header']['catalogue'] = 'any catalogue'
+        msg['header']['is_split'] = True
+        process_issues(msg)
+        mock_start_issue_workflow.assert_not_called()
+        del msg['header']['is_split']
+
+        # Skip when no collection is present
+        mock_logger.get_issues.return_value = (i for i in [mock_issue])
+        mock_is_functional.return_value = True
+        mock_logger.has_issue.return_value = True
         msg['header']['application'] = 'any application'
         del msg['header']['collection']
         process_issues(msg)
@@ -319,25 +333,29 @@ class TestIssue(TestCase):
 
         # Non-functional processes might report issues
         # In that case they will not be skipped and handled as regular issues
-        mock_logger.get_issues.return_value = [mock_issue]
+        mock_logger.get_issues.return_value = (i for i in [mock_issue])
         mock_is_functional.return_value = False
+        mock_logger.has_issue.return_value = True
         msg['header']['collection'] = 'any collection'
         process_issues(msg)
         mock_start_issue_workflow.assert_called()
         mock_start_issue_workflow.reset_mock()
 
         # Do not skip empty issues for functional process steps
-        mock_logger.get_issues.return_value = []
+        mock_logger.get_issues.return_value = (i for i in [])
+        mock_logger.has_issue.return_value = False
         mock_is_functional.return_value = True
         process_issues(msg)
         mock_start_issue_workflow.assert_called()
         mock_start_issue_workflow.reset_mock()
 
         # The regular case is a functional process step that has any issues to report
-        mock_logger.get_issues.return_value = [mock_issue]
+        issues = (i for i in [mock_issue])
+        mock_logger.get_issues.return_value = issues
+        mock_logger.has_issue.return_value = True
         mock_is_functional.return_value = True
         process_issues(msg)
-        mock_start_issue_workflow.assert_called_with(msg.get('header'), [mock_issue], mock_quality_update.return_value)
+        mock_start_issue_workflow.assert_called_with(msg.get('header'), issues, mock_quality_update.return_value)
 
     def test_get_validity(self):
         entity = {
@@ -357,7 +375,6 @@ class TestIssue(TestCase):
     @patch('gobcore.quality.issue.Issue')
     @patch('gobcore.quality.issue.start_workflow')
     @patch('gobcore.quality.issue.ContentsWriter', MagicMock())
-    @patch("gobcore.quality.issue.ProgressTicker", MagicMock())
     def test_start_issue_workflow(self, mock_start_workflow, mock_issue):
         header = {
             'catalogue': 'qa',

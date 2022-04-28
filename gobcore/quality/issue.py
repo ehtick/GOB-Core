@@ -278,7 +278,7 @@ def is_functional_process(process):
 
 
 def process_issues(msg):
-    issues = logger.get_issues()
+    issues = logger.get_issues()  # returns generator
 
     header = msg.get('header', {})
 
@@ -298,7 +298,7 @@ def process_issues(msg):
 
     # Only log quality for functional steps
     # Otherwise only log issues if there are any issues
-    if not (is_functional_process(quality_update.proces) or issues):
+    if not (is_functional_process(quality_update.proces) or logger.has_issue()):
         # Functional process issues are always processed, even if they are empty
         # Otherwise a check is made if there are any issues, if not then skip the empty set
         # So even an non-functional process may report Issues
@@ -307,9 +307,13 @@ def process_issues(msg):
     # Skip GOBPrepare jobs
     # Don't Quality check yourself
     # Don't check jobs where no collection is present
-    if quality_update.application == 'GOBPrepare' \
-            or quality_update.catalogue == QualityUpdate.CATALOG \
-            or quality_update.collection is None:
+    # Don't check splitter job (logs nothing)
+    if any([
+        quality_update.application == 'GOBPrepare',
+        quality_update.catalogue == QualityUpdate.CATALOG,
+        quality_update.collection is None,
+        header.get('is_split')
+    ]):
         return
 
     _start_issue_workflow(header, issues, quality_update)
@@ -329,21 +333,21 @@ def _start_issue_workflow(header, issues, quality_update):
             issue = Issue(**json_issue)
             writer.write(quality_update.get_contents(issue))
 
-        # Start workflow
-        # allow retries when an identical workflow is already running for max_retry_time seconds
-        # allow DELETE events to be generated, when no issues are found (always start)
-        workflow = {
-            'workflow_name': "import",
-            'step_name': "update_model",
-            'retry_time': 10 * 60  # retry for max 10 minutes
-        }
+    # Start workflow
+    # allow retries when an identical workflow is already running for max_retry_time seconds
+    workflow = {
+        'workflow_name': "import",
+        'step_name': "update_model",
+        'retry_time': 10 * 60  # retry for max 10 minutes
+    }
 
-        wf_msg = {
-            'header': quality_update.get_header(header),
-            'contents_ref': writer.filename,
-            'summary': {
-                'num_records': progress._count
-            }
+    wf_msg = {
+        'header': quality_update.get_header(header),
+        'contents_ref': writer.filename,
+        'summary': {
+            'num_records': progress._count
         }
+    }
 
+    if progress._count:
         start_workflow(workflow, wf_msg)

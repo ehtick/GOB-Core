@@ -167,6 +167,9 @@ class Logger:
         # Return the current position in the file
         return issue_offset
 
+    def has_issue(self) -> bool:
+        return bool(self._issues)
+
     def get_issues(self):
         if self._issues:
             # First close the open file since no more issues will be added

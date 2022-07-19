@@ -1,6 +1,5 @@
 from datetime import datetime
 from itertools import chain
-import os
 from pathlib import Path
 import socket
 from sys import getsizeof
@@ -119,16 +118,13 @@ def get_unique_name():
     return f"{now}.{unique}"
 
 
-def get_filename(name, offload_folder):
-    """Gets the full filename given a the name of a file
+def get_filename(name: str, offload_folder: str) -> str:
+    """Returns the full filename given a the name of a file, creates parent folders if they don't exist.
 
-    The filename resolves to the file in the offload folder
-
-    :param name:
-    :return:
+    :param name: filename
+    :param offload_folder: folder where file should be
+    :return: full path as str
     """
-    dir = os.path.join(GOB_SHARED_DIR, offload_folder)
-    # Create the path if the path not yet exists
-    path = Path(dir)
-    path.mkdir(exist_ok=True)
-    return os.path.join(dir, name)
+    path = Path(GOB_SHARED_DIR, offload_folder)
+    path.mkdir(exist_ok=True, parents=True)
+    return str(path / name)

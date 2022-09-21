@@ -8,6 +8,7 @@ The instance can be configured with a message that is being processed
 Each log message will so be populated with the message details
 
 """
+import contextlib
 import datetime
 import io
 import json
@@ -16,7 +17,7 @@ import os
 import sys
 import threading
 from collections import defaultdict
-from typing import ClassVar, TYPE_CHECKING, Union
+from typing import ClassVar, TYPE_CHECKING, Union, Optional
 
 from gobcore.logging.log_publisher import LogPublisher
 
@@ -27,11 +28,24 @@ if TYPE_CHECKING:
     from gobcore.quality.issue import Issue  # pragma: no cover
 
 
+class StdoutHandler(logging.StreamHandler):
+
+    def __init__(self):
+        super().__init__(stream=sys.stdout)
+        self.name = "StdoutHandler"
+
+
 class RequestsHandler(logging.Handler):
 
+    LOGFORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
     LOG_PUBLISHER = None
 
-    def emit(self, record):
+    def __init__(self):
+        super().__init__()
+        self.name = "RequestsHandler"
+        self.formatter = logging.Formatter(self.LOGFORMAT)
+
+    def emit(self, record: logging.LogRecord):
         """Emits a log record on the message broker
 
         :param record: log record
@@ -81,8 +95,6 @@ class Logger:
     GOB logger, used for application logging for the GOB system.
     Holds information to give context to subsequent logging.
     """
-
-    LOGFORMAT = "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
     LOGLEVEL = logging.INFO
 
     # Save these messages to report at end of msg handling
@@ -94,13 +106,10 @@ class Logger:
     MAX_SIZE = 10_000
     SHORT_MESSAGE_SIZE = 1_000
 
-    _logger: ClassVar[dict[str, logging.Logger]] = {}
-
     def __init__(self, name: str = None):
-        self.name = name
-
         if name is not None:
-            self._init_logger()
+            self.name = name
+            self._init_logger(handlers=[StdoutHandler()])
 
         self._default_args = {}
         self._offload_file = None
@@ -108,6 +117,9 @@ class Logger:
         self._issues = {}
         self._data_msg_count = defaultdict(int)
         self.messages = defaultdict(list)
+
+    def __repr__(self):
+        return f"{super().__repr__()}<{self.name}>"
 
     def clear_issues(self):
         self._issues.clear()
@@ -244,19 +256,22 @@ class Logger:
     def get_attribute(self, attribute):
         return self._default_args.get(attribute)
 
-    def configure(self, msg: dict, name: str = None):
-        """Configure the logger to store the relevant information for subsequent logging.
-        Should be called at the start of processing new item.
+    def get_logger(self) -> logging.Logger:
+        return logging.getLogger(self.name)
+
+    def configure(self, msg: dict, name: str, handlers: Optional[list[logging.Handler]] = None):
+        """
+        Configure the logger to store the relevant information for subsequent logging.
+        Should be called just before the start of processing a new item.
+        The logger handlers are deduplicated on the handlers name
 
         :param msg: the processed message
-        :param name: the name of the process that processes the message
+        :param name: (Required) the name of the process that processes the message
+        :param handlers: (Optional) add handlers to current named instance
         """
-        if name is None and self.name is None:
-            raise ValueError("Name not supllied in either Logger or Logger.configure")
-
-        if name:
+        if name is not None:
             self.name = name
-            self._init_logger()
+            self._init_logger(handlers or [])
 
         self.messages.clear()
 
@@ -272,38 +287,14 @@ class Logger:
                 'stepid': header.get('stepid')
             }
 
-    def add_message_broker_handler(self):
-        """Adds the message broker handler to the `name` instance if one doesn't exist yet."""
-        name = "RequestsHandler"
-
-        # make sure we have only 1 handler
-        if not any(
-            isinstance(handler, RequestsHandler) and handler.name == name
-            for handler in self.get_logger().handlers
-        ):
-            handler = RequestsHandler()
-            handler.name = name
-            formatter = logging.Formatter(self.LOGFORMAT)
-            handler.setFormatter(formatter)
-            self.get_logger().addHandler(handler)
-
-    def _init_logger(self):
-        if self.name in self._logger:
-            return
-
+    def _init_logger(self, handlers: list[logging.Handler]):
         new_logger = logging.getLogger(self.name)
         new_logger.setLevel(self.LOGLEVEL)
 
-        # log default to stdout
-        new_logger.addHandler(logging.StreamHandler(stream=sys.stdout))
-        self.set_logger(new_logger)
-
-    def get_logger(self) -> logging.Logger:
-        return self._logger[self.name]
-
-    @classmethod
-    def set_logger(cls, inst: logging.Logger):
-        cls._logger[inst.name] = inst
+        for handler in handlers:
+            # Don't add handlers if one exists with the same name
+            if not any(new_hndlr.name == handler.name for new_hndlr in new_logger.handlers):
+                new_logger.addHandler(handler)
 
 
 class LoggerManager:
@@ -328,8 +319,39 @@ class LoggerManager:
         return method
 
     @property
-    def name(self) -> str:
-        return self.get_logger().name
+    def name(self) -> Optional[str]:
+        if hasattr(self.get_logger(), "name"):
+            return self.get_logger().name
+
+    @name.setter
+    def name(self, value: str):
+        if not isinstance(value, str):
+            # raises vague exception otherwise
+            raise TypeError(f"Logger name is not str: {type(value)}")
+        self.get_logger().name = value
+
+    @contextlib.contextmanager
+    def configure_context(self, msg: dict, name: str, handlers: Optional[list[logging.Handler]] = None):
+        """
+        Runs the logs through logger `name` within this context.
+        When leaving the context, reset `name` to the original value.
+        The method signature is the same as `Logger.configure`
+
+        :param msg: the processed message
+        :param name: (Required) the name of the process that processes the message
+        :param handlers: (Optional) add handlers to current named instance
+        """
+        current_name = self.name  # None if not initialised
+        self.get_logger().configure(msg, name, handlers)
+
+        try:
+            yield
+        finally:
+            if current_name is None:
+                # A previous not initialised logger doesn't have a name attribute, delete it again
+                delattr(self.get_logger(), "name")
+            else:
+                self.name = current_name
 
 
 logger = LoggerManager()

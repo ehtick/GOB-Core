@@ -1,13 +1,14 @@
-import unittest
-import copy
+from unittest import TestCase
 from unittest.mock import MagicMock, patch
+from typing import ItemsView, KeysView
+import copy
 
 from gobcore.exceptions import GOBException
 from gobcore.model import GOBModel, NoSuchCollectionException, NoSuchCatalogException, Schema
 from tests.gobcore.fixtures import random_string
 
 
-class TestModel(unittest.TestCase):
+class TestModel(TestCase):
 
     def setUp(self):
         self.model = GOBModel()
@@ -22,6 +23,8 @@ class TestModel(unittest.TestCase):
     def test_get_catalogs(self):
         catalogs = self.model.get_catalogs()
         self.assertIsInstance(catalogs.items(), type({}.items()))
+        self.assertIsInstance(self.model.items(), ItemsView)
+        self.assertIsInstance(self.model.keys(), KeysView)
         self.assertIn('meetbouten', catalogs.keys())
 
     def test_get_collection_names(self):
@@ -96,11 +99,11 @@ class TestModel(unittest.TestCase):
         model = GOBModel(True)
 
         # Prepare object. Remove legacy_attributes
-        data = model._data
+        data = model.data
         data['nap']['collections']['peilmerken']['attributes'] = data['nap']['collections']['peilmerken']['legacy_attributes']
         del data['nap']['collections']['peilmerken']['legacy_attributes']
 
-        with self.assertRaisesRegexp(GOBException, "Expected 'legacy_attributes' to be defined for nap peilmerken"):
+        with self.assertRaisesRegex(GOBException, "Expected 'legacy_attributes' to be defined for nap peilmerken"):
             model._init_catalog(data['nap'])
 
         # Reset
@@ -139,6 +142,9 @@ class TestModel(unittest.TestCase):
 
         self.assertEqual("idvalue.1", self.model.get_source_id(entity, spec))
         self.model.has_states.assert_called_with('meetbouten', 'meetbouten')
+
+    def test_has_states_catalog_keyerror(self):
+        self.assertFalse(self.model.has_states('nonexistingcatalog', 'collection'))
 
     def test_source_id_states_other_seqnr_field(self):
         self.model.has_states = MagicMock(return_value=True)
@@ -185,14 +191,20 @@ class TestModel(unittest.TestCase):
                 self.model.split_ref(testcase)
 
     def test_get_collection_from_ref(self):
-        self.model.get_collection = MagicMock(return_value={"fake": "collection"})
+        collections = MagicMock()
+        collections.__getitem__.return_value = {"fake": "collection"}
+        self.model.data = {'some': {'collections': collections}}
         self.model.split_ref = MagicMock(return_value=("some", "reference"))
 
         result = self.model.get_collection_from_ref("some:reference")
 
         self.assertEqual({"fake": "collection"}, result)
         self.model.split_ref.assert_called_with("some:reference")
-        self.model.get_collection.assert_called_with("some", "reference")
+        collections.__getitem__.assert_called_with("reference")
+
+        self.model.data = {'other': {'collections': collections}}
+        result = self.model.get_collection_from_ref("some:reference")
+        self.assertIsNone(result)
 
     @patch("gobcore.model.get_inverse_relations")
     def test_get_inverse_relations(self, mock_get_inverse_relations):
@@ -246,7 +258,7 @@ class TestModel(unittest.TestCase):
 
     def test_get_collection_by_name(self):
         model = GOBModel()
-        model._data = {
+        model.data = {
             'cat_a': {
                 'collections': {
                     'coll_a': 'collection a',
@@ -279,26 +291,26 @@ class TestModel(unittest.TestCase):
         model.split_ref.assert_called_with(ref)
         self.assertEqual(model.split_ref.return_value, result)
 
-    @patch("gobcore.model.os.getenv", lambda x, _: x == 'DISABLE_TEST_CATALOGUE')
+    @patch("gobcore.model.os.getenv", lambda x: x == 'DISABLE_TEST_CATALOGUE')
     def test_test_catalog_deleted(self):
         # Reinitialise
         GOBModel._data = None
 
         model = GOBModel()
-        self.assertFalse('test_catalogue' in model._data)
+        self.assertFalse('test_catalogue' in model.data)
 
         # Cleanup
         GOBModel._data = None
 
     def test_test_catalog_present(self):
         model = GOBModel()
-        self.assertTrue('test_catalogue' in model._data)
+        self.assertTrue('test_catalogue' in model.data)
 
     @patch('gobcore.model.load_schema')
     def test_load_schemas(self, mock_load_schema):
         mock_load_schema.return_value = {'attributes': {}, 'version': '1.0', 'entity_id': 'some_attribute'}
         model = GOBModel()
-        model._data = {
+        model.data = {
             'cat_a': {
                 'collections': {
                     'coll_a': {
@@ -319,7 +331,7 @@ class TestModel(unittest.TestCase):
                 }
             },
         }
-        expected = copy.deepcopy(model._data)
+        expected = copy.deepcopy(model.data)
         expected['cat_a']['collections']['coll_b'] = {
             'attributes': {},
             'version': '1.0',
@@ -333,13 +345,14 @@ class TestModel(unittest.TestCase):
                 'version': '1.0'
             },
         }
-        model._load_schemas()
-        self.assertEqual(expected, model._data)
-        mock_load_schema.assert_called_with(Schema(datasetId='the dataset', tableId='the table', version='1.0'))
+        model._load_schemas(model.data)
+        self.assertEqual(expected, model.data)
+        mock_load_schema.assert_called_with(
+            Schema(datasetId='the dataset', tableId='the table', version='1.0'))
 
     def test_catalog_collection_from_abbr(self):
         model = GOBModel()
-        model._data = {
+        model.data = {
             'cat_a': {
                 'abbreviation': 'ca',
                 'collections': {
@@ -380,7 +393,7 @@ class TestModel(unittest.TestCase):
 
     def test_catalog_from_abbr(self):
         model = GOBModel()
-        model._data = {
+        model.data = {
             'cat_a': {
                 'abbreviation': 'ca',
                 'collections': {
@@ -389,7 +402,7 @@ class TestModel(unittest.TestCase):
             }
         }
 
-        self.assertEqual(model._data['cat_a'], model.get_catalog_from_abbr('ca'))
+        self.assertEqual(model.data['cat_a'], model.get_catalog_from_abbr('ca'))
 
         with self.assertRaises(NoSuchCatalogException):
             model.get_catalog_from_abbr('nonexistent')

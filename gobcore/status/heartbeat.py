@@ -10,11 +10,12 @@ when the service has reported itself dead via the atexit method
 
 """
 import atexit
+import contextlib
 import datetime
 import threading
 import socket
 import os
-from typing import Union, Optional
+from typing import Union
 
 from gobcore.message_broker import AsyncConnection
 from gobcore.message_broker.config import STATUS_EXCHANGE, HEARTBEAT_KEY, PROGRESS_KEY
@@ -54,14 +55,8 @@ class Heartbeat:
     progress_key = PROGRESS_KEY
 
     @classmethod
-    def progress(
-            cls,
-            connection: AsyncConnection,
-            service: Service,
-            msg: dict,
-            status: JobStatus,
-            info_msg: Optional[str] = None
-    ):
+    @contextlib.contextmanager
+    def progress(cls, connection: AsyncConnection, service: Service, msg: dict):
         """
         Send a progress heartbeat
 
@@ -70,25 +65,37 @@ class Heartbeat:
         :param connection: The message broker connection
         :param service: The definition of the service that delivered the message
         :param msg: The message being processed
-        :param status: The status to report (STATUS_START, STATUS_OK or STATUS_FAIL)
         :return: None
         """
-        if service.get("report") and msg.get("header"):
-            jobid = msg["header"].get("jobid")
-            stepid = msg["header"].get("stepid")
-            if jobid and stepid:
-                # Log progress on stdout
-                print(cls._progress_log_msg(service.get('queue'), status, msg['header']))
-                # Publish progress
-                connection.publish(cls.exchange, cls.progress_key, {
-                    # Include header so that any logs get reported on the correct job
-                    "header": msg["header"],
-                    # Include the specific status fields
-                    "jobid": jobid,
-                    "stepid": stepid,
-                    "status": status,
-                    "info_msg": info_msg
-                })
+        def _publish_progress(status: JobStatus, info_msg: str = None):
+            if service.get("report") and msg.get("header"):
+                jobid = msg["header"].get("jobid")
+                stepid = msg["header"].get("stepid")
+
+                if jobid and stepid:
+                    # Log progress on stdout
+                    print(cls._progress_log_msg(service.get('queue'), status, msg['header']))
+
+                    publish_msg = {
+                        # Include header so that any logs get reported on the correct job
+                        "header": msg["header"],
+                        # Include the specific status fields
+                        "jobid": jobid,
+                        "stepid": stepid,
+                        "status": status,
+                        "info_msg": info_msg
+                    }
+                    connection.publish(cls.exchange, cls.progress_key, publish_msg)
+
+        try:
+            _publish_progress(STATUS_START)
+            yield
+            _publish_progress(STATUS_OK)
+        except Exception as err:
+            _publish_progress(STATUS_FAIL, str(err))
+            raise err
+        finally:
+            pass
 
     @classmethod
     def _progress_log_msg(cls, queue: str, status: JobStatus, header: dict) -> str:

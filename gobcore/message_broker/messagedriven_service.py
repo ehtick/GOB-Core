@@ -1,47 +1,27 @@
 import sys
-import time
 import threading
-from typing import Callable, Dict, Any, Optional
+import time
+from typing import Any, Optional
 
 from gobcore.logging.logger import logger, StdoutHandler, RequestsHandler
 from gobcore.message_broker.async_message_broker import AsyncConnection
-from gobcore.message_broker.typing import Service, ServiceDefinition
-from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL, STATUS_OK, STATUS_START, STATUS_FAIL
 from gobcore.message_broker.config import CONNECTION_PARAMS
 from gobcore.message_broker.initialise_queues import initialize_message_broker
 from gobcore.message_broker.notifications import contains_notification, send_notification
+from gobcore.message_broker.typing import Service, ServiceDefinition
 from gobcore.quality.issue import process_issues
+from gobcore.status.heartbeat import Heartbeat, HEARTBEAT_INTERVAL
 from gobcore.utils import get_logger_name
 
 CHECK_CONNECTION = 5                # Check connection every n seconds
 RUNS_IN_OWN_THREAD = "own_thread"   # Service that runs in a separate thread
-LOGGER_HANDLERS = [StdoutHandler(), RequestsHandler()]
+LOG_HANDLERS = [StdoutHandler(), RequestsHandler()]
 
 # Assure that heartbeats are sent at every HEARTBEAT_INTERVAL
 assert(HEARTBEAT_INTERVAL % CHECK_CONNECTION == 0)
 
 
-def _handle_result_msg(connection: AsyncConnection, service: Service, result_msg: dict) -> bool:
-    """
-    Processes issues, notifications and reports from result message if available.
-    Return False if result_msg is False, else True
-    """
-    if result_msg:
-        process_issues(result_msg)
-
-        if contains_notification(result_msg):
-            send_notification(result_msg)
-
-        # If a report_queue is defined, report the result message
-        if 'report' in service:
-            report = service['report']
-            connection.publish(report['exchange'], report['key'], result_msg)
-
-    # Don't acknowledge messages which explicitely return False, in all other cases do acknowledge.
-    return result_msg is not False
-
-
-def _on_message(connection: AsyncConnection, service: Service, msg: Dict[str, Any]) -> bool:
+def _on_message(connection: AsyncConnection, service: Service, msg: dict[str, Any]) -> bool:
     """Called on every message receipt
 
     :param connection: the connection with the message broker
@@ -50,25 +30,23 @@ def _on_message(connection: AsyncConnection, service: Service, msg: Dict[str, An
 
     :return:
     """
-    handler: Callable = service['handler']
-    logger.configure(msg, get_logger_name(handler), handlers=LOGGER_HANDLERS)
+    with (
+        Heartbeat.progress(connection, service, msg),
+        logger.configure_context(msg, get_logger_name(service), LOG_HANDLERS)
+    ):
+        # execute handler
+        if result_msg := service["handler"](msg):
+            process_issues(result_msg)
 
-    try:
-        Heartbeat.progress(connection, service, msg, STATUS_START)
-        result_msg = handler(msg)
-        result = _handle_result_msg(connection, service, result_msg)
+            if contains_notification(result_msg):
+                send_notification(result_msg)
 
-        if result:
-            Heartbeat.progress(connection, service, msg, STATUS_OK)
+            # If a report_queue is defined, report the result message
+            if report := service.get("report"):
+                connection.publish(report["exchange"], report["key"], result_msg)
 
-    except Exception as err:
-        Heartbeat.progress(connection, service, msg, STATUS_FAIL, str(err))
-        # re-raise the exception, further handling is done in the message broker
-        raise err
-
-    else:
-        # Remove the message from the queue by returning true
-        return result
+    # Don't acknowledge messages which explicitely return False, in all other cases do acknowledge.
+    return result_msg is not False
 
 
 class MessagedrivenService:
@@ -89,6 +67,8 @@ class MessagedrivenService:
                 'queue': 'name_of_the_queue_to_report_to',
                 'key': 'name_of_the_key_to_report_to'
             }
+            # optional logger configuration
+            'logger': 'name of the logger to be configured'
         }
     }
     ```

@@ -1,6 +1,5 @@
 import os
 import copy
-import warnings
 from collections import UserDict
 
 from gobcore.exceptions import GOBException
@@ -12,11 +11,6 @@ from gobcore.model.pydantic import Schema
 from gobcore.model.relations import get_relations, get_inverse_relations
 from gobcore.model.quality import QUALITY_CATALOG, get_quality_assurances
 from gobcore.model.schema import load_schema
-
-
-def deprecation(message):
-    """Add a deprecation warning."""
-    warnings.warn(message, DeprecationWarning, stacklevel=3)
 
 
 class NotInModelException(Exception):
@@ -32,13 +26,7 @@ class NoSuchCollectionException(NotInModelException):
 
 
 class GOBModel(UserDict):
-    inverse_relations = None
-    _data = None
-    legacy_mode = None
-
-    # Set and used to cache SQLAlchemy models by the SA layer.
-    # Use model.sa.gob.get_sqlalchemy_models() to retrieve/init.
-    sqlalchemy_models = None
+    _initialised = False
 
     global_attributes = {
         **PRIVATE_META_FIELDS,
@@ -46,86 +34,98 @@ class GOBModel(UserDict):
         **FIXED_FIELDS
     }
 
-    def __init__(self, legacy=False):
-        if GOBModel._data is not None:
-            if self.legacy_mode is not None and self.legacy_mode != legacy:
+    def __new__(cls, legacy=False):
+        """GOBModel (instance) singleton."""
+        if cls._initialised:
+            if cls.legacy_mode is not legacy:
                 raise Exception("Tried to initialise model with different legacy setting")
             # Model is already initialised
-            return
-        GOBModel.legacy_mode = legacy
+        else:
+            # GOBModel singleton initialisation.
+            singleton = super().__new__(cls)
+            cls.legacy_mode = legacy
+            cls.inverse_relations = None
 
-        cached_data = json_to_cached_dict(os.path.join(os.path.dirname(__file__), 'gobmodel.json'))
-        # Leave cached data untouched.
-        data = copy.deepcopy(cached_data)
+            # Set and used to cache SQLAlchemy models by the SA layer.
+            # Use model.sa.gob.get_sqlalchemy_models() to retrieve/init.
+            cls.sqlalchemy_models = None
 
-        if os.getenv('DISABLE_TEST_CATALOGUE'):
-            # Default is to include the test catalogue.
-            # By setting the DISABLE_TEST_CATALOGUE environment variable
-            # the test catalogue can be removed.
-            del data["test_catalogue"]
+            # UserDict (GOBModel classmethod).
+            super().__init__(cls)
 
-        # Proces data.
-        self._load_schemas(data)
-        # Temporary assignements for GOBModel class and instance .data and ._data
-        # just to maintain backwards compatibility.
-        # GOBModel (instance) will be a singleton in the next fase (1c).
-        GOBModel.data = data
-        GOBModel._data = data
-        self._init_data()
+            cached_data = json_to_cached_dict(os.path.join(os.path.dirname(__file__), 'gobmodel.json'))
+            # Initialise GOBModel.data (leave cached_data untouched).
+            cls.data = copy.deepcopy(cached_data)
 
-        # UserDict data.
-        super().__init__(data)
-        # Reset instance .data. UserDict .data is a copy of data (initialdata).
-        self.data = data
+            if os.getenv('DISABLE_TEST_CATALOGUE'):
+                # Default is to include the test catalogue.
+                # By setting the DISABLE_TEST_CATALOGUE environment variable
+                # the test catalogue can be removed.
+                del cls.data["test_catalogue"]
 
-    def _init_data(self):
+            # Proces GOBModel.data.
+            cls._load_schemas(cls.data)
+            cls._init_data(cls.data)
+
+            cls._initialised = True
+            cls.__instance = singleton
+        return cls.__instance
+
+    # Match __new__ parameters.
+    @classmethod
+    def __init__(cls, legacy=False):
+        pass
+
+    @classmethod
+    def _init_data(cls, data):
         """Extract references for easy access.
 
         Add catalog and collection names to catalog and collection objects.
         """
-        for catalog_name, catalog in self.items():
+        for catalog_name, catalog in data.items():
             catalog['name'] = catalog_name
-            self._init_catalog(catalog)
+            cls._init_catalog(catalog)
 
         # This needs to happen after initialisation of the object catalogs
-        self.data[QUALITY_CATALOG] = get_quality_assurances(self)
-        self.data[QUALITY_CATALOG]['name'] = QUALITY_CATALOG
-        self.data["rel"] = get_relations(self)
-        self.data["rel"]["name"] = "rel"
+        data[QUALITY_CATALOG] = get_quality_assurances(data)
+        data[QUALITY_CATALOG]['name'] = QUALITY_CATALOG
+        data["rel"] = get_relations(cls)
+        data["rel"]["name"] = "rel"
 
-        self._init_catalog(self.data[QUALITY_CATALOG])
-        self._init_catalog(self.data["rel"])
+        cls._init_catalog(data[QUALITY_CATALOG])
+        cls._init_catalog(data["rel"])
 
-    def _init_catalog(self, catalog):
-        """Initialises self.data object with all fields and helper dicts."""
+    @classmethod
+    def _init_catalog(cls, catalog):
+        """Initialises GOBModel.data object with all fields and helper dicts."""
         catalog_name = catalog["name"]
 
-        for entity_name, model in catalog['collections'].items():
-            model['name'] = entity_name
+        for entity_name, collection in catalog['collections'].items():
+            collection['name'] = entity_name
 
             # GOB API.
-            if self.legacy_mode:
-                if 'schema' in model and 'legacy_attributes' not in model:
+            if cls.legacy_mode:
+                if 'schema' in collection and 'legacy_attributes' not in collection:
                     raise GOBException(
                         f"Expected 'legacy_attributes' to be defined for {catalog_name} {entity_name}")
-                model['attributes'] = model.get('legacy_attributes', model['attributes'])
+                collection['attributes'] = collection.get('legacy_attributes', collection['attributes'])
 
-            state_attributes = STATE_FIELDS if self.has_states(catalog_name, entity_name) else {}
+            state_attributes = STATE_FIELDS if cls.has_states(catalog_name, entity_name) else {}
             all_attributes = {
                 **state_attributes,
-                **model['attributes']
+                **collection['attributes']
             }
 
-            model['references'] = self._extract_references(model['attributes'])
-            model['very_many_references'] = self._extract_very_many_references(model['attributes'])
+            collection['references'] = cls._extract_references(collection['attributes'])
+            collection['very_many_references'] = cls._extract_very_many_references(collection['attributes'])
 
             # Add fields to the GOBModel to be used in database creation and lookups
-            model['fields'] = all_attributes
+            collection['fields'] = all_attributes
 
             # Include complete definition, including all global fields
-            model['all_fields'] = {
+            collection['all_fields'] = {
                 **all_attributes,
-                **self.global_attributes
+                **cls.global_attributes
             }
 
     @staticmethod
@@ -155,77 +155,8 @@ class GOBModel(UserDict):
             self.inverse_relations = get_inverse_relations(self)
         return self.inverse_relations
 
-    def get_catalog_names(self):
-        """Deprecated. Use .keys()."""
-        deprecation("deprecated: use .keys()")
-        return self._data.keys()
-
-    def get_catalogs(self):
-        """Deprecated. Use self.data."""
-        deprecation("deprecated: use self.data")
-        return self._data
-
-    def get_catalog(self, catalog_name):
-        """Deprecated. Use gob_model[catalog_name] (.__getitem__) or .get(catalog_name)."""
-        deprecation("deprecated: use gob_model[catalog_name] or gob_model.get(catalog_name)")
-        return self._data[catalog_name] if catalog_name in self._data else None
-
-    def get_collection_names(self, catalog_name):
-        """Deprecated. Use gob_model[catalog_name]['collections'].keys()."""
-        deprecation("deprecated: use gob_model[catalog_name]['collections'].keys()")
-        catalog = self.get_catalog(catalog_name)
-        return catalog['collections'].keys() if 'collections' in catalog else None
-
-    def get_collections(self, catalog_name):
-        """Deprecated.
-
-        Use:
-        * gob_model[catalog_name]['collections']
-        * if gob_model.get(catalog_name):
-              return gob_model[catalog_name].get('collections')
-        """
-        deprecation("deprecated: use gob_model[catalog_name]['collections'] or …")
-        catalog = self.get_catalog(catalog_name)
-        return catalog['collections'] if catalog and 'collections' in catalog else None
-
-    def get_collection(self, catalog_name, collection_name):
-        """Deprecated.
-
-        Use:
-          try:
-              return gob_model[catalog_name]['collections'][collection_name]
-          except KeyError:
-              return None
-        """
-        deprecation("deprecated: use gob_model[catalog_name]['collections'].get(collection_name) …")
-        collections = self.get_collections(catalog_name)
-        return collections[collection_name] if collections and collection_name in collections else None
-
-    def get_collection_by_name(self, collection_name):
-        """Finds collection only by name.
-
-        Raises GOBException when multiple collections with collection_name are found.
-        Returns (catalog, collection) tuple when success.
-
-        :param collection_name:
-        :return:
-        """
-        collections = []
-        catalog = None
-
-        for catalog_name, catalog in self.items():
-            collection = catalog['collections'].get(collection_name)
-
-            if collection:
-                collections.append(collection)
-                collection_catalog_name = catalog_name
-
-        if len(collections) > 1:
-            raise GOBException(f"Multiple collections found with name {collection_name}")
-
-        return (collection_catalog_name, collections[0]) if collections else None
-
-    def has_states(self, catalog_name, collection_name):
+    @classmethod
+    def has_states(cls, catalog_name, collection_name):
         """Tells if a collection has states.
 
         :param catalog_name: name of the catalog
@@ -233,7 +164,7 @@ class GOBModel(UserDict):
         :return: True if the collection has states
         """
         try:
-            collection = self[catalog_name]['collections'][collection_name]
+            collection = cls.data[catalog_name]['collections'][collection_name]
             return collection.get("has_states") is True
         except KeyError:
             return False

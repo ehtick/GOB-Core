@@ -3,11 +3,30 @@
 set -u # crash on missing env
 set -e # stop on any error
 
+echo() {
+   builtin echo -e "$@"
+}
+
 export COVERAGE_FILE="/tmp/.coverage"
 
-FILES=(
-#  gobcore/__init__.py
-#  gobcore/datastore/__init__.py
+# Add files to pass through Flake8, Black and mypy checks.
+CLEAN_FILES=(
+  gobcore/__init__.py
+  gobcore/datastore/__init__.py
+  gobcore/enum.py
+  gobcore/exceptions.py
+  gobcore/parse.py
+  gobcore/sources/__init__.py
+  gobcore/status/__init__.py
+  gobcore/typing.py
+  gobcore/utils.py
+  gobcore/views/__init__.py
+  gobcore/workflow/__init__.py
+  gobcore/workflow/start_workflow.py
+)
+
+# Uncomment files to pass through Flake8 & Black checks. Move mypy clean files to CLEAN_FILES.
+DIRTY_FILES=(
 #  gobcore/datastore/bag_extract.py
 #  gobcore/datastore/datastore.py
 #  gobcore/datastore/factory.py
@@ -19,11 +38,9 @@ FILES=(
 #  gobcore/datastore/sql.py
 #  gobcore/datastore/sqlserver.py
 #  gobcore/datastore/wfs.py
-  gobcore/enum.py
 #  gobcore/events/__init__.py
 #  gobcore/events/import_events.py
 #  gobcore/events/import_message.py
-#  gobcore/exceptions.py
 #  gobcore/logging/__init__.py
 #  gobcore/logging/audit_logger.py
 #  gobcore/logging/log_publisher.py
@@ -55,7 +72,6 @@ FILES=(
 #  gobcore/model/sa/indexes.py
 #  gobcore/model/sa/management.py
 #  gobcore/model/schema.py
-#  gobcore/parse.py
 #  gobcore/quality/__init__.py
 #  gobcore/quality/config.py
 #  gobcore/quality/issue.py
@@ -69,39 +85,36 @@ FILES=(
 #  gobcore/secure/cryptos/fernet.py
 #  gobcore/secure/request.py
 #  gobcore/secure/user.py
-#  gobcore/sources/__init__.py
 #  gobcore/standalone.py
-#  gobcore/status/__init__.py
 #  gobcore/status/heartbeat.py
 #  gobcore/typesystem/__init__.py
 #  gobcore/typesystem/gob_geotypes.py
 #  gobcore/typesystem/gob_secure_types.py
 #  gobcore/typesystem/gob_types.py
 #  gobcore/typesystem/json.py
-#  gobcore/utils.py
-#  gobcore/views/__init__.py
-#  gobcore/workflow/__init__.py
 #  gobcore/workflow/start_commands.py
-#  gobcore/workflow/start_workflow.py
 )
 
-echo "Running mypy"
-# temporary disabled, fix mypy for gobcore/__init__.py first
-# mypy "${FILES[@]}"
+# Combine CLEAN_FILES and DIRTY_FILES.
+FILES=( "${CLEAN_FILES[@]}" "${DIRTY_FILES[@]}" )
 
-echo "Running unit tests"
+
+echo "Running mypy on non-dirty files"
+mypy "${CLEAN_FILES[@]}"
+
+echo "\nRunning unit tests"
 coverage run --source=gobcore -m pytest
 
-echo "Reporting coverage"
+echo "Coverage report"
 coverage report --fail-under=100
 
-echo "Check if black finds no potential reformat fixes"
+echo "\nCheck if Black finds no potential reformat fixes"
 black --check --diff "${FILES[@]}"
 
-echo "Check for potential import sort"
-isort --check --diff "${FILES[@]}"
+echo "\nCheck for potential import sort"
+isort --check --diff --src-path=gobcore "${FILES[@]}"
 
-echo "Running flake8"
+echo "\nRunning Flake8 style checks"
 flake8 "${FILES[@]}"
 
-echo "Checks complete"
+echo "\nChecks complete"

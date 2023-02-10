@@ -19,6 +19,9 @@ _CONVERSIONS = {
     "ontstaan_uit_brk_zakelijke_rechten": "ontstaan_uit_brk_zrt",
     "betrokken_samenwerkingsverband_brk_subject": "betr_samenwerkverband_brk_sjt",
     "betrokken_gorzen_en_aanwassen_brk_subject": "betr_gorzen_aanwassen_brk_sjt",
+    "is_bron_voor_brk_aantekening_kadastraal_object": "is_bron_voor_brk_akt",
+    "_hft_btrk_p__brk_kadastraal_object": "hft_btrk_op_brk_kot",
+    "is_bron_voor_brk_aantekening_recht": "is_bron_voor_brk_art",
 }
 
 
@@ -27,7 +30,7 @@ class NameCompressor:
 
     For PostgreSQL the maximimum length = 63 but simply testing for this length is not enough.
 
-    The name is also used with prefixes: 'mv_' for materialized views.
+    The name is also used with prefixes: 'mv_' for materialized views, 'rel_' for relations.
     And postfixes: '_tmp' for temporary tables.
     """
 

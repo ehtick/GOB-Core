@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, call
 
 from tests.gobcore.fixtures import get_service_fixture
 
@@ -44,6 +44,30 @@ class TestProgressTicker(TestCase):
                 mock_print.reset_mock()
             else:
                 mock_print.assert_not_called()
+
+    @patch("builtins.print")
+    def test_ticks(self, mock_print):
+        with self.ticker:
+            self.ticker.ticks(10)
+
+            mock_print.assert_called_once()
+            assert self.ticker._count == 10
+
+            self.ticker.ticks(5)
+            mock_print.assert_called_with("TickerName - 15")
+            assert self.ticker._count == 15
+
+            self.ticker.ticks(32)
+            mock_print.assert_has_calls([
+                call("Start TickerName"),
+                call("TickerName - 15"),
+                call("TickerName - 30"),
+                call("TickerName - 45")
+            ])
+            assert self.ticker._count == 47
+
+            self.ticker.ticks(1000)
+            mock_print.assert_called_with("TickerName - 1,035")
 
 
 class TestUtilFunctions(TestCase):

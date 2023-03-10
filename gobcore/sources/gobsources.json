@@ -919,13 +919,32 @@
       "kadastraleobjecten": {
         "heeft_een_relatie_met_bag_verblijfsobject": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "is_ontstaan_uit_brk_g_perceel": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "is_ontstaan_uit_brk_kadastraalobject": {
+          "method": "equals",
+          "destination_attribute": "identificatie",
+          "none_allowed": true
+        },
+        "aangeduid_door_brk_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "aangeduid_door_brk_kadastralegemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "aangeduid_door_brk_kadastralegemeentecode": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        },
+        "aangeduid_door_brk_kadastralesectie": {
           "method": "equals",
           "destination_attribute": "identificatie"
         }
@@ -933,31 +952,43 @@
       "zakelijkerechten": {
         "belast_brk_zakelijke_rechten": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "belast_met_brk_zakelijke_rechten": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "ontstaan_uit_brk_zakelijke_rechten": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "vve_identificatie_ontstaan_uit": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "betrokken_bij_brk_zakelijke_rechten": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "vve_identificatie_betrokken_bij": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "is_beperkt_tot_brk_tenaamstellingen": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
+        },
+        "betrokken_bij_appartementsrechtsplitsing_vve": {
+          "method": "equals",
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "rust_op_brk_kadastraal_object": {
           "method": "equals",
@@ -971,15 +1002,18 @@
         },
         "betrokken_partner_brk_subject": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "betrokken_samenwerkingsverband_brk_subject": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "betrokken_gorzen_en_aanwassen_brk_subject": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "van_brk_zakelijk_recht": {
           "method": "equals",
@@ -987,13 +1021,15 @@
         },
         "is_gebaseerd_op_brk_stukdelen": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         }
       },
       "stukdelen": {
         "is_bron_voor_brk_tenaamstelling": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "is_bron_voor_brk_aantekening_kadastraal_object": {
           "method": "equals",
@@ -1007,7 +1043,8 @@
         },
         "is_bron_voor_brk_zakelijk_recht": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         }
       },
       "aantekeningenrechten": {
@@ -1017,17 +1054,20 @@
         },
         "heeft_brk_betrokken_persoon": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "is_gebaseerd_op_brk_stukdeel": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         }
       },
       "aantekeningenkadastraleobjecten": {
         "heeft_brk_betrokken_persoon": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         },
         "heeft_betrekking_op_brk_kadastraal_object": {
           "method": "equals",
@@ -1035,11 +1075,24 @@
         },
         "is_gebaseerd_op_brk_stukdeel": {
           "method": "equals",
-          "destination_attribute": "identificatie"
+          "destination_attribute": "identificatie",
+          "none_allowed": true
         }
       },
       "kadastralegemeentecodes": {
         "is_onderdeel_van_brk_kadastrale_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      },
+      "kadastralegemeentes": {
+        "ligt_in_brk_gemeente": {
+          "method": "equals",
+          "destination_attribute": "identificatie"
+        }
+      },
+      "kadastralesecties": {
+        "is_onderdeel_van_brk_kadastrale_gemeentecode": {
           "method": "equals",
           "destination_attribute": "identificatie"
         }

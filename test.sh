@@ -17,12 +17,16 @@ CLEAN_FILES=(
   gobcore/exceptions.py
   gobcore/parse.py
   gobcore/sources/__init__.py
+  gobcore/standalone.py
   gobcore/status/__init__.py
+  gobcore/status/heartbeat.py
   gobcore/typing.py
   gobcore/utils.py
   gobcore/views/__init__.py
   gobcore/workflow/__init__.py
+  gobcore/workflow/start_commands.py
   gobcore/workflow/start_workflow.py
+  gobcore/workflow/typing.py
 )
 
 # Uncomment files to pass through Flake8 & Black checks. Move mypy clean files to CLEAN_FILES.
@@ -85,14 +89,11 @@ DIRTY_FILES=(
 #  gobcore/secure/cryptos/fernet.py
 #  gobcore/secure/request.py
 #  gobcore/secure/user.py
-#  gobcore/standalone.py
-#  gobcore/status/heartbeat.py
 #  gobcore/typesystem/__init__.py
 #  gobcore/typesystem/gob_geotypes.py
 #  gobcore/typesystem/gob_secure_types.py
 #  gobcore/typesystem/gob_types.py
 #  gobcore/typesystem/json.py
-#  gobcore/workflow/start_commands.py
 )
 
 # Combine CLEAN_FILES and DIRTY_FILES.

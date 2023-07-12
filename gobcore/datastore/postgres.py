@@ -92,6 +92,19 @@ class PostgresDatastore(SqlDatastore):
         except psycopg2.Error as e:
             raise GOBException(f'Error executing query: {query[:80]}. Error: {e}')
 
+    def copy_from_stdin(self, query: str, data: str) -> None:
+        """Executes Postgres copy from stdin
+
+        :params query, data
+        :return:
+        """
+        try:
+            with self.connection.cursor() as cur:
+                cur.copy_expert(query, data)
+            self.connection.commit()
+        except psycopg2.Error as e:
+            raise GOBException(f'Error executing query: COPY FROM STDIN. Error: {e}')
+
     def list_tables_for_schema(self, schema: str) -> list[str]:
         query = f"SELECT table_name FROM information_schema.tables WHERE table_schema='{schema}'"
         result = self.query(query, name=None)

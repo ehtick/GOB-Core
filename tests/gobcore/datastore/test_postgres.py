@@ -26,6 +26,9 @@ class MockConnection:
         def execute(self, query):
             return
 
+        def copy_from_stdin(self, query, data):
+            return
+
         def close(self):
             return
 
@@ -163,6 +166,20 @@ class TestPostgresDatastore(TestCase):
 
         with self.assertRaises(GOBException):
             store.execute('some query')
+
+    def test_copy_from_stdin(self):
+        store = PostgresDatastore({})
+        store.connection = MagicMock()
+        mocked_cursor = store.connection.cursor.return_value.__enter__.return_value
+
+        store.copy_from_stdin('some query', 'some data')
+        mocked_cursor.copy_expert.assert_called_with('some query', 'some data')
+        store.connection.commit.assert_called_once()
+
+        mocked_cursor.copy_expert.side_effect = Error
+
+        with self.assertRaises(GOBException):
+            store.copy_from_stdin('some query','some data')
 
     def test_list_tables_for_schema(self):
         store = PostgresDatastore({})
